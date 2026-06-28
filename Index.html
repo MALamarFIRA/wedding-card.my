@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Invitation: Akmal & Musfirah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600;700&family=Courier+Prime:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --maroon: #582121;
+      --gold: #C5A059;
+      --cream: #F5EFEB;
+      --dark-text: #2B2321;
+      --white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Scroll lock class when splash screen is active */
+    body.no-scroll {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--cream);
+      color: var(--dark-text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* --- 100% SOLID SPLASH SCREEN OVERLAY --- */
+    #splashScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--maroon); /* Completely opaque solid color */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100000;
+      color: var(--gold);
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.6s ease, pointer-events 0.6s ease;
+    }
+
+    /* 🌟 ZOOM OUT GROUP: Animates everything inside except the typing effect */
+    .zoom-out-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      animation: splashZoomOut 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    #splashScreen h2 {
+      font-family: 'Cinzel', serif !important;
+      letter-spacing: 3px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* 🌟 SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
+    .signature-wrapper {
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    #splashScreen h1 {
+      font-family: 'Great Vibes', cursive !important;
+      font-size: 55px;
+      color: var(--white);
+      font-weight: normal;
+      white-space: nowrap;
+      display: inline-block;
+      width: 0;
+      overflow: hidden;
+      /* 🌟 SIGNATURE ANIMATION: Starts after a slight delay (0.5s) */
+      animation: drawSignature 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+    }
+
+    #splashScreen p {
+      font-family: 'Montserrat', sans-serif !important;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+      opacity: 0.8;
+      color: var(--gold);
+    }
+
+    .open-btn {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid var(--gold);
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .open-btn:hover {
+      background: var(--gold);
+      color: var(--maroon);
+    }
+
+    #splashScreen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* --- 🌟 NEW ANIMATION TIMELINES --- */
+    @keyframes splashZoomOut {
+      0% {
+        transform: scale(1.1);
+        opacity: 0;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes drawSignature {
+      0% {
+        width: 0;
+      }
+      100% {
+        /* Adjust this to 100% or slightly max-content if text wraps on smaller viewports */
+        width: 100%; 
+      }
+    }
+
+    .mobile-container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--cream);
+      padding: 25px 15px;
+      border-radius: 12px;
+      padding-bottom: 80px;
+    }
+
+    .section-divider {
+      text-align: center;
+      margin: 40px 0;
+      color: var(--dark-text);
+      font-size: 24px;
+    }
+
+    /* --- 3D FLIP CONTAINER ENGINE --- */
+    .flip-container {
+      perspective: 1200px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+      display: grid;
+      grid-template-rows: 1fr;
+    }
+
+    .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front, .flip-back {
+      grid-area: 1 / 1 / 2 / 2;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flip-front {
+      z-index: 2;
+      transform: rotateY(0deg);
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+
+    /* --- CARD FRONT: PASSPORT --- */
+    .passport-card {
+      background-color: var(--maroon);
+      color: var(--gold);
+      border-radius: 15px;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 530px;
+    }
+
+    .passport-card h2 { font-family: 'Cinzel', serif; letter-spacing: 2px; font-size: 16px; }
+    .passport-card h1 { font-family: 'Cinzel', serif; letter-spacing: 4px; font-size: 32px; margin-top: 5px; }
+    .flight-path { margin: 45px 0; font-size: 45px; opacity: 0.9; }
+    .couple-names-main { font-family: 'Cinzel', serif; font-size: 22px; letter-spacing: 1px; }
+    .wedding-date-main { font-family: 'Courier Prime', monospace; font-size: 18px; margin: 15px 0; }
+    .flip-hint-text { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-top: 30px; animation: pulseHint 2s infinite; }
+
+    /* --- CARD BACK: BOARDING PASS --- */
+    .boarding-pass {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      border: 1px solid rgba(0,0,0,0.05);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 15px;
+    }
+
+    .bp-header { background: var(--maroon); color: var(--gold); text-align: center; padding: 12px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; }
+    .bp-body { padding: 15px 20px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+    .bp-invite-text { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #777; margin-bottom: 4px; }
+    .bp-names { font-family: 'Cinzel', serif; font-size: 22px; font-weight: bold; border-bottom: 2px dashed #ddd; padding-bottom: 12px; margin-bottom: 12px; }
+    
+    .bp-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; font-size: 12px; margin-bottom: 11px; }
+    .bp-label { font-weight: 600; text-transform: uppercase; color: #555; font-size: 10px; }
+    .bp-value { color: var(--dark-text); margin-top: 1px; }
+
+    .photo-gallery { display: flex; justify-content: space-around; gap: 12px; margin-bottom: 15px; }
+    .polaroid { background: var(--cream); padding: 6px 6px 14px 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.12); width: 44%; transform: rotate(-2deg); }
+    .polaroid:nth-child(even) { transform: rotate(2deg); }
+    .polaroid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border: 1px solid #ddd; }
+    .polaroid-caption { font-family: 'Courier Prime', monospace; font-size: 12px; margin-top: 10px; color: #444; font-weight: bold; }
+
+    .barcode-area { margin-top: auto; padding-top: 10px; border-top: 1px dashed #ddd; cursor: pointer; }
+    .dummy-barcode {
+      width: 180px; height: 40px; margin: 8px auto 4px auto;
+      background: linear-gradient(90deg, #333 0px, #333 2px, transparent 2px, transparent 4px, #333 4px, #333 5px, transparent 5px, transparent 8px, #333 8px, #333 11px, transparent 11px, transparent 13px, #333 13px, #333 14px, transparent 14px, transparent 16px, #333 16px, #333 17px, transparent 17px, transparent 21px, #333 21px, #333 24px, transparent 24px, transparent 26px, #333 26px, #333 27px, transparent 27px, transparent 30px, #333 30px, #333 33px, transparent 33px, transparent 35px, #333 35px, #333 38px, transparent 38px, transparent 40px, #333 40px, #333 41px, transparent 41px, transparent 45px, #333 45px, #333 48px, transparent 48px, transparent 52px, #333 52px, #333 55px, transparent 55px, transparent 56px, #333 56px, #333 59px, transparent 59px, transparent 62px, #333 62px, #333 65px, transparent 65px, transparent 67px, #333 67px, #333 68px, transparent 68px, transparent 72px, #333 72px, #333 73px, transparent 73px, transparent 76px, #333 76px, #333 79px, transparent 79px, transparent 81px, #333 81px, #333 82px, transparent 82px, transparent 85px, #333 85px, #333 88px, transparent 88px, transparent 90px, #333 90px, #333 91px, transparent 91px, transparent 95px, #333 95px, #333 96px, transparent 96px, transparent 100px, #333 100px, #333 103px, transparent 103px, transparent 105px, #333 105px, #333 108px, transparent 108px, transparent 110px, #333 110px, #333 111px, transparent 111px, transparent 115px, #333 115px, #333 118px, transparent 118px, transparent 122px, #333 122px, #333 125px, transparent 125px, transparent 126px, #333 126px, #333 129px, transparent 129px, transparent 132px, #333 132px, #333 135px, transparent 135px, transparent 137px, #333 137px, #333 138px, transparent 138px, transparent 142px, #333 142px, #333 143px, transparent 143px, transparent 146px, #333 146px, #333 149px, transparent 149px, transparent 151px, #333 151px, #333 152px, transparent 152px, transparent 155px, #333 155px, #333 158px, transparent 158px, transparent 160px, #333 160px, #333 161px, transparent 161px, transparent 165px, #333 165px, #333 166px, transparent 166px, transparent 170px, #333 170px, #333 173px, transparent 173px, transparent 175px, #333 175px, #333 178px, transparent 178px, transparent 180px);
+    }
+    .barcode-number { font-family: 'Courier Prime', monospace; letter-spacing: 2px; font-size: 11px; color: #555; margin-top: 4px; }
+
+    .map-menu, .calendar-menu { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; padding: 5px; animation: fadeInSlide 0.2s ease-out; }
+    .map-menu.active, .calendar-menu.active { display: grid; }
+    
+    .map-option, .calendar-option { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--white); }
+    .google-maps, .google-cal { background-color: #4285F4; }
+    .waze-maps { background-color: #33CCFF; color: #2B2321; }
+    .apple-cal { background-color: #000000; }
+
+    .countdown-box { background: var(--white); border: 2px solid var(--dark-text); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 25px; }
+    .countdown-box h3 { font-family: 'Courier Prime', monospace; letter-spacing: 2px; font-size: 16px; margin-bottom: 15px; }
+    .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .timer-num { font-size: 24px; font-weight: bold; }
+    .timer-label { font-size: 10px; text-transform: uppercase; color: #666; }
+
+    .letter-card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; line-height: 1.6; font-size: 14px; }
+    .letter-card h4 { font-weight: 600; margin-bottom: 15px; }
+    .letter-signature { font-family: 'Great Vibes', cursive; font-size: 28px; margin-top: 20px; color: var(--maroon); }
+
+    .calendar-reminder-btn { background: #fdfbf7; border: 2px dashed var(--gold); border-radius: 10px; padding: 12px; margin-top: 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+
+    /* --- CENTERED ALTERNATING TIMELINE --- */
+    .timeline-container { position: relative; padding: 20px 0; margin: 15px 0; }
+    .timeline-container::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--dark-text); transform: translateX(-50%); }
+    
+    .timeline-item { position: relative; margin-bottom: 30px; width: 100%; display: flex; }
+    .timeline-item:last-child { margin-bottom: 10px; }
+    .timeline-dot { position: absolute; left: 50%; top: 12px; width: 14px; height: 14px; border-radius: 50%; background: var(--maroon); border: 2px solid var(--cream); transform: translateX(-50%); z-index: 5; }
+    
+    .timeline-content { width: 50%; display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 0 20px; box-sizing: border-box; }
+    .timeline-item:nth-child(odd) { justify-content: flex-start; }
+    .timeline-item:nth-child(odd) .timeline-content { flex-direction: row; text-align: right; justify-content: flex-end; }
+    .timeline-item:nth-child(even) { justify-content: flex-end; }
+    .timeline-item:nth-child(even) .timeline-content { flex-direction: row-reverse; text-align: left; justify-content: flex-end; }
+    
+    .timeline-icon { font-size: 22px; color: var(--maroon); min-width: 28px; text-align: center; display: flex; align-items: center; justify-content: center; }
+    .timeline-text h4 { font-size: 14px; font-weight: bold; color: var(--dark-text); margin-bottom: 2px; }
+    .timeline-text p { font-size: 13px; color: #666; }
+
+    .btn { display: block; width: 100%; background: var(--maroon); color: var(--gold); text-align: center; padding: 14px; border-radius: 25px; font-weight: bold; font-size: 14px; letter-spacing: 1px; margin: 15px 0 5px 0; border: none; cursor: pointer; }
+    .due-date-text { text-align: center; font-size: 12px; margin-bottom: 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--dark-text); }
+    
+    .contact-row { display: flex; justify-content: space-between; align-items: center; background: var(--white); padding: 15px 20px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+    .contact-info span { font-weight: bold; font-size: 14px; }
+    .contact-info p { font-size: 12px; color: #666; }
+    .whatsapp-icon { color: #25D366; font-size: 24px; text-decoration: none; }
+
+    /* Vertical Live Wishes Wall Container */
+    #liveWishesWall {
+      display: flex !important;
+      flex-direction: column !important; /* 🌟 Changed to stack wishes vertically */
+      gap: 15px;
+      height: 250px; /* 🌟 Set a fixed height for the vertical window view */
+      overflow-y: auto !important; /* 🌟 Enable vertical scrolling */
+      overflow-x: hidden !important; /* Disable horizontal shifting */
+      scroll-behavior: smooth;
+      
+      /* Hide standard scrollbars */
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+
+    #liveWishesWall::-webkit-scrollbar {
+      display: none; /* Hide scrollbars for Chrome/Safari/Opera */
+    }
+
+    /* Ensure individual bubbles look great stacked */
+    .wish-bubble {
+      flex-shrink: 0;
+      width: 100% !important; /* 🌟 Take full available width */
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .wish-author {
+      font-weight: bold;
+      font-size: 13px;
+      color: var(--dark-text);
+      margin-bottom: 5px;
+    }
+
+    .wish-text {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    /* --- REFOCUSED TOP BUTTON LAYOUT --- */
+    .top-btn { 
+      position: fixed; 
+      bottom: 145px; 
+      right: 20px;   
+      background: var(--maroon); 
+      color: var(--gold); 
+      width: 45px; 
+      height: 45px; 
+      border-radius: 50%; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      font-size: 10px; 
+      cursor: pointer; 
+      z-index: 900; /* 👈 Lowered so it goes behind the modal backdrop */
+      opacity: 0; 
+      pointer-events: none; 
+      box-shadow: 0 4px 12px rgba(186, 12, 47, 0.25); 
+      transition: opacity 0.4s ease, transform 0.4s ease, pointer-events 0.4s ease;
+      transform: translateY(10px); 
+    }
+
+    .top-btn.show { 
+      opacity: 1; 
+      pointer-events: auto; 
+      transform: translateY(0);
+    }
+
+    .top-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* --- FLOATING MUSIC BUTTON --- */
+    .music-btn { 
+      position: fixed; 
+      bottom: 85px;  
+      right: 20px;   
+      width: 45px; 
+      height: 45px; 
+      background-color: var(--maroon); 
+      border-radius: 50%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 3px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+      cursor: pointer; 
+      z-index: 900; /* 👈 Lowered to match the top button */
+      transition: all 0.3s ease;
+    }
+
+    .music-btn:active {
+      transform: scale(0.92);
+    }
+
+    .music-bar { 
+      width: 3px; 
+      height: 14px; 
+      background-color: var(--gold); 
+      border-radius: 2px; 
+    }
+
+    .music-btn.playing .bar-1 { animation: dance 0.6s ease-in-out infinite alternate; }
+    .music-btn.playing .bar-2 { animation: dance 0.9s ease-in-out infinite alternate 0.15s; }
+    .music-btn.playing .bar-3 { animation: dance 0.7s ease-in-out infinite alternate 0.3s; }
+
+    @keyframes dance { 
+      0% { height: 5px; } 
+      100% { height: 18px; } 
+    }
+
+    .music-btn.paused { 
+      background-color: #555; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .music-btn.paused .music-bar { 
+      height: 4px !important; 
+      animation: none !important; 
+    }
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .rsvp-modal { background: var(--cream); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; position: relative; transform: translateY(-20px); transition: transform 0.3s; }
+    .modal-backdrop.active .rsvp-modal { transform: translateY(0); }
+    .modal-close { position: absolute; top: 15px; right: 15px; font-size: 20px; cursor: pointer; color: #777; }
+    .modal-title { font-family: 'Cinzel', serif; color: var(--maroon); text-align: center; margin-bottom: 20px; font-size: 20px; }
+
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
+    
+    .form-group input, .form-group select, .form-group textarea { 
+      width: 100%; 
+      padding: 10px; 
+      border: 1px solid #ccc; 
+      border-radius: 6px; 
+      font-family: 'Montserrat', sans-serif; 
+      font-size: 16px; /* Increased from 14px to prevent iOS auto-zoom */
+      background: var(--white); 
+    }
+    .conditional-field { display: none; }
+    .pax-stepper { display: flex; align-items: center; width: 100%; background: var(--white); border: 1px solid #ccc; border-radius: 6px; overflow: hidden; }
+    .pax-btn { background: #eee; border: none; width: 45px; height: 42px; font-size: 18px; font-weight: bold; cursor: pointer; }
+    .pax-stepper input[type="number"] { flex: 1; border: none; text-align: center; font-weight: 600; font-size: 16px; height: 42px; background: transparent; }
+
+    @keyframes fadeInSlide { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseHint { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+    /* --- INTERACTIVE FORM TOOLTIP --- */
+    .tooltip-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .tooltip-box {
+      visibility: hidden;
+      position: absolute;
+      bottom: 125%; /* Positions it directly above the info icon */
+      left: 50%;
+      transform: translateX(-15%); /* Centers alignment slightly offset for mobile viewports */
+      background-color: var(--dark-text);
+      color: var(--white);
+      text-align: left;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.4;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none; /* Prevents text block from blocking clicks */
+      text-transform: none; /* Keeps it in standard sentence case */
+      font-weight: normal;
+    }
+
+    /* Little tail pointing down to the icon */
+    .tooltip-box::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 15%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--dark-text) transparent transparent transparent;
+    }
+
+    /* Show the tooltip box on desktop hover or mobile tap */
+    .tooltip-container:hover .tooltip-box,
+    .tooltip-container:active .tooltip-box {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* --- STICKY GLASSMORPHISM BOTTOM NAVIGATION BAR WITH BUMP --- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px; /* Adapts to your mobile layout container */
+      z-index: 999;
+      
+      /* Your elegant glassmorphism engine */
+      background: rgba(255, 255, 255, 0.12) !important;
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px 20px 0 0; /* Smooth top corners for the panel */
+      
+      /* Flex grid layout adjustments */
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 65px;
+      padding: 0; /* Height fixes item alignments */
+      padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
+      
+      animation: glassShimmer 8s ease-in-out infinite alternate;
+      will-change: box-shadow, background-color;
+      -webkit-tap-highlight-color: transparent; /* Removes flash block frame on mobile touch */
+    }
+
+    /* Your ambient reflection keyframe engine preserved exactly */
+    @keyframes glassShimmer {
+      0% {
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.05), inset 0 1px 15px rgba(255, 255, 255, 0.1);
+      }
+      100% {
+        background: rgba(255, 255, 255, 0.18);
+        box-shadow: 0 -4px 35px rgba(186, 12, 47, 0.1), inset 0 1px 25px rgba(255, 255, 255, 0.25);
+      }
+    }
+
+    /* --- NAV ITEMS STYLE & TRANSITIONS --- */
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #333 !important; /* Elegant text depth over glass */
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+      flex: 1;
+      gap: 4px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #333 !important; /* Crisp SVG lines */
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 1px 1px rgba(255,255,255,0.5));
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .nav-item span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* --- THE HOVER & TOUCH HOLD INTERACTIONS (All Normal Items) --- */
+    .nav-item:hover, 
+    .nav-item:active {
+      color: var(--maroon) !important;
+      text-shadow: 0 1px 4px rgba(186, 12, 47, 0.15);
+    }
+
+    /* Pull items upwards slightly with an expansion bounce scale when hovered or held down */
+    .nav-item:hover svg, 
+    .nav-item:active svg {
+      stroke: var(--maroon) !important;
+      transform: translateY(-4px) scale(1.15);
+    }
+
+    /* --- SYSTEM MIDDLE BUMP FOR ASK AI --- */
+    .nav-bump-wrapper {
+      position: relative;
+      width: 75px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Elevates the element layout out of the bar safely */
+    .nav-item.ai-bump {
+      position: absolute;
+      top: -22px; 
+      height: auto;
+      overflow: visible;
+    }
+
+    /* The beautiful floating frame structure circle for Ask AI */
+    .ai-circle {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--maroon) 0%, #800020 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(186, 12, 47, 0.35);
+      margin-bottom: 2px;
+      border: 4px solid rgba(255, 255, 255, 0.85); /* Creates the crisp mask look on top of the glass bar */
+      backdrop-filter: blur(5px);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .ai-circle i {
+      color: #ffffff !important;
+      font-size: 18px;
+      margin: 0 !important;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item.ai-bump span {
+      color: #333 !important;
+      font-weight: 700;
+    }
+
+    /* Specialized popping interaction effect for the center button when hovered or touched */
+    .nav-item.ai-bump:hover .ai-circle,
+    .nav-item.ai-bump:active .ai-circle {
+      transform: scale(1.12) translateY(-2px);
+      box-shadow: 0 6px 18px rgba(186, 12, 47, 0.5);
+      border-color: #ffffff;
+    }
+
+    .nav-item.ai-bump:hover i,
+    .nav-item.ai-bump:active i {
+      transform: rotate(15deg);
+    }
+
+    /* --- TRAVEL TICKET BOTTOM SHEET POP-UPS --- */
+    #calendarModal, #contactModal, #locationModal {
+      display: flex !important;
+      align-items: flex-end !important;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 3000;
+      background: rgba(0, 0, 0, 0.5) !important; /* Dark backdrop contrast makes ticket look ultra-vibrant */
+    }
+
+    #calendarModal.active, #contactModal.active, #locationModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Transformed into a premium Boarding Pass / Ticket Folder packet */
+    #calendarModal .rsvp-modal, 
+    #contactModal .rsvp-modal, 
+    #locationModal .rsvp-modal {
+      background: #fdfcf9 !important; /* Solid vintage premium ticket paper stock */
+      border: 3px solid var(--maroon, #ba0c2f) !important; /* Maroon frame accent line */
+      border-bottom: none !important;
+      border-radius: 24px 24px 0 0 !important; /* Top card rounded edges */
+      box-shadow: 0 -12px 35px rgba(0, 0, 0, 0.3);
+      
+      width: 100%;
+      max-width: 480px;
+      margin: 0 !important;
+      padding: 28px 20px 45px 20px;
+      
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Quick fluid terminal pull up */
+      will-change: transform;
+      position: relative;
+    }
+
+    /* Pocket Tab Indicator Line at top */
+    #calendarModal .rsvp-modal::before,
+    #contactModal .rsvp-modal::before,
+    #locationModal .rsvp-modal::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: #e0dbce;
+      border-radius: 2px;
+    }
+
+    #calendarModal.active .rsvp-modal, 
+    #contactModal.active .rsvp-modal, 
+    #locationModal.active .rsvp-modal {
+      transform: translateY(0);
+    }
+
+    /* --- TICKET DETAIL ELEMENTS --- */
+    .ticket-header-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #cfc8b8; /* Perforated tear-away strip line */
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ticket-header-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--maroon, #ba0c2f) !important;
+      letter-spacing: 1px;
+    }
+
+    .ticket-header-badge {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      background: var(--maroon, #ba0c2f);
+      color: #ffffff !important;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* Super Legible Typography settings */
+    #calendarModal p, #contactModal p, #locationModal p {
+      color: #222222 !important; /* Clear dark text readability */
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 500;
+      text-shadow: none !important;
+      margin-bottom: 20px;
+    }
+
+    .ticket-contact-card {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 14px 18px; 
+      background: #f5f2eb; /* Solid contrasting secondary block color */
+      border-radius: 14px; 
+      border: 1px solid #e3ded5;
+    }
+
+    /* Close button overrides for ticket theme style */
+    #calendarModal .modal-close, #contactModal .modal-close, #locationModal .modal-close {
+      background: #e0dbce;
+      color: #333;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 14px;
+      right: 16px;
+    }
+
+
+    /* --- FULL COVERAGE MOBILE PANELS --- */
+    .ai-chat-panel {
+      position: fixed;
+      bottom: 0; 
+      left: 50% !important;
+      width: 100% !important;
+      max-width: 500px; 
+      box-sizing: border-box; 
+      height: 100%; 
+      height: -webkit-fill-available; 
+      background: #f7f9fa;
+      z-index: 2500;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+      
+      transform: translateX(-50%) translateY(100%); 
+      
+      /* 🌟 ADD THESE TWO LINES HERE */
+      visibility: hidden;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+      
+      will-change: transform;
+      border-top-left-radius: 15px !important;
+      border-top-right-radius: 15px !important;
+      overflow: hidden; 
+    }
+
+    .ai-chat-panel.is-dragging {
+      transition: none !important;
+    }
+
+    /* Stylized top interaction touch target */
+    .chat-drag-handle {
+      width: 100%;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    /* The actual pill bar icon shape */
+    .chat-drag-handle::before {
+      content: '';
+      width: 40px;
+      height: 5px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      transition: background-color 0.2s ease;
+    }
+
+    .chat-drag-handle:active::before {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Small adjustments to header layout spacing to match header layout profile */
+    .ai-chat-panel .chat-header {
+      padding-top: 20px;
+      border-top-left-radius: 15px !important;
+      border-top-right-radius: 15px !important;
+    }
+    /* When the panel slides up, make it immediately interactive */
+    .ai-chat-panel.active {
+      visibility: visible !important;
+      transform: translateX(-50%) translateY(0) !important;
+    }
+
+    .chat-header {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, var(--maroon, #ba0c2f), #7a041c);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .chat-bot-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bot-avatar {
+      width: 34px;
+      height: 34px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .bot-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bot-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* --- CONCIERGE DYNAMIC BADGE PULSES --- */
+    .bot-status {
+      font-size: 11px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    .bot-status.online {
+      color: #25d366; /* Vibrant wedding-safe green color */
+    }
+    .bot-status.offline {
+      color: #ba0c2f; /* Maroon/Red accent color match */
+    }
+
+    .chat-close-btn {
+      font-size: 18px;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    /* Scrollable Chat Engine Log Box */
+    .chat-log {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Message Bubble Settings */
+    .msg {
+      max-width: 85%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+
+    .bubble-bot {
+      background: #ffffff;
+      color: #333333;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .bubble-user {
+      background: var(--maroon, #ba0c2f);
+      color: #ffffff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 6px rgba(186, 12, 47, 0.15);
+    }
+
+    /* --- CENTERED SUGGESTIONS CONTAINER SYSTEM --- */
+    .central-suggestion-board {
+      width: 100%;
+      max-width: 320px;
+      margin: 20px auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .suggestion-title {
+      margin: 0;
+      font-size: 14px;
+      color: #666666;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .suggestion-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .suggestion-chip {
+      background: #ffffff;
+      color: #333333;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      text-align: left;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .suggestion-chip:active {
+      background: #f0f0f0;
+      transform: scale(0.98);
+    }
+
+    /* Chat Input Bar Configuration */
+    .chat-input-area {
+      padding: 12px;
+      background: #ffffff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom)); /* Accommodates iPhone home indicator bar */
+    }
+
+    #chatInput {
+      font-size: 16px !important; /* Forces mobile browsers to remain stable without auto-zooming */
+      flex: 1;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 20px;
+      outline: none;
+      background: #f8fafc;
+      -webkit-appearance: none;
+    }
+
+    #chatSendBtn {
+      background: var(--maroon, #ba0c2f);
+      color: #ffffff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    #chatSendBtn:disabled {
+      background: #cbd5e1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- EMERGENCY CONTACT BANNER DOCK SYSTEM --- */
+    .chat-human-fallback-wrapper {
+      background: #fff4f5;
+      border-top: 1px solid rgba(186, 12, 47, 0.1);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      
+      /* 🌟 HIDE BY DEFAULT UPON INITIAL ENTRY */
+      display: none; 
+    }
+
+    .fallback-title {
+      font-size: 11.5px;
+      color: #666666;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .fallback-buttons-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .fallback-buttons-row .chat-whatsapp-btn {
+      flex: 1; /* Forces both buttons to split the screen width perfectly 50/50 */
+      background: #25d366;
+      color: #ffffff !important;
+      padding: 8px 6px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      text-decoration: none !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: 0 2px 4px rgba(37, 211, 102, 0.15);
+      white-space: nowrap;
+      transition: transform 0.2s ease;
+    }
+
+    /* Optional: Subtle theme variance for the second button if you want them distinct */
+    .fallback-buttons-row .chat-whatsapp-btn.bride-btn-color {
+      background: #128c7e; 
+    }
+
+    .fallback-buttons-row .chat-whatsapp-btn:active {
+      transform: scale(0.96);
+    }
+
+
+    /* --- 3xN SUGGESTION ROW LAYOUT ENGINE --- */
+    .chips-scroll-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch; /* Smooth swiping mechanics on mobile devices */
+    }
+
+    /* Hide scrollbars cleanly while preserving operational swiping track */
+    .chips-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+    .chips-scroll-container {
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      width: max-content; /* Force rows to stretch naturally past borders */
+    }
+
+    /* Ensure your suggestion chips handle horizontal padding properly */
+    .central-suggestion-board .suggestion-chip {
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+
+    #hiddenCatWrapper {
+      position: fixed !important;
+      bottom: 50px; /* Aligns right above your bottom nav bar */
+      
+      /* 🌟 CHANGED: Swapped right to left side alignment */
+      left: 20px !important; 
+      right: auto !important;
+      
+      z-index: 2490 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      
+      /* 🌟 CHANGED: Aligns the speech bubble to look natural from the left edge */
+      align-items: flex-start !important; 
+      width: 90px !important;
+      height: auto !important;
+    }
+
+    /* Tap target for the cat image element */
+    #footerEasterEggCat {
+      cursor: pointer;
+      user-select: none;
+      width: 90px;
+      height: 90px;
+    }
+
+    /* Speech Bubble Layout Styling */
+    .cat-bubble {
+      position: absolute;
+      bottom: 100px; 
+      
+      /* 🌟 CHANGED: Anchors bubble alignment metrics from the left */
+      left: -5px;
+      right: auto;
+      
+      background: #ffffff;
+      border: 2px solid #ba0c2f;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #333;
+      width: 180px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      pointer-events: auto;
+      z-index: 2491;
+      
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+      visibility: hidden;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s, visibility 0.2s;
+    }
+
+    .cat-bubble.show-bubble {
+      opacity: 1 !important;
+      transform: translateY(0) scale(1) !important;
+      visibility: visible !important;
+    }
+
+    /* 🌟 CHANGED: Moved caret arrow indicators to look clean on the left edge */
+    .cat-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 40px; /* Swapped right to left placement pointer */
+      border-width: 8px 8px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+    }
+    .cat-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 39px; /* Swapped right to left placement pointer shadow */
+      border-width: 9px 9px 0;
+      border-style: solid;
+      border-color: #ba0c2f transparent;
+      display: block;
+      z-index: -1;
+    }
+
+  </style>
+</head>
+
+<body class="no-scroll"> <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
+
+  <div id="splashScreen">
+    <div class="splash-container">
+      <div class="zoom-out-group">
+        <h2>THE WEDDING OF</h2>
+        
+        <div class="signature-wrapper">
+          <h1 class="signature-text">Akmal & Musfirah</h1>
+        </div>
+        
+        <p>01.05.2027 • Miri, Sarawak</p>
+        
+        <button class="open-btn" onclick="openInvitationPackage()">
+          <i class="fa-solid fa-envelope-open"></i> OPEN INVITATION
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="musicControl" class="music-btn paused" onclick="toggleMusic()">
+    <div class="music-bar bar-1"></div>
+    <div class="music-bar bar-2"></div>
+    <div class="music-bar bar-3"></div>
+  </div>
+
+  <div class="mobile-container" id="top">
+
+    <div class="flip-container" id="locationSection">
+      <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
+        
+        <div class="flip-front">
+          <div class="passport-card">
+            <h2>WEDDING</h2>
+            <h1>PASSPORT</h1>
+            <div class="flight-path"><i class="fa-solid fa-plane-departure"></i></div>
+            <div class="couple-names-main">AKMAL & MUSFIRAH</div>
+            <div class="wedding-date-main">01.05.2027</div>
+            <div class="flip-hint-text"><i class="fa-solid fa-hand-pointer"></i> Tap Passport to Open</div>
+          </div>
+        </div>
+
+        <div class="flip-back">
+          <div class="boarding-pass">
+            <div class="bp-header">BOARDING PASS TO OUR WEDDING</div>
+            <div class="bp-body">
+              
+              <div class="photo-gallery">
+                <div class="polaroid"><img src="https://lh3.googleusercontent.com/d/1lnSsQZct8_8UOUXxy8moSd0ot5vRh5Ra" alt="Groom"><div class="polaroid-caption">THE GROOM</div></div>
+                <div class="polaroid"><img src="https://lh3.googleusercontent.com/d/1c0uMuNZN5ccRqjr5OVFHqMAko_tlfRnm" alt="Bride"><div class="polaroid-caption">THE BRIDE</div></div>
+              </div>
+
+              <div>
+                <div class="bp-invite-text">You are invited to the wedding of</div>
+                <div class="bp-names">AKMAL & MUSFIRAH</div>
+              </div>
+              
+              <div class="bp-details-grid">
+                <div><div class="bp-label">Date</div><div class="bp-value">1 MAY, 2027</div></div>
+                <div><div class="bp-label">Venue</div><div class="bp-value">Eastwood Valley Golf & Country Club, Grandball Room, Miri</div></div>
+                <div><div class="bp-label">Time</div><div class="bp-value">10:00 AM - 12:30 PM</div></div>
+                <div><div class="bp-label">Flight Route</div><div class="bp-value">KUL <i class="fa-solid fa-plane"></i> MYY</div></div>
+              </div>
+
+              <div class="barcode-area" onclick="toggleMapMenu(event)">
+                <div class="dummy-barcode"></div>
+                <div class="barcode-number">#MALamarFIRA•01052027</div>
+                <span style="font-size: 9px; color: #888; text-transform: uppercase; display: block; margin-top: 2px;">(Tap barcode for Map locations)</span>
+                
+                <div class="map-menu" id="mapSelectionMenu">
+                  <a href="https://maps.app.goo.gl/KyWUGHw6Sc7wcBE67" target="_blank" class="map-option google-maps" onclick="event.stopPropagation();"><i class="fa-solid fa-map-location-dot"></i> Google Maps</a>
+                  <a href="https://ul.waze.com/ul?venue_id=74711084.747241909.2804519&overview=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank" class="map-option waze-maps" onclick="event.stopPropagation();"><i class="fa-brands fa-waze"></i> Waze</a>
+                </div>
+              </div>
+              <div class="flip-hint-text" style="color: var(--dark-text); margin-top: 15px;"><i class="fa-solid fa-rotate-left"></i> Tap empty area to flip back</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="btn" onclick="openRSVP()"><i class="fa-solid fa-pen-to-square"></i> RSVP HERE</button>
+    <div class="due-date-text">PLEASE REPLY BEFORE: 30 January, 2027</div>
+
+    <div class="section-divider"><i class="fa-solid fa-heart"></i></div>
+
+    <div class="countdown-box">
+      <h3>BOARDING SOON</h3>
+      <div class="timer-grid">
+        <div><div class="timer-num" id="days">00</div><div class="timer-label">Days</div></div>
+        <div><div class="timer-num" id="hours">00</div><div class="timer-label">Hours</div></div>
+        <div><div class="timer-num" id="mins">00</div><div class="timer-label">Mins</div></div>
+        <div><div class="timer-num" id="secs">00</div><div class="timer-label">Secs</div></div>
+      </div>
+    </div>
+
+    <div class="letter-card" id="calendarSection">
+      <div style="font-family: 'Great Vibes', cursive; font-size: 32px; color: var(--maroon);">Save The Date</div>
+      <div style="font-size: 35px; color: var(--maroon); margin: 15px 0;"><i class="fa-regular fa-heart"></i></div>
+      <div style="font-family: 'Courier Prime', monospace; font-size: 24px; font-weight: bold; margin-bottom: 20px;">01.05.2027</div>
+
+      <div class="calendar-reminder-btn" onclick="toggleCalendarMenu(event)">
+        <span style="font-weight: 600; font-size: 11px; text-transform: uppercase;">FOR THE REMINDER</span>
+        <div style="font-weight: bold; font-size: 14px; color: var(--maroon); margin: 2px 0;">CLICK HERE TO ADD TO CALENDAR</div>
+        <i class="fa-solid fa-plane" style="transform: rotate(-45deg); color: var(--maroon); font-size: 16px;"></i>
+
+        <div class="calendar-menu" id="calendarSelectionMenu">
+          <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Wedding+Day+-+Akmal+%26+Musfirah+%23MALamarFira&dates=20270501T020000Z%2F20270501T043000Z&details=We+are+getting+married%21+We+look+forward+to+celebrating+our+special+day+with+you.+Please+remember+to+RSVP+before+30+January+2027.&location=Eastwood+Valley+Golf+%26+Country+Club%2C+Miri%2C+Sarawak&sf=true&output=xml" target="_blank" class="calendar-option google-cal">
+            <i class="fa-brands fa-google"></i> Google
+          </a>
+          <a href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Wedding Day - Akmal %26 Musfirah %23MALamarFira%0ADTSTART:20270501T020000Z%0ADTEND:20270501T043000Z%0ALOCATION:Eastwood Valley Golf %26 Country Club\, Miri\, Sarawak%0ADESCRIPTION:We are getting married! We look forward to celebrating our special day with you. Please remember to RSVP before 30 January 2027.%0AEND:VEVENT%0AEND:VCALENDAR" download="Wedding_Akmal_Musfirah.ics" class="calendar-option apple-cal">
+            <i class="fa-brands fa-apple"></i> Apple
+          </a>
+        </div>
+      </div>
+
+      <br><hr style="border: 0; border-top: 1px dashed #ddd; margin: 20px 0;"><br>
+      <h4>Dear Family and Friends,</h4>
+      <p>We’re getting married and we’d love for you to celebrate with us, eat good food, and make fun memories together!</p>
+      <p><br>Come join us for a day filled with good vibes, happy tears, and lots of laughter!</p>
+      <p><br>Two people, one big day, and all our favorite people in one place. We can’t wait to celebrate with you!</p>
+      <div class="letter-signature">With Love, <br> Akmal & Musfirah</div>
+    </div>
+
+    <div class="section-divider"><i class="fa-solid fa-heart"></i></div>
+
+    <h3 style="text-align: center; font-family: 'Cinzel', serif; letter-spacing: 2px; margin-bottom: 25px;">WEDDING TIMELINE</h3>
+    <div class="timeline-container">
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-text"><h4>10:00 AM</h4><p>Guest Arrival</p></div><div class="timeline-icon"><i class="fa-regular fa-clock"></i></div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-text"><h4>10:30 AM</h4><p>Bride & Groom Arrival</p></div><div class="timeline-icon"><i class="fa-solid fa-user-group"></i></div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-text"><h4>11:45 AM</h4><p>Wedding Lunch</p></div><div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-text"><h4>12:30 PM</h4><p>Photo Session</p></div><div class="timeline-icon"><i class="fa-solid fa-camera"></i></div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-text"><h4>1:00 PM</h4><p>Ceremony End</p></div><div class="timeline-icon"><i class="fa-solid fa-car-side"></i></div></div></div>
+    </div>
+
+    <div class="section-divider"><i class="fa-solid fa-heart"></i></div>
+
+    <div id="contactSection">
+      <h3 style="text-align: center; font-family: 'Cinzel', serif; letter-spacing: 2px; margin-bottom: 20px;">CONTACT US</h3>
+      
+      <div class="contact-row">
+        <div class="contact-info"><span>Akmal</span><p>Groom</p></div>
+        <a href="https://wa.me/601110703042" target="_blank" rel="noopener noreferrer" class="whatsapp-icon">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
+      
+      <div class="contact-row">
+        <div class="contact-info"><span>Musfirah</span><p>Bride</p></div>
+        <a href="https://wa.me/601125073990" target="_blank" rel="noopener noreferrer" class="whatsapp-icon">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="letter-card" style="margin-top: 25px; text-align: left; padding: 18px;">
+      <h4 style="font-family: 'Cinzel', serif; color: var(--maroon); margin-bottom: 12px; text-align: center">
+        <i class="fa-solid fa-comment-heart"></i> Live Wishes Wall
+      </h4>
+      
+      <div id="liveWishesWall">
+        <div id="noWishesPlaceholder" style="font-size: 13px; color: #888; text-align: center; font-style: italic; padding: 20px 0; width: 100%;">
+          No wishes yet. Be the first to leave a message!
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="top-btn" id="stickyTopBtn" onclick="scrollToTop()"><i class="fa-solid fa-chevron-up"></i>Top</div>
+
+  <div class="modal-backdrop" id="rsvpModal" onclick="closeRSVPOnBackdrop(event)">
+    <div class="rsvp-modal">
+      <div class="modal-close" onclick="closeRSVP()"><i class="fa-solid fa-xmark"></i></div>
+      <div class="modal-title">Wedding RSVP</div>
+      <form id="rsvpForm" onsubmit="submitRSVP(event)">
+        <div class="form-group"><label for="guestName">Full Name <span style="color: var(--maroon);">*</span></label><input type="text" id="guestName" required placeholder="Enter name"></div>
+        <div class="form-group">
+          <label for="attendance">Will you attend? <span style="color: var(--maroon);">*</span></label>
+          <select id="attendance" required onchange="toggleAttendanceFields(this.value)">
+            <option value="" disabled selected>Choose option...</option>
+            <option value="attend">Yes, I will attend</option>
+            <option value="unable">No, I am unable to attend</option>
+          </select>
+        </div>
+        <div class="form-group conditional-field class-pax">
+          <label for="paxCount" style="display: flex; align-items: center; gap: 6px; position: relative;">
+            Number of Pax
+            <span class="tooltip-container">
+              <i class="fa-solid fa-circle-info" style="color: #888; cursor: pointer; font-size: 14px;"></i>
+              <span class="tooltip-box">Maximum capacity per RSVP submission is limited to 8 guests only.</span>
+            </span>
+          </label>
+          <div class="pax-stepper">
+            <button type="button" class="pax-btn" onclick="changePax(-1)">−</button>
+            <input type="number" id="paxCount" value="1" min="1" max="8" inputmode="numeric" pattern="[0-9]*" oninput="validatePaxInput(this)">
+            <button type="button" class="pax-btn" onclick="changePax(1)">+</button>
+          </div>
+        </div>
+        <div class="form-group conditional-field class-email">
+          <label for="guestEmail" style="display: flex; align-items: center; gap: 6px; position: relative;">
+            Email <span style="color: var(--maroon);">*</span>
+            <span class="tooltip-container">
+              <i class="fa-solid fa-circle-info" style="color: #888; cursor: pointer; font-size: 14px;"></i>
+              <span class="tooltip-box">This email will be used for your RSVP double confirmation and seating arrangement details.</span>
+            </span>
+          </label>
+          <input type="email" id="guestEmail" placeholder="name@example.com">
+        </div>
+        <div class="form-group"><label for="wishes">Wishes</label><textarea id="wishes" rows="3" placeholder="Write wishes here..."></textarea></div>
+        <button type="submit" class="btn">SUBMIT RSVP</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="ai-chat-panel" id="aiChatPanel">
+    <div class="chat-drag-handle" id="chatDragHandle"></div>
+
+    <div class="chat-header">
+      <div class="chat-bot-profile">
+        <div class="bot-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="bot-info">
+          <span class="bot-name">AKMU</span>
+          <span id="botStatusIndicator" class="bot-status online">● Online</span>
+        </div>
+      </div>
+      <div class="chat-close-btn" onclick="closeAIChat()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+
+    <div class="chat-log" id="chatLog">
+      <div class="msg bubble-bot">
+        Hello! 👋 I'm AKMU, your personal assistant for Akmal & Musfirah's wedding. How can I help you today? 😊
+      </div>
+
+      <div class="central-suggestion-board" id="centralSuggestions" style="width: 100%; box-sizing: border-box;">
+        <h4 class="suggestion-title" style="margin-bottom: 8px;"><i class="fa-solid fa-wand-magic-sparkles"></i> How can I help you?</h4>
+        
+        <div class="chips-scroll-container">
+          <div class="chips-row">
+            <div class="suggestion-chip" onclick="useSuggestion('How to RSVP?')">📋 How to RSVP?</div>
+            <div class="suggestion-chip" onclick="useSuggestion('How do I book my flights to Miri?')">✈️ Book Flights to Miri</div>
+            <div class="suggestion-chip" onclick="useSuggestion('When is the wedding date?')">📅 Wedding Date</div>
+          </div>
+          
+          <div class="chips-row">
+            <div class="suggestion-chip" onclick="useSuggestion('What are some interesting things to do in Miri?')">🌅 Things to do in Miri</div>
+            <div class="suggestion-chip" onclick="useSuggestion('Where is the wedding venue exactly?')">📍 Wedding Location Map</div>
+            <div class="suggestion-chip" onclick="useSuggestion('What are the nearest hotels to stay?')">🏨 Nearby Accommodations</div>
+          </div>
+          
+          <div class="chips-row">
+            <div class="suggestion-chip" onclick="useSuggestion('How to send gift?')">🎁 Send Gift / QR Code</div>
+            <div class="suggestion-chip" onclick="useSuggestion('What is the estimated Grab fare from the airport?')">🚕 Airport Grab Fare</div>
+            <div class="suggestion-chip" onclick="useSuggestion('Who should I contact?')">📞 Contact Crew Assistant</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-human-fallback-wrapper">
+      <div class="fallback-title">Can't find your answer? Contact a Crew Assistant:</div>
+      <div class="fallback-buttons-row">
+        <a href="https://wa.me/601110703042" target="_blank" class="chat-whatsapp-btn">
+          <i class="fa-brands fa-whatsapp"></i> Contact Akmal
+        </a>
+        
+        <a href="https://wa.me/601125073990" target="_blank" class="chat-whatsapp-btn bride-btn-color">
+          <i class="fa-brands fa-whatsapp"></i> Contact Musfirah
+        </a>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+      <button type="button" id="chatSendBtn" onclick="sendChatMessage()">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="calendarModal" onclick="if(event.target.id === 'calendarModal') closeCalendarModal()">
+    <div class="rsvp-modal">
+      
+      <div class="ticket-header-block">
+        <div class="ticket-header-title"><i class="fa-regular fa-calendar-plus"></i> FLIGHT REMINDER</div>
+        <div class="ticket-header-badge">RESERVATION</div>
+      </div>
+      
+      <p>Secure your seating entry by locking our official wedding date directly into your mobile personal schedule application:</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; margin: 0 auto;">
+        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Wedding+Day+-+Akmal+%26+Musfirah+%23MALamarFira&dates=20270501T020000Z%2F20270501T043000Z&details=We+are+getting+married%21+We+look+forward+to+celebrating+our+special+day+with+you.+Please+remember+to+RSVP+before+30+January+2027.&location=Eastwood+Valley+Golf+%26+Country+Club%2C+Miri%2C+Sarawak&sf=true&output=xml" target="_blank" class="btn" style="background: #4285F4; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+          <i class="fa-brands fa-google"></i> Add to Google Calendar
+        </a>
+        <a href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Wedding Day - Akmal %26 Musfirah %23MALamarFira%0ADTSTART:20270501T020000Z%0ADTEND:20270501T043000Z%0ALOCATION:Eastwood Valley Golf %26 Country Club\, Miri\, Sarawak%0ADESCRIPTION:We are getting married! We look forward to celebrating our special day with you. Please remember to RSVP before 30 January 2027.%0AEND:VEVENT%0AEND:VCALENDAR" download="Wedding_Akmal_Musfirah.ics" class="btn" style="background: #000000; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+          <i class="fa-brands fa-apple"></i> Add to Apple Calendar
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="contactModal" onclick="if(event.target.id === 'contactModal') closeContactModal()">
+    <div class="rsvp-modal">
+      
+      <div class="ticket-header-block">
+        <div class="ticket-header-title"><i class="fa-solid fa-address-book"></i> IN-FLIGHT CREW ASSISTANCE</div>
+        <div class="ticket-header-badge">SUPPORT</div>
+      </div>
+      
+      <p>Have questions regarding travel plans, parking venues, or schedules? Reach out directly to the couple via WhatsApp:</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;">
+        <div class="ticket-contact-card">
+          <div style="text-align: left;">
+            <span style="font-weight: bold; font-size: 15px; display: block; color: #111;">Akmal</span>
+            <span style="font-size: 12px; color: #666; font-weight: bold; font-family: 'Courier Prime', monospace;">GROOM / PILOT</span>
+          </div>
+          <a href="https://wa.me/601110703042" target="_blank" style="background: #25D366; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 20px; box-shadow: 0 4px 10px rgba(37,211,102,0.3);">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+        
+        <div class="ticket-contact-card">
+          <div style="text-align: left;">
+            <span style="font-weight: bold; font-size: 15px; display: block; color: #111;">Musfirah</span>
+            <span style="font-size: 12px; color: #666; font-weight: bold; font-family: 'Courier Prime', monospace;">BRIDE / CO-PILOT</span>
+          </div>
+          <a href="https://wa.me/601125073990" target="_blank" style="background: #25D366; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 20px; box-shadow: 0 4px 10px rgba(37,211,102,0.3);">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="locationModal" onclick="if(event.target.id === 'locationModal') closeLocationModal()">
+    <div class="rsvp-modal">
+      
+      <div class="ticket-header-block">
+        <div class="ticket-header-title"><i class="fa-solid fa-map-location-dot"></i> FLIGHT ROUTE & TERMINAL</div>
+        <div class="ticket-header-badge">MYY GATE</div>
+      </div>
+      
+      <div style="background: #f5f2eb; padding: 12px; border-radius: 12px; border: 1px dashed #cfc8b8; margin-bottom: 15px; text-align: left;">
+        <div style="font-family: 'Courier Prime', monospace; font-size: 11px; font-weight: bold; color: var(--maroon);">DESTINATION TERMINAL:</div>
+        <div style="font-weight: bold; font-size: 14px; color: #111; margin-top: 2px;">Eastwood Valley Golf & Country Club</div>
+        <div style="font-size: 12px; color: #444;">Grandball Room, Miri, Sarawak</div>
+      </div>
+      
+      <p>Launch your dashboard global navigation platform tracking tool to plot your coordinates to the ceremony hall:</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; margin: 0 auto;">
+        <a href="http://googleusercontent.com/maps.google.com/4" target="_blank" class="btn" style="background: #EA4335; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+          <i class="fa-solid fa-map-pin"></i> Open Google Maps
+        </a>
+        <a href="https://ul.waze.com/ul?venue_id=74711084.747241909.2804519&overview=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank" class="btn" style="background: #33CCFF; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+          <i class="fa-brands fa-waze"></i> Open Waze Navigation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="javascript:void(0);" onclick="openCalendarModal()" class="nav-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      <span>Calendar</span>
+    </a>
+
+    <a href="javascript:void(0);" onclick="openContactModal()" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 { 6 } 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      <span>Contact</span>
+    </a>
+
+    <div class="nav-bump-wrapper">
+      <a href="javascript:void(0);" onclick="openAIModal()" class="nav-item ai-bump">
+        <div class="ai-circle">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span>Ask AI</span>
+      </a>
+    </div>
+
+    <a href="javascript:void(0);" onclick="openLocationModal()" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      <span>Location</span>
+    </a>
+
+    <a href="javascript:void(0);" onclick="openRSVP()" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      <span>RSVP</span>
+    </a>
+  </div>
+
+  <div id="hiddenCatWrapper">
+    <div id="catSpeechBubble" class="cat-bubble">
+      🐱 Meow! Planning to explore Miri... 
+      <a href="https://drive.google.com/file/d/1qdKtmUq7ARistQjhio6wizbWPW3FkGXX/view?usp=sharing" target="_blank" rel="noopener noreferrer" style="color: #ba0c2f; font-weight: bold; text-decoration: none;">click here! ✨</a>
+    </div>
+    <div id="footerEasterEggCat" onclick="toggleCatMessage()">
+      <img src="https://lh3.googleusercontent.com/d/1ZxmXuZKu0RWtLojHfbKJd4mx8Ketan7n" alt="Cute Cat Assistant" style="width: 90px; height: 90px; display: block;">
+    </div>
+  </div>
+
+<script>
+    // Countdown Engine
+    const targetDate = new Date("May 1, 2027 10:00:00").getTime();
+    function updateCountdown() {
+      const now = new Date().getTime(); const diff = targetDate - now; if (diff < 0) return;
+      document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+      document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+      document.getElementById("mins").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+      document.getElementById("secs").innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000); updateCountdown();
+
+    let scrollTimeout = null;
+
+    window.addEventListener('scroll', function() {
+      const topBtn = document.getElementById('stickyTopBtn');
+      if (window.scrollY > 300) {
+        topBtn.classList.add('show');
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          topBtn.classList.remove('show');
+        }, 2000); 
+      } else {
+        topBtn.classList.remove('show');
+      }
+    });
+    function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+    // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
+    let pageScrollTimer = null;
+
+    function openInvitationPackage() {
+      const myMusic = document.getElementById("bgMusic");
+      const musicBtn = document.getElementById("musicControl");
+      const splash = document.getElementById("splashScreen");
+
+      splash.classList.add("fade-out");
+      document.body.classList.remove("no-scroll");
+
+      myMusic.play().then(() => {
+        musicBtn.classList.add("playing");
+        musicBtn.classList.remove("paused");
+      }).catch(err => console.log("Audio handler log:", err));
+
+      startPageAutoScroll();
+    }
+
+    function startPageAutoScroll() {
+      if (pageScrollTimer) clearInterval(pageScrollTimer);
+      pageScrollTimer = setInterval(() => {
+        window.scrollBy({ top: 1, behavior: 'auto' });
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+          stopPageAutoScroll();
+        }
+      }, 25);
+    }
+
+    function stopPageAutoScroll() {
+      if (pageScrollTimer) {
+        clearInterval(pageScrollTimer);
+        pageScrollTimer = null;
+        window.removeEventListener('wheel', stopPageAutoScroll);
+        window.removeEventListener('touchstart', stopPageAutoScroll);
+        window.removeEventListener('keydown', stopPageAutoScroll);
+        console.log("Auto-scroll destroyed permanently due to guest interaction.");
+      }
+    }
+
+    window.addEventListener('wheel', stopPageAutoScroll);
+    window.addEventListener('touchstart', stopPageAutoScroll);
+    window.addEventListener('keydown', stopPageAutoScroll);
+
+    function openRSVP() { document.getElementById('rsvpModal').classList.add('active'); }
+    function closeRSVP() { 
+      document.getElementById('rsvpModal').classList.remove('active'); 
+      document.getElementById('rsvpForm').reset(); 
+      document.getElementById('guestEmail').required = false;
+      toggleAttendanceFields(""); 
+    }
+    function closeRSVPOnBackdrop(event) { if(event.target.id === 'rsvpModal') closeRSVP(); }
+
+    function handlePassportCardFlip(event) {
+      if (event.target.closest('.barcode-area') || event.target.closest('#mapSelectionMenu')) return;
+      document.getElementById('passportFlipCard').classList.toggle('flipped');
+    }
+
+    function toggleMapMenu(event) { event.stopPropagation(); document.getElementById('mapSelectionMenu').classList.toggle('active'); }
+    function toggleCalendarMenu(event) { if (event.target.closest('.calendar-option')) return; document.getElementById('calendarSelectionMenu').classList.toggle('active'); }
+
+    function changePax(amt) { const input = document.getElementById('paxCount'); let val = (parseInt(input.value) || 1) + amt; if (val >= 1 && val <= 8) input.value = val; }
+    function validatePaxInput(input) { let val = parseInt(input.value); if (val > 8) input.value = 8; else if (val < 1 || isNaN(val)) if (input.value !== "") input.value = 1; }
+
+    function toggleAttendanceFields(val) {
+      const displayStyle = val === 'attend' ? 'block' : 'none';
+      const emailInput = document.getElementById('guestEmail');
+      document.querySelectorAll('.class-pax, .class-email').forEach(el => el.style.display = displayStyle);
+      if (val === 'attend') {
+        emailInput.required = true;
+      } else {
+        emailInput.required = false;
+        emailInput.value = "";
+      }
+    }
+
+    function toggleMusic() {
+      const myMusic = document.getElementById("bgMusic");
+      const musicBtn = document.getElementById("musicControl");
+      if (myMusic.paused) { myMusic.play(); musicBtn.classList.add("playing"); musicBtn.classList.remove("paused"); }
+      else { myMusic.pause(); musicBtn.classList.remove("playing"); musicBtn.classList.add("paused"); }
+    }
+
+    // --- VERTICAL CAROUSEL ENGINE LOGIC ---
+    let carouselTimer = null;
+    let scrollDirection = 1; // 1 = downward scrolling, -1 = upward scrolling
+
+    function startWishAutoScroll() {
+      if (carouselTimer) clearInterval(carouselTimer);
+      
+      carouselTimer = setInterval(() => {
+        const wall = document.getElementById('liveWishesWall');
+        if (!wall) return;
+
+        // Calculate max vertical scroll depth limit
+        const maxScroll = wall.scrollHeight - wall.clientHeight;
+        if (maxScroll <= 0) return; // Not enough wishes to slide yet
+
+        // If scrolling downwards and hit the bottom floor
+        if (scrollDirection === 1 && wall.scrollTop >= maxScroll - 2) {
+          scrollDirection = -1; // Reverse path to upward scroll
+          return; 
+        } 
+        // If scrolling upwards and reached the top floor
+        else if (scrollDirection === -1 && wall.scrollTop <= 2) {
+          scrollDirection = 1; // Reverse path to downward scroll
+          return; 
+        }
+
+        // Increment or decrement the vertical scroll position cleanly by 40px
+        const nextScrollTarget = wall.scrollTop + (40 * scrollDirection);
+        wall.scrollTo({ top: nextScrollTarget, behavior: 'smooth' });
+      }, 4000); // Transitions automatically every 4 seconds
+    }
+
+    const wallEl = document.getElementById('liveWishesWall');
+    if (wallEl) {
+      // Pause animation if a guest touches or manually drags the wall container list
+      wallEl.addEventListener('touchstart', () => { 
+        if (carouselTimer) clearInterval(carouselTimer); 
+      }, { passive: true });
+      
+      wallEl.addEventListener('touchend', () => {
+        startWishAutoScroll();
+      }, { passive: true });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbzI-ENWNr5K1naIwyvpCgd7wi_g87ez1Z81gJsdkxJ09Lu80SyZ0yPkVdhoeKUKKwnZ/exec";
+
+      fetch(webAppUrl, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "getWishes" }) // Tell backend what action to run
+      })
+      .then(response => response.json())
+      .then(data => {
+        const existingWishes = data.wishes; // Access the array returned from backend
+        const wall = document.getElementById('liveWishesWall');
+        
+        if (existingWishes && existingWishes.length > 0) {
+          const placeholder = document.getElementById('noWishesPlaceholder');
+          if (placeholder) placeholder.remove();
+          
+          existingWishes.forEach(item => {
+            const wishCard = document.createElement('div');
+            wishCard.className = 'wish-bubble';
+            wishCard.innerHTML = `<div class="wish-author"><span>${escapeHtml(item.name)}</span></div><div class="wish-text">"${escapeHtml(item.wishes)}"</div>`;
+            wall.appendChild(wishCard);
+          });
+        }
+        startWishAutoScroll();
+      })
+      .catch(err => {
+        console.error("Could not look up past guestbook entries:", err);
+        startWishAutoScroll();
+      });
+    });
+
+    function submitRSVP(event) {
+      event.preventDefault();
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = "SAVING RSVP..."; submitBtn.disabled = true;
+
+      const status = document.getElementById('attendance').value;
+      const rawWishes = document.getElementById('wishes').value.trim();
+
+      const formData = {
+        name: document.getElementById('guestName').value,
+        status: status === 'attend' ? 'Attending' : 'Not Attending',
+        pax: status === 'attend' ? document.getElementById('paxCount').value : '0',
+        email: status === 'attend' ? document.getElementById('guestEmail').value : 'N/A',
+        wishes: rawWishes
+      };
+
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbzI-ENWNr5K1naIwyvpCgd7wi_g87ez1Z81gJsdkxJ09Lu80SyZ0yPkVdhoeKUKKwnZ/exec"; // 🌟 Paste your Web App URL here!
+
+      fetch(webAppUrl, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ 
+          action: "submitRsvp", 
+          formData: formData 
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const response = data.result; // Read the status string returned by backend
+        
+        if (response === "Success") {
+          alert(`Thank you ${formData.name}! Your RSVP has been recorded.`);
+          if (rawWishes !== "") {
+            const wall = document.getElementById('liveWishesWall');
+            const placeholder = document.getElementById('noWishesPlaceholder');
+            if (placeholder) placeholder.remove();
+            const newWish = document.createElement('div');
+            newWish.className = 'wish-bubble';
+            newWish.innerHTML = `<div class="wish-author"><span>${escapeHtml(formData.name)}</span></div><div class="wish-text">"${escapeHtml(rawWishes)}"</div>`;
+            
+            // Insert new entry right at the top of your vertical layout tree
+            wall.insertBefore(newWish, wall.firstChild);
+            
+            // Reset baseline values and snap scroll focal window back to top row smoothly
+            scrollDirection = 1;
+            wall.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+          startWishAutoScroll();
+          closeRSVP();
+        } else if (response === "Duplicate") {
+          alert(`⚠️ Error: The name "${formData.name}" has already submitted an RSVP response.`);
+        } else {
+          alert("Something went wrong saving your data. Please try again.");
+        }
+        submitBtn.innerText = originalText; submitBtn.disabled = false;
+      })
+      .catch(err => {
+        console.error("Submission error:", err);
+        alert("Connection error."); 
+        submitBtn.innerText = originalText; submitBtn.disabled = false;
+      });
+    }
+
+    function escapeHtml(text) { return text.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">"); }
+
+    // Manual Arrow Navigation Button Click Hooks
+    function moveCarousel(direction) {
+      const wall = document.getElementById('liveWishesWall');
+      if (!wall) return;
+      if (carouselTimer) clearInterval(carouselTimer);
+      
+      // Shift viewport vertical container up or down cleanly by 80px custom offsets
+      wall.scrollBy({ top: 80 * direction, behavior: 'smooth' });
+      startWishAutoScroll();
+    }
+
+    // Modal Window Controllers
+    function openCalendarModal() { document.getElementById('calendarModal').classList.add('active'); }
+    function closeCalendarModal() { document.getElementById('calendarModal').classList.remove('active'); }
+
+    // Contact Window Controllers
+    function openContactModal() { document.getElementById('contactModal').classList.add('active'); }
+    function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
+
+    // Location Window Controllers
+    function openLocationModal() { document.getElementById('locationModal').classList.add('active'); }
+    function closeLocationModal() { document.getElementById('locationModal').classList.remove('active'); }
+
+    // --- AI CHAT SYSTEM ACTION HOOKS ---
+    function openAIModal() {
+      const panel = document.getElementById('aiChatPanel');
+      panel.style.transform = 'translateX(-50%) translateY(0)'; 
+      panel.classList.add('active');
+      document.getElementById('centralSuggestions').style.display = 'flex';
+      document.querySelector('.chat-human-fallback-wrapper').style.display = 'none';
+      
+      const chatLog = document.getElementById('chatLog');
+      chatLog.scrollTop = 0;
+    }
+
+    function closeAIChat() {
+      const panel = document.getElementById('aiChatPanel');
+      panel.classList.remove('active');
+      panel.style.transform = ''; 
+    }
+
+    function useSuggestion(text) {
+      document.getElementById('chatInput').value = text;
+      sendChatMessage();
+    }
+
+    function sendChatMessage() {
+      const inputEl = document.getElementById('chatInput');
+      const queryText = inputEl.value.trim();
+      const chatLog = document.getElementById('chatLog');
+      const sendBtn = document.getElementById('chatSendBtn');
+      const suggestionsBoard = document.getElementById('centralSuggestions');
+
+      if (!queryText) return;
+
+      const lowerText = queryText.toLowerCase();
+      if (
+        lowerText === "rsvp" || 
+        lowerText.includes("register rsvp") || 
+        lowerText.includes("isi rsvp") || 
+        lowerText.includes("sahkan kehadiran") ||
+        lowerText.includes("buka rsvp")
+      ) {
+        inputEl.value = "";
+        openRSVP();
+        return;
+      }
+
+      const userBubble = document.createElement('div');
+      userBubble.className = 'msg bubble-user';
+      userBubble.innerText = queryText;
+      chatLog.appendChild(userBubble);
+
+      if (suggestionsBoard) suggestionsBoard.style.display = 'none';
+
+      inputEl.value = "";
+      inputEl.disabled = true;
+      sendBtn.disabled = true;
+      chatLog.scrollTop = chatLog.scrollHeight;
+
+      const typingBubble = document.createElement('div');
+      typingBubble.className = 'msg bubble-bot';
+      typingBubble.id = 'aiTypingPlaceholder';
+      typingBubble.innerHTML = '<i class="fa-solid fa-ellipsis fa-bounce"></i> Checking...';
+      chatLog.appendChild(typingBubble);
+      chatLog.scrollTop = chatLog.scrollHeight;
+
+      // 🌟 API URL Configuration Link Target
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbzI-ENWNr5K1naIwyvpCgd7wi_g87ez1Z81gJsdkxJ09Lu80SyZ0yPkVdhoeKUKKwnZ/exec"; 
+
+      fetch(webAppUrl, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ 
+          action: "chat", 
+          query: queryText 
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const aiOutput = data.reply; // Pull response string out of parsed object wrapper
+        const placeholder = document.getElementById('aiTypingPlaceholder');
+        if (placeholder) placeholder.remove();
+
+        let showQr = false;
+        let showCalendar = false; 
+        let cleanOutput = aiOutput;
+
+        if (
+          aiOutput.includes("reached my Credit limit") || 
+          aiOutput.includes("API credits") || 
+          aiOutput.includes("429") || 
+          aiOutput.includes("RESOURCE_EXHAUSTED")
+        ) {
+          const statusIndicator = document.getElementById('botStatusIndicator');
+          statusIndicator.innerText = "● Offline (Sleep)";
+          statusIndicator.className = "bot-status offline";
+          
+          let formattedBusyText = aiOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+          formattedBusyText = formattedBusyText.replace(/\n/g, '<br>');
+          
+          const botBubble = document.createElement('div');
+          botBubble.className = 'msg bubble-bot';
+          botBubble.innerHTML = formattedBusyText;
+          chatLog.appendChild(botBubble);
+          
+          document.querySelector('.chat-human-fallback-wrapper').style.display = 'flex';
+
+          inputEl.placeholder = "AKMU is sleeping 1 hour (っ- ‸ - ς)ᶻ 𝗓 𐰁. Please wait...";
+          inputEl.disabled = true;
+          sendBtn.disabled = true;
+          chatLog.scrollTop = chatLog.scrollHeight;
+          
+          setTimeout(() => {
+            statusIndicator.innerText = "● Online";
+            statusIndicator.className = "bot-status online";
+            inputEl.disabled = false;
+            sendBtn.disabled = false;
+            inputEl.placeholder = "Type your question here...";
+            document.querySelector('.chat-human-fallback-wrapper').style.display = 'none';
+          }, 60000); 
+
+          return;
+        }
+        
+        if (cleanOutput.includes("[TRIGGER_EXISTING_RSVP]")) {
+          cleanOutput = cleanOutput.replace("[TRIGGER_EXISTING_RSVP]", "").trim();
+          openRSVP();
+        }
+
+        if (cleanOutput.includes("[SHOW_QR_CODE]")) {
+          showQr = true;
+          cleanOutput = cleanOutput.replace("[SHOW_QR_CODE]", "").trim();
+        }
+
+        if (cleanOutput.includes("[SHOW_CALENDAR_BUTTONS]")) {
+          showCalendar = true;
+          cleanOutput = cleanOutput.replace("[SHOW_CALENDAR_BUTTONS]", "").trim();
+        }
+
+        cleanOutput = cleanOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        cleanOutput = cleanOutput.replace(/^\s*[\*]\s*/gm, '');
+        let parsedText = cleanOutput.replace(/\|/g, ' | '); 
+
+        const formattedOutput = parsedText.replace(/(https?:\/\/[^\s<>()[\]{}|]+)/g, function(url) {
+          return '<a href="' + url + '" target="_blank" style="color: #ba0c2f; font-weight: bold; text-decoration: underline;">Open Link <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></a>';
+        });
+
+        const botBubble = document.createElement('div');
+        botBubble.className = 'msg bubble-bot';
+        botBubble.innerHTML = formattedOutput.replace(/\n/g, '<br>');
+        
+        if (showQr) {
+          botBubble.innerHTML += `
+            <div style="margin-top: 12px; text-align: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
+              <p style="font-size: 11px; color:#555; margin: 0 0 8px 0; font-weight: bold;">DuitNow QR Gift Contribution</p>
+              <img src="https://lh3.googleusercontent.com/d/1JZS9yx1ax4lT-Q_VjakVWSvEdT_ws3KA" alt="Wedding QR" style="width: 100%; max-width: 180px; display: block; margin: 0 auto; border-radius: 4px;">
+            </div>
+          `;
+        }
+
+        if (showCalendar) {
+          botBubble.innerHTML += `
+            <div class="calendar-btn-wrapper" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+              <button onclick="window.open('https://calendar.google.com/calendar/event?action=TEMPLATE&text=Wedding+Day+-+Akmal+%26+Musfirah+%23MALamarFira&dates=20270501T020000Z%2F20270501T043000Z&details=We+are+getting+married%21+We+look+forward+to+celebrating+our+special+day+with+you.+Please+remember+to+RSVP+before+30+January+2027.&location=Eastwood+Valley+Golf+%26+Country+Club%2C+Miri%2C+Sarawak', '_blank', 'noopener,noreferrer')" 
+                      style="padding: 8px 14px; background: #4285F4; color: white; border-radius: 20px; border: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer;">
+                <i class="fa-brands fa-google"></i> Google Calendar
+              </button>
+              <a href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Wedding Day - Akmal %26 Musfirah %23MALamarFira%0ADTSTART:20270501T020000Z%0ADTEND:20270501T043000Z%0ALOCATION:Eastwood Valley Golf %26 Country Club\, Miri\, Sarawak%0ADESCRIPTION:We are getting married! We look forward to celebrating our special day with you. Please remember to RSVP before 30 January 2027.%0AEND:VEVENT%0AEND:VCALENDAR" 
+                 download="wedding-invite.ics" style="padding: 8px 14px; background: #000000; color: white; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                 <i class="fa-brands fa-apple"></i> Apple Calendar
+              </a>
+            </div>
+          `;
+        }
+
+        chatLog.appendChild(botBubble);
+
+        const lowercaseOutput = aiOutput.toLowerCase();
+        if (
+          lowercaseOutput.includes("crew assistant") || 
+          lowercaseOutput.includes("contact") || 
+          lowercaseOutput.includes("akmal") || 
+          lowercaseOutput.includes("musfirah")
+        ) {
+          document.querySelector('.chat-human-fallback-wrapper').style.display = 'flex';
+        } else {
+          document.querySelector('.chat-human-fallback-wrapper').style.display = 'none';
+        }
+
+        inputEl.disabled = false;
+        sendBtn.disabled = false;
+        chatLog.scrollTop = chatLog.scrollHeight;
+        inputEl.focus();
+      })
+      .catch(err => {
+        console.error("Chat routing connection issue:", err);
+        const placeholder = document.getElementById('aiTypingPlaceholder');
+        if (placeholder) placeholder.remove();
+
+        const errorBubble = document.createElement('div');
+        errorBubble.className = 'msg bubble-bot';
+        errorBubble.style.color = '#ba0c2f';
+        errorBubble.innerText = "Network issue. Please ask again.";
+        chatLog.appendChild(errorBubble);
+
+        inputEl.disabled = false;
+        sendBtn.disabled = false;
+        chatLog.scrollTop = chatLog.scrollHeight;
+      });
+    }
+
+    // --- ADDITIONAL CAT COMPONENT HANDLER LOGIC ---
+    function toggleCatMessage() {
+      document.getElementById('catSpeechBubble').classList.toggle('show-bubble');
+    }
+
+    function triggerAiFromCat(event) {
+      event.preventDefault();
+      document.getElementById('catSpeechBubble').classList.remove('show-bubble');
+      openAIModal();
+    }
+
+    // --- AI PANEL SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatPanel = document.getElementById('aiChatPanel');
+      const dragHandle = document.getElementById('chatDragHandle');
+      const bottomTrigger = document.getElementById('pageBottomTrigger');
+
+      // The scroll tracker now strictly handles opening the AI Chat Panel 
+      if (bottomTrigger) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              openAIModal(); 
+            }
+          });
+        }, { threshold: 0.1 });
+
+        observer.observe(bottomTrigger);
+      }
+      
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+
+      function handleTouchStart(e) {
+        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
+        
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        chatPanel.classList.add('is-dragging');
+      }
+
+      function handleTouchMove(e) {
+        if (!isDragging) return;
+        
+        currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+
+        if (deltaY > 0) {
+          e.preventDefault();
+          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
+        }
+      }
+
+      function handleTouchEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        chatPanel.classList.remove('is-dragging');
+
+        const deltaY = currentY - startY;
+        const threshold = chatPanel.offsetHeight * 0.25;
+
+        if (deltaY > threshold) {
+          chatPanel.style.transform = '';
+          closeAIChat(); 
+        } else {
+          chatPanel.style.transform = 'translateX(-50%) translateY(0)';
+          setTimeout(() => {
+            chatPanel.style.transform = '';
+          }, 400);
+        }
+        
+        startY = 0;
+        currentY = 0;
+      }
+
+      if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+      if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
+      
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd);
+
+      // 🌟 ADDED RIGHT HERE: Dismiss the cat bubble when clicking outside it!
+      window.addEventListener('touchstart', function(event) {
+        const catWrapper = document.getElementById('hiddenCatWrapper');
+        const catBubble = document.getElementById('catSpeechBubble');
+        
+        if (catBubble && catBubble.classList.contains('show-bubble')) {
+          // If the tap target is NOT inside the cat image or the text bubble, close it!
+          if (catWrapper && !catWrapper.contains(event.target)) {
+            catBubble.classList.remove('show-bubble');
+          }
+        }
+      }, { passive: true });
+
+    });
+  </script>
+</body>
+</html>
