@@ -1990,8 +1990,11 @@
     // --- AI CHAT SYSTEM ACTION HOOKS ---
     function openAIModal() {
       const panel = document.getElementById('aiChatPanel');
+      
+      // 🌟 Keeps the layout locked to the center-top view frame smoothly
       panel.style.transform = 'translateX(-50%) translateY(0)'; 
       panel.classList.add('active');
+      
       document.getElementById('centralSuggestions').style.display = 'flex';
       document.querySelector('.chat-human-fallback-wrapper').style.display = 'none';
       
@@ -2002,7 +2005,9 @@
     function closeAIChat() {
       const panel = document.getElementById('aiChatPanel');
       panel.classList.remove('active');
-      panel.style.transform = ''; 
+      
+      // 🌟 Explicitly slide it down off-screen to clear any sub-pixel keyboard jitter
+      panel.style.transform = 'translateX(-50%) translateY(100%)'; 
     }
 
     function useSuggestion(text) {
