@@ -676,6 +676,9 @@
       transition: opacity 0.3s ease;
       z-index: 3000;
       background: rgba(0, 0, 0, 0.5) !important; /* Dark backdrop contrast makes ticket look ultra-vibrant */
+      padding-bottom: calc(env(safe-area-inset-bottom) + 80px) !important;
+      overflow-y: auto; 
+      -webkit-overflow-scrolling: touch
     }
 
     #calendarModal.active, #contactModal.active, #locationModal.active {
