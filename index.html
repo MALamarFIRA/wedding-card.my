@@ -2250,13 +2250,18 @@
         const chatLog = document.getElementById('chatLog');
         if (chatLog && chatLog.scrollTop > 0) return;
         
-        // Forcefully remove transitions completely right when touched
-        chatPanel.style.transition = 'none';
-        chatPanel.style.webkitTransition = 'none';
-        
         startY = e.touches[0].clientY;
         isDragging = true;
         chatPanel.classList.add('is-dragging');
+    
+        // 1. Force the layout to center without using CSS transforms
+        chatPanel.style.left = '0';
+        chatPanel.style.right = '0';
+        chatPanel.style.margin = '0 auto';
+        
+        // 2. Kill all transitions completely so it moves matching your finger refresh rates
+        chatPanel.style.setProperty('transition', 'none', 'important');
+        chatPanel.style.setProperty('webkitTransition', 'none', 'important');
       }
     
       function handleTouchMove(e) {
@@ -2265,15 +2270,14 @@
         currentY = e.touches[0].clientY;
         deltaY = currentY - startY;
     
-        // Prevent screen bouncing on mobile
         if (e.cancelable) e.preventDefault();
     
         if (deltaY > 0) {
-          // Direct assignment bypasses render pacing issues entirely
-          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
+          // 3. Since translateX is gone, we can safely write a clean, single axis transform!
+          chatPanel.style.transform = `translateY(${deltaY}px)`;
         } else {
-          // If dragged back upwards, lock cleanly at zero baseline
-          chatPanel.style.transform = 'translateX(-50%) translateY(0px)';
+          // Pin at top baseline if dragged above start frame bounds
+          chatPanel.style.transform = 'translateY(0px)';
         }
       }
     
@@ -2282,26 +2286,33 @@
         isDragging = false;
         chatPanel.classList.remove('is-dragging');
     
-        // ONLY apply the smooth transitions here on finger lift
-        chatPanel.style.transition = 'transform 0.35s cubic-bezier(0.15, 0.85, 0.45, 1)';
-        chatPanel.style.webkitTransition = 'transform 0.35s cubic-bezier(0.15, 0.85, 0.45, 1)';
+        // Re-apply smooth native transition mechanics on finger lift
+        chatPanel.style.setProperty('transition', 'transform 0.3s cubic-bezier(0.15, 0.85, 0.45, 1)', 'important');
         
-        const threshold = chatPanel.offsetHeight * 0.25; // 25% drop threshold
+        const threshold = chatPanel.offsetHeight * 0.25; 
     
         if (deltaY > threshold) {
-          chatPanel.style.transform = 'translateX(-50%) translateY(100%)';
+          // Dismissed
+          chatPanel.style.transform = 'translateY(100%)';
           setTimeout(() => {
             closeAIChat();
-            // Clear styles so default panel styles work when opened next time
+            // Clear layout modifiers cleanly for next initialize sequence
             chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-          }, 350);
+            chatPanel.style.left = '';
+            chatPanel.style.right = '';
+            chatPanel.style.margin = '';
+          }, 300);
         } else {
-          chatPanel.style.transform = 'translateX(-50%) translateY(0px)';
+          // Snap back up safely
+          chatPanel.style.transform = 'translateY(0px)';
           setTimeout(() => {
             chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-          }, 350);
+            chatPanel.style.left = '';
+            chatPanel.style.right = '';
+            chatPanel.style.margin = '';
+          }, 300);
         }
         
         startY = 0;
@@ -2309,15 +2320,10 @@
         deltaY = 0;
       }
     
-      // Bind directly to the elements with both bubbling phases handled
-      if (dragHandle) {
-        dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
-      }
-      if (chatPanel) {
-        chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
-      }
+      // Double-bind touch endpoints for absolute tracking safety
+      if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+      if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
       
-      // Attach move and end events to the window so the swipe stays active even if the finger slips off the panel
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleTouchEnd, { passive: true });
     
