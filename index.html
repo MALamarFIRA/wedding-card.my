@@ -2224,12 +2224,12 @@
 
     // --- AI PANEL SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
     document.addEventListener('DOMContentLoaded', () => {
-
+    
       const chatPanel = document.getElementById('aiChatPanel');
       const dragHandle = document.getElementById('chatDragHandle');
       const bottomTrigger = document.getElementById('pageBottomTrigger');
-
-      // The scroll tracker now strictly handles opening the AI Chat Panel 
+    
+      // The scroll tracker handles opening the AI Chat Panel 
       if (bottomTrigger) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -2243,64 +2243,97 @@
       
       let startY = 0;
       let currentY = 0;
+      let deltaY = 0;
       let isDragging = false;
-
+      let ticking = false;
+    
       function handleTouchStart(e) {
-        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
+        // Stop tracking drag interactions if the guest book is scrolled downward
+        const chatLog = document.getElementById('chatLog');
+        if (chatLog && chatLog.scrollTop > 0) return;
         
         startY = e.touches[0].clientY;
         isDragging = true;
+        
+        // Completely kill animations/transitions while moving along tracking points
+        chatPanel.style.transition = 'none';
         chatPanel.classList.add('is-dragging');
       }
-
+    
       function handleTouchMove(e) {
         if (!isDragging) return;
         currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY;
+        deltaY = currentY - startY;
+    
+        // Only process down-swipes
         if (deltaY > 0) {
-          e.preventDefault();
-          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
+          if (e.cancelable) e.preventDefault();
+          
+          // requestAnimationFrame: Optimizes rendering frame rates to match mobile hardware
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              if (isDragging) {
+                chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
+              }
+              ticking = false;
+            });
+            ticking = true;
+          }
         }
       }
-
+    
       function handleTouchEnd() {
         if (!isDragging) return;
         isDragging = false;
         chatPanel.classList.remove('is-dragging');
-        const deltaY = currentY - startY;
-        const threshold = chatPanel.offsetHeight * 0.25;
+    
+        // Add beautiful, hardware-accelerated spring curves for final releases
+        chatPanel.style.transition = 'transform 0.35s cubic-bezier(0.15, 0.85, 0.45, 1)';
+        
+        const threshold = chatPanel.offsetHeight * 0.22; // Quick, 22% dismiss trigger for great UX
+    
         if (deltaY > threshold) {
-          chatPanel.style.transform = '';
-          closeAIChat(); 
+          // Swipe past threshold: Drop down cleanly and safely execute original cleanup actions
+          chatPanel.style.transform = 'translateX(-50%) translateY(100%)';
+          setTimeout(() => {
+            closeAIChat();
+            chatPanel.style.transition = '';
+            chatPanel.style.transform = '';
+          }, 350);
         } else {
+          // Swipe failed threshold: Bounce back elegantly into full visual view matrix
           chatPanel.style.transform = 'translateX(-50%) translateY(0)';
           setTimeout(() => {
+            chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-          }, 400);
+          }, 350);
         }
+        
+        // Reset structural state flags safely
         startY = 0;
         currentY = 0;
+        deltaY = 0;
       }
-
+    
+      // Hook passive listeners for responsive execution tracks
       if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
       if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
       
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('touchend', handleTouchEnd);
-
-      // 🌟 ADDED RIGHT HERE: Dismiss the cat bubble when clicking outside it!
+      window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    
+      // Dismiss the cat bubble when clicking outside it!
       window.addEventListener('touchstart', function(event) {
         const catWrapper = document.getElementById('hiddenCatWrapper');
         const catBubble = document.getElementById('catSpeechBubble');
         
         if (catBubble && catBubble.classList.contains('show-bubble')) {
-          // If the tap target is NOT inside the cat image or the text bubble, close it!
           if (catWrapper && !catWrapper.contains(event.target)) {
             catBubble.classList.remove('show-bubble');
           }
         }
       }, { passive: true });
-
+    
     });
 
 
