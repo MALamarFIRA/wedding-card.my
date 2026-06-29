@@ -791,13 +791,14 @@
     /* --- FULL COVERAGE MOBILE PANELS --- */
     .ai-chat-panel {
       position: fixed;
-      bottom: 0; 
+      top: 0; 
       left: 50% !important;
       width: 100% !important;
       max-width: 500px; 
       box-sizing: border-box; 
-      height: 100%; 
-      height: -webkit-fill-available; 
+      
+      height: 100dvh; 
+      
       background: #f7f9fa;
       z-index: 2500;
       display: flex;
@@ -806,7 +807,6 @@
       
       transform: translateX(-50%) translateY(100%); 
       
-      /* 🌟 ADD THESE TWO LINES HERE */
       visibility: hidden;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
       
