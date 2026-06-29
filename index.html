@@ -2245,44 +2245,35 @@
       let currentY = 0;
       let deltaY = 0;
       let isDragging = false;
-      let ticking = false;
     
       function handleTouchStart(e) {
-        // Stop tracking drag interactions if the chat log is scrolled down
         const chatLog = document.getElementById('chatLog');
         if (chatLog && chatLog.scrollTop > 0) return;
         
+        // Forcefully remove transitions completely right when touched
+        chatPanel.style.transition = 'none';
+        chatPanel.style.webkitTransition = 'none';
+        
         startY = e.touches[0].clientY;
         isDragging = true;
-        
-        // CRITICAL: Kill ALL CSS transitions instantly so it follows your finger in real-time
-        chatPanel.style.setProperty('transition', 'none', 'important');
         chatPanel.classList.add('is-dragging');
       }
     
       function handleTouchMove(e) {
         if (!isDragging) return;
+        
         currentY = e.touches[0].clientY;
         deltaY = currentY - startY;
     
-        // Allow pulling downward freely
+        // Prevent screen bouncing on mobile
+        if (e.cancelable) e.preventDefault();
+    
         if (deltaY > 0) {
-          if (e.cancelable) e.preventDefault();
-          
-          if (!ticking) {
-            window.requestAnimationFrame(() => {
-              if (isDragging) {
-                // Glues the panel matrix position perfectly to your finger's Y offset
-                chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
-              }
-              ticking = false;
-            });
-            ticking = true;
-          }
+          // Direct assignment bypasses render pacing issues entirely
+          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
         } else {
-          // If user drags back UP past the starting point, lock it safely at the top view baseline
+          // If dragged back upwards, lock cleanly at zero baseline
           chatPanel.style.transform = 'translateX(-50%) translateY(0px)';
-          deltaY = 0;
         }
       }
     
@@ -2291,42 +2282,46 @@
         isDragging = false;
         chatPanel.classList.remove('is-dragging');
     
-        // Re-introduce the beautiful spring easing animation ONLY on finger release
-        chatPanel.style.setProperty('transition', 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.125)', 'important');
+        // ONLY apply the smooth transitions here on finger lift
+        chatPanel.style.transition = 'transform 0.35s cubic-bezier(0.15, 0.85, 0.45, 1)';
+        chatPanel.style.webkitTransition = 'transform 0.35s cubic-bezier(0.15, 0.85, 0.45, 1)';
         
-        const threshold = chatPanel.offsetHeight * 0.3; // Requires a deliberate 30% drag to drop
+        const threshold = chatPanel.offsetHeight * 0.25; // 25% drop threshold
     
         if (deltaY > threshold) {
-          // Dragged past threshold: Drop down smoothly out of view
           chatPanel.style.transform = 'translateX(-50%) translateY(100%)';
           setTimeout(() => {
             closeAIChat();
+            // Clear styles so default panel styles work when opened next time
             chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-          }, 400);
+          }, 350);
         } else {
-          // Dragged below threshold: Spring gracefully back into place!
           chatPanel.style.transform = 'translateX(-50%) translateY(0px)';
           setTimeout(() => {
             chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-          }, 400);
+          }, 350);
         }
         
-        // Reset control variables safely
         startY = 0;
         currentY = 0;
         deltaY = 0;
       }
     
-      // Hook passive listeners for high-speed tracking responsiveness
-      if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
-      if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
+      // Bind directly to the elements with both bubbling phases handled
+      if (dragHandle) {
+        dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+      }
+      if (chatPanel) {
+        chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
+      }
       
+      // Attach move and end events to the window so the swipe stays active even if the finger slips off the panel
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleTouchEnd, { passive: true });
     
-      // Dismiss the cat bubble when clicking outside it!
+      // Dismiss the cat bubble when clicking outside it
       window.addEventListener('touchstart', function(event) {
         const catWrapper = document.getElementById('hiddenCatWrapper');
         const catBubble = document.getElementById('catSpeechBubble');
