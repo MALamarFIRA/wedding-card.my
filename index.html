@@ -2222,70 +2222,131 @@
       openAIModal();
     }
 
-    // --- AI PANEL SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
-    document.addEventListener('DOMContentLoaded', () => {
-      const chatPanel = document.getElementById('aiChatPanel');
-      const dragHandle = document.getElementById('chatDragHandle');
-      const bottomTrigger = document.getElementById('pageBottomTrigger');
+// --- AI PANEL & TICKET MODALS SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
+document.addEventListener('DOMContentLoaded', () => {
+  const chatPanel = document.getElementById('aiChatPanel');
+  const dragHandle = document.getElementById('chatDragHandle');
+  const bottomTrigger = document.getElementById('pageBottomTrigger');
 
-      // The scroll tracker now strictly handles opening the AI Chat Panel 
-      if (bottomTrigger) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              openAIModal(); 
-            }
-          });
-        }, { threshold: 0.1 });
+  // 1. The scroll tracker strictly handles opening the AI Chat Panel 
+  if (bottomTrigger) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          openAIModal(); 
+        }
+      });
+    }, { threshold: 0.1 });
 
-        observer.observe(bottomTrigger);
-      }
+    observer.observe(bottomTrigger);
+  }
+  
+  // 2. AI Chat Panel Drag State Tracking Mechanics
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+  if (chatPanel) {
+    chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
+    chatPanel.addEventListener('touchmove', handleTouchMove, { passive: false });
+    chatPanel.addEventListener('touchend', handleTouchEnd);
+  }
+
+  function handleTouchStart(e) {
+    if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
+    
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    chatPanel.classList.add('is-dragging');
+  }
+
+  function handleTouchMove(e) {
+    if (!isDragging) return;
+    
+    currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+
+    if (deltaY > 0) {
+      e.preventDefault();
+      chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
+    }
+  }
+
+  function handleTouchEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    chatPanel.classList.remove('is-dragging');
+
+    const deltaY = currentY - startY;
+    const threshold = chatPanel.offsetHeight * 0.25;
+
+    if (deltaY > threshold) {
+      closeAIChat(); 
+    } else {
+      chatPanel.style.transform = 'translateX(-50%) translateY(0)';
+    }
+    
+    startY = 0;
+    currentY = 0;
+  }
+
+  // 🌟 3. NEW ADDITION: TICKET MODALS SWIPE-TO-CLOSE CONFIGURATION
+  // Automatically attaches touch listener systems to your boarding pass cards
+  const ticketModals = ['#calendarModal', '#contactModal', '#locationModal'];
+
+  ticketModals.forEach(modalId => {
+    const modalOuter = document.querySelector(modalId);
+    if (!modalOuter) return;
+    
+    const ticketCard = modalOuter.querySelector('.rsvp-modal');
+    if (!ticketCard) return;
+
+    let tStartY = 0;
+    let tCurrentY = 0;
+    let tIsDragging = false;
+
+    ticketCard.addEventListener('touchstart', (e) => {
+      if (ticketCard.scrollTop > 0) return; // Ignore tracking if internal elements scroll
       
-      let startY = 0;
-      let currentY = 0;
-      let isDragging = false;
+      tStartY = e.touches[0].clientY;
+      tIsDragging = true;
+      ticketCard.style.transition = 'none'; // Clear animation profiles during dragging
+    }, { passive: true });
 
-      function handleTouchStart(e) {
-        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
-        
-        startY = e.touches[0].clientY;
-        isDragging = true;
-        chatPanel.classList.add('is-dragging');
+    ticketCard.addEventListener('touchmove', (e) => {
+      if (!tIsDragging) return;
+
+      tCurrentY = e.touches[0].clientY;
+      const deltaY = tCurrentY - tStartY;
+
+      if (deltaY > 0) {
+        e.preventDefault(); // Lock iOS browser rubber-banding bounce shifts
+        ticketCard.style.transform = `translateY(${deltaY}px)`;
+      }
+    }, { passive: false });
+
+    ticketCard.addEventListener('touchend', () => {
+      if (!tIsDragging) return;
+      tIsDragging = false;
+      
+      ticketCard.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+
+      const deltaY = tCurrentY - tStartY;
+      const threshold = ticketCard.offsetHeight * 0.25; 
+
+      if (deltaY > threshold) {
+        // Simulates backdrop click to trigger your existing safe close sequences
+        modalOuter.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      } else {
+        ticketCard.style.transform = 'translateY(0)';
       }
 
-      function handleTouchMove(e) {
-        if (!isDragging) return;
-        
-        currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY;
-
-        if (deltaY > 0) {
-          e.preventDefault();
-          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
-        }
-      }
-
-      function handleTouchEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        chatPanel.classList.remove('is-dragging');
-
-        const deltaY = currentY - startY;
-        const threshold = chatPanel.offsetHeight * 0.25;
-
-        if (deltaY > threshold) {
-          chatPanel.style.transform = '';
-          closeAIChat(); 
-        } else {
-          chatPanel.style.transform = 'translateX(-50%) translateY(0)';
-          setTimeout(() => {
-            chatPanel.style.transform = '';
-          }, 400);
-        }
-        
-        startY = 0;
-        currentY = 0;
-      }
+      tStartY = 0;
+      tCurrentY = 0;
+    });
+  });
+});
 
       if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
       if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
