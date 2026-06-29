@@ -797,9 +797,8 @@
       max-width: 500px; 
       box-sizing: border-box; 
       
-      height: 100dvh; 
-      
-      background: #f7f9fa;
+      background: #f7f9fa !important; /* Forces a solid color so no content can bleed through */
+      height: 100dvh;
       z-index: 2500;
       display: flex;
       flex-direction: column;
@@ -813,7 +812,8 @@
       will-change: transform;
       border-top-left-radius: 15px !important;
       border-top-right-radius: 15px !important;
-      overflow: hidden; 
+      overflow: hidden;
+      overscroll-behavior: contain;
     }
 
     .ai-chat-panel.is-dragging {
@@ -1991,7 +1991,6 @@
     function openAIModal() {
       const panel = document.getElementById('aiChatPanel');
       
-      // 🌟 Keeps the layout locked to the center-top view frame smoothly
       panel.style.transform = 'translateX(-50%) translateY(0)'; 
       panel.classList.add('active');
       
@@ -2000,14 +1999,24 @@
       
       const chatLog = document.getElementById('chatLog');
       chatLog.scrollTop = 0;
+    
+      // 🌟 FIX FOR SAFARI TOOLBARS: Freeze the home background layer completely
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100dvh';
     }
-
+    
     function closeAIChat() {
       const panel = document.getElementById('aiChatPanel');
       panel.classList.remove('active');
-      
-      // 🌟 Explicitly slide it down off-screen to clear any sub-pixel keyboard jitter
       panel.style.transform = 'translateX(-50%) translateY(100%)'; 
+    
+      // 🌟 RESTORE SCROLLING: Return background layout to normal
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
     }
 
     function useSuggestion(text) {
