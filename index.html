@@ -2225,69 +2225,6 @@
     // --- AI PANEL SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
     document.addEventListener('DOMContentLoaded', () => {
 
-    // --- TICKET MODALS SWIPE-TO-CLOSE CONFIGURATION ---
-      const ticketModals = ['#calendarModal', '#contactModal', '#locationModal'];
-    
-      ticketModals.forEach(modalId => {
-        const modalOuter = document.querySelector(modalId);
-        if (!modalOuter) return;
-        
-        // Target the inner boarding pass card
-        const ticketCard = modalOuter.querySelector('.rsvp-modal');
-        if (!ticketCard) return;
-    
-        let startY = 0;
-        let currentY = 0;
-        let isDragging = false;
-    
-        ticketCard.addEventListener('touchstart', (e) => {
-          // If user is scrolling internal text content, don't drag the card down
-          if (ticketCard.scrollTop > 0) return;
-          
-          startY = e.touches[0].clientY;
-          isDragging = true;
-          ticketCard.style.transition = 'none'; // Kill animations while tracking fingers
-        }, { passive: true });
-    
-        ticketCard.addEventListener('touchmove', (e) => {
-          if (!isDragging) return;
-    
-          currentY = e.touches[0].clientY;
-          const deltaY = currentY - startY;
-    
-          // Only allow dragging downwards
-          if (deltaY > 0) {
-            e.preventDefault(); // Stop iOS scroll bounce rubber-banding
-            ticketCard.style.transform = `translateY(${deltaY}px)`;
-          }
-        }, { passive: false });
-    
-        ticketCard.addEventListener('touchend', () => {
-          if (!isDragging) return;
-          isDragging = false;
-          
-          // Restore smooth timing mechanics
-          ticketCard.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-    
-          const deltaY = currentY - startY;
-          const threshold = ticketCard.offsetHeight * 0.25; // 25% pull threshold
-    
-          if (deltaY > threshold) {
-            // 🌟 SWIPE DOWN SUCCESS: Close the active modal
-            // This fires your backdrop checker logic smoothly
-            modalOuter.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-          } else {
-            // 🌟 CANCELLED SWIPE: Snap back up to normal viewing layout frame
-            ticketCard.style.transform = 'translateY(0)';
-          }
-    
-          startY = 0;
-          currentY = 0;
-        });
-      });
-
-
-      
       const chatPanel = document.getElementById('aiChatPanel');
       const dragHandle = document.getElementById('chatDragHandle');
       const bottomTrigger = document.getElementById('pageBottomTrigger');
