@@ -669,16 +669,19 @@
     /* --- TRAVEL TICKET BOTTOM SHEET POP-UPS --- */
     #calendarModal, #contactModal, #locationModal {
       display: flex !important;
-      align-items: flex-end !important;
+      align-items: flex-end !important; /* Keeps the sheet sliding up from the bottom */
       justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100dvh; /* 🌟 Keep it completely locked to the dynamic viewport screen */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
       z-index: 3000;
-      background: rgba(0, 0, 0, 0.5) !important; /* Dark backdrop contrast makes ticket look ultra-vibrant */
-      padding-bottom: calc(env(safe-area-inset-bottom) + 80px) !important;
-      overflow-y: auto; 
-      -webkit-overflow-scrolling: touch
+      background: rgba(0, 0, 0, 0.5) !important;
+      overflow: hidden; /* Prevent the backdrop itself from scrolling */
     }
 
     #calendarModal.active, #contactModal.active, #locationModal.active {
@@ -699,7 +702,14 @@
       width: 100%;
       max-width: 480px;
       margin: 0 !important;
-      padding: 28px 20px 45px 20px;
+      
+      /* 🌟 CHAGNED THIS: Keep top/side padding, but make the bottom dynamic */
+      padding: 28px 20px calc(env(safe-area-inset-bottom) + 50px) 20px !important;
+      
+      /* 🌟 ADDED THIS: Limits card height on short phones so it's safely scrollable if needed */
+      max-height: 85dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Quick fluid terminal pull up */
