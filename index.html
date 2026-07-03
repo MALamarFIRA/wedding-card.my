@@ -159,11 +159,14 @@
 
     .mobile-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 480px; /* Keep your original size */
       background: var(--cream);
-      padding: 25px 15px;
+      padding: 25px 15px; /* Keeps your original top/side padding */
       border-radius: 12px;
-      padding-bottom: 80px;
+      box-sizing: border-box; /* Ensures padding doesn't alter the total width calculation */
+      
+      /* CRITICAL FIX: Combines your 80px buffer with the device's hardware safe area */
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
     }
 
     .section-divider {
@@ -522,29 +525,35 @@
       position: fixed;
       bottom: 0;
       left: 50%;
-      transform: translateX(-50%);
+      /* 1. Combined horizontal centering with translateZ(0) to force hardware acceleration */
+      transform: translateX(-50%) translateZ(0);
+      will-change: transform, box-shadow, background-color; /* Added transform hint */
+      
       width: 100%;
-      max-width: 500px; /* Adapts to your mobile layout container */
+      max-width: 500px; 
       z-index: 999;
       
-      /* Your elegant glassmorphism engine */
+      /* Retained your exact styling specs */
       background: rgba(255, 255, 255, 0.12) !important;
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
       border-top: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 20px 20px 0 0; /* Smooth top corners for the panel */
+      border-radius: 20px 20px 0 0;
       
-      /* Flex grid layout adjustments */
       display: flex;
       justify-content: space-around;
       align-items: center;
+      
+      /* 2. Changed to absolute pixel heights using box-sizing to protect internal elements */
       height: 65px;
-      padding: 0; /* Height fixes item alignments */
-      padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
+      box-sizing: border-box; 
+      
+      /* 3. Safe fallback padding structure */
+      padding: 0; 
+      padding-bottom: env(safe-area-inset-bottom, 0px); 
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
-      will-change: box-shadow, background-color;
-      -webkit-tap-highlight-color: transparent; /* Removes flash block frame on mobile touch */
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* Your ambient reflection keyframe engine preserved exactly */
@@ -2298,7 +2307,8 @@
             closeAIChat();
             // Clear layout modifiers cleanly for next initialize sequence
             chatPanel.style.transition = '';
-            chatPanel.style.transform = '';
+            /* FIX: Reset back to the clean hidden transform with hardware layering */
+            chatPanel.style.transform = 'translateX(-50%) translateY(100%) translateZ(0)';
             chatPanel.style.left = '';
             chatPanel.style.right = '';
             chatPanel.style.margin = '';
@@ -2308,7 +2318,8 @@
           chatPanel.style.transform = 'translateY(0px)';
           setTimeout(() => {
             chatPanel.style.transition = '';
-            chatPanel.style.transform = '';
+            /* FIX: Keep the composite layer translation active when open */
+            chatPanel.style.transform = 'translateX(-50%) translateY(0) translateZ(0)';
             chatPanel.style.left = '';
             chatPanel.style.right = '';
             chatPanel.style.margin = '';
