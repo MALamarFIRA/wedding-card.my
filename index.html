@@ -159,14 +159,15 @@
 
     .mobile-container {
       width: 100%;
-      max-width: 480px; /* Keep your original size */
+      max-width: 480px; 
       background: var(--cream);
-      padding: 25px 15px; /* Keeps your original top/side padding */
+      padding: 25px 15px;
       border-radius: 12px;
-      box-sizing: border-box; /* Ensures padding doesn't alter the total width calculation */
+      box-sizing: border-box !important;
       
-      /* CRITICAL FIX: Combines your 80px buffer with the device's hardware safe area */
-      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+      /* CRITICAL CHANGE: Increase the bottom padding significantly to make sure */
+      /* your text timeline elements never collide or slip underneath your navigation. */
+      padding-bottom: calc(110px + env(safe-area-inset-bottom, 16px)) !important;
     }
 
     .section-divider {
@@ -522,21 +523,20 @@
 
     /* --- STICKY GLASSMORPHISM BOTTOM NAVIGATION BAR WITH BUMP --- */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      /* 1. Combined horizontal centering with translateZ(0) to force hardware acceleration */
-      transform: translateX(-50%) translateZ(0);
-      will-change: transform, box-shadow, background-color; /* Added transform hint */
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) translateZ(0) !important;
+      will-change: transform;
       
       width: 100%;
       max-width: 500px; 
-      z-index: 999;
+      z-index: 99999; /* Boosted z-index layer priority */
       
-      /* Retained your exact styling specs */
+      /* Elegance glassmorphism styles retained */
       background: rgba(255, 255, 255, 0.12) !important;
-      backdrop-filter: blur(15px) saturate(180%);
-      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      backdrop-filter: blur(15px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
       border-top: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 20px 20px 0 0;
       
@@ -544,13 +544,13 @@
       justify-content: space-around;
       align-items: center;
       
-      /* 2. Changed to absolute pixel heights using box-sizing to protect internal elements */
-      height: 65px;
-      box-sizing: border-box; 
-      
-      /* 3. Safe fallback padding structure */
-      padding: 0; 
-      padding-bottom: env(safe-area-inset-bottom, 0px); 
+      /* CRITICAL CHANGE: Explicitly split height and padding equations */
+      height: calc(65px + env(safe-area-inset-bottom, 16px)) !important;
+      padding-top: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: env(safe-area-inset-bottom, 16px) !important; /* Employs a crisp 16px backup default if iOS doesn't declare it */
+      box-sizing: border-box !important;
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       -webkit-tap-highlight-color: transparent;
@@ -2000,7 +2000,8 @@
     function openAIModal() {
       const panel = document.getElementById('aiChatPanel');
       
-      panel.style.transform = 'translateX(-50%) translateY(0)'; 
+      // Forces hardware acceleration layout tracking rules
+      panel.style.transform = 'translateX(-50%) translateY(0) translateZ(0)'; 
       panel.classList.add('active');
       
       document.getElementById('centralSuggestions').style.display = 'flex';
@@ -2009,23 +2010,19 @@
       const chatLog = document.getElementById('chatLog');
       chatLog.scrollTop = 0;
     
-      // 🌟 FIX FOR SAFARI TOOLBARS: Freeze the home background layer completely
+      // 🌟 SAFARI FIX: Lock viewport scrolling safely without changing position models
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.height = '100dvh';
     }
     
     function closeAIChat() {
       const panel = document.getElementById('aiChatPanel');
       panel.classList.remove('active');
-      panel.style.transform = 'translateX(-50%) translateY(100%)'; 
+      panel.style.transform = 'translateX(-50%) translateY(100%) translateZ(0)'; 
     
-      // 🌟 RESTORE SCROLLING: Return background layout to normal
+      // 🌟 RESTORE SCROLLING: Safely unlock deep layout tags
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
     }
 
     function useSuggestion(text) {
