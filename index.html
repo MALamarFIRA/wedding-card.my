@@ -398,9 +398,10 @@
 
     /* --- FLOATING MUSIC BUTTON --- */
     .music-btn { 
-      position: fixed; 
-      bottom: 85px;  
-      right: 20px;   
+      position: fixed !important; 
+      /* 1. FIX: Keeps it floating cleanly above the changing heights of the glass footer */
+      bottom: calc(85px + env(safe-area-inset-bottom, 16px)) !important;  
+      right: 20px !important;   
       width: 45px; 
       height: 45px; 
       background-color: var(--maroon); 
@@ -411,12 +412,19 @@
       gap: 3px; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
       cursor: pointer; 
-      z-index: 900; /* 👈 Lowered to match the top button */
-      transition: all 0.3s ease;
+      
+      /* 2. FIX: Boost z-index to fly safely above the footer glass blur at all times */
+      z-index: 1998 !important; 
+      
+      /* 3. FIX: Tie button to the GPU to stop it lagging/shaking behind during fast scrolling */
+      transform: translateZ(0);
+      will-change: transform, bottom;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
+    /* 4. FIX: Combined scale and hardware acceleration layers smoothly on active taps */
     .music-btn:active {
-      transform: scale(0.92);
+      transform: scale(0.92) translateZ(0);
     }
 
     .music-bar { 
