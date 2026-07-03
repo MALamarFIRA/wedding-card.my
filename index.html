@@ -538,9 +538,9 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: auto;
-      padding-top: 12px;
-      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      height: 65px;
+      padding: 0; /* Height fixes item alignments */
+      padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
@@ -620,7 +620,7 @@
     /* Elevates the element layout out of the bar safely */
     .nav-item.ai-bump {
       position: absolute;
-      top: -50px;
+      top: -22px; 
       height: auto;
       overflow: visible;
     }
