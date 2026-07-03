@@ -364,9 +364,10 @@
 
     /* --- REFOCUSED TOP BUTTON LAYOUT --- */
     .top-btn { 
-      position: fixed; 
-      bottom: 145px; 
-      right: 20px;   
+      position: fixed !important; 
+      /* 1. FIX: Keeps it dynamically stacked exactly 60px higher than the music button */
+      bottom: calc(145px + env(safe-area-inset-bottom, 16px)) !important; 
+      right: 20px !important;   
       background: var(--maroon); 
       color: var(--gold); 
       width: 45px; 
@@ -378,22 +379,31 @@
       align-items: center; 
       font-size: 10px; 
       cursor: pointer; 
-      z-index: 900; /* 👈 Lowered so it goes behind the modal backdrop */
+      
+      /* 2. FIX: Boosted layer priority slightly so it sits cleanly relative to the footer actions */
+      z-index: 1998 !important; 
+      
       opacity: 0; 
       pointer-events: none; 
       box-shadow: 0 4px 12px rgba(186, 12, 47, 0.25); 
-      transition: opacity 0.4s ease, transform 0.4s ease, pointer-events 0.4s ease;
-      transform: translateY(10px); 
+      
+      /* 3. FIX: Set up separate hardware translate tracking states */
+      transform: translateY(10px) translateZ(0); 
+      will-change: transform, opacity, bottom;
+      transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.3s ease;
     }
 
+    /* 4. FIX: Maintains the hardware layer when sliding into view */
     .top-btn.show { 
       opacity: 1; 
       pointer-events: auto; 
-      transform: translateY(0);
+      transform: translateY(0) translateZ(0);
     }
 
+    /* 5. FIX: Keeps positioning stable on finger taps */
     .top-btn:active {
-      transform: scale(0.92);
+      transform: scale(0.92) translateZ(0);
+      transition: transform 0.1s ease;
     }
 
     /* --- FLOATING MUSIC BUTTON --- */
