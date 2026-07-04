@@ -1170,25 +1170,24 @@
     #hiddenCatWrapper {
       position: fixed !important;
       
-      /* 🔥 UPDATED: Height altered to sit perfectly flush above the 65px bar floor */
-      bottom: 65px !important; 
+      /* 🔥 FIX: Calculates the position from the TOP of the screen viewport instead of the shifting bottom */
+      top: calc(100svh - 65px - 90px) !important; 
+      bottom: auto !important; /* Disables bottom tracking completely */
       
-      /* 🌟 CHANGED: Swapped right to left side alignment */
+      /* Keeps your left alignment preserved */
       left: 20px !important; 
       right: auto !important;
       
-      /* 🔥 UPDATED: Boosted z-index slightly to guarantee it floats above your 999 nav layout */
       z-index: 10000 !important; 
       display: flex !important;
       flex-direction: column !important;
-      
-      /* 🌟 CHANGED: Aligns the speech bubble to look natural from the left edge */
       align-items: flex-start !important; 
       width: 90px !important;
       height: auto !important;
-      
-      /* 🔥 ADDED: Safety lock to prevent browser scrolling mechanics from causing layout shifts */
       overflow: visible !important;
+      
+      /* 🔥 PROTECTION: Prevents touch jitter during aggressive scrolling */
+      will-change: top;
     }
 
     /* Tap target for the cat image element */
