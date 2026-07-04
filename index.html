@@ -2278,11 +2278,21 @@
     
 
       function handleTouchStart(e) {
-        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
+        const chatLog = document.getElementById('chatLog');
+        if (chatLog && chatLog.scrollTop > 0) return;
         
         startY = e.touches[0].clientY;
         isDragging = true;
         chatPanel.classList.add('is-dragging');
+    
+        // 1. Force the layout to center without using CSS transforms
+        chatPanel.style.left = '0';
+        chatPanel.style.right = '0';
+        chatPanel.style.margin = '0 auto';
+        
+        // 2. Kill all transitions completely so it moves matching your finger refresh rates
+        chatPanel.style.setProperty('transition', 'none', 'important');
+        chatPanel.style.setProperty('webkitTransition', 'none', 'important');
       }
 
     
