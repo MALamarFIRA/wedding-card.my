@@ -75,6 +75,10 @@
       margin-bottom: 10px;
     }
 
+    .mobile-container, .bottom-nav {
+      display: none;
+    }
+
     /* 🌟 SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
     .signature-wrapper {
       margin-bottom: 5px;
@@ -1666,15 +1670,25 @@
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
       const splash = document.getElementById("splashScreen");
-
+    
+      // 🌟 REVEAL CONTENT CARDS AT THE EXACT INSTANT OF INVITATION OPENING
+      document.querySelectorAll('.mobile-container, .bottom-nav').forEach(el => {
+        el.style.display = 'block'; // or 'flex' depending on your bottom nav setup
+      });
+    
       splash.classList.add("fade-out");
+      
+      // Release body restrictions safely
       document.body.classList.remove("no-scroll");
-
+      // If you used position: fixed in step 1, clear it here:
+      document.body.style.position = 'static'; 
+      document.body.style.height = 'auto';
+    
       myMusic.play().then(() => {
         musicBtn.classList.add("playing");
         musicBtn.classList.remove("paused");
       }).catch(err => console.log("Audio handler log:", err));
-
+    
       startPageAutoScroll();
     }
 
