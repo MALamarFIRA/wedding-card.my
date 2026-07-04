@@ -533,6 +533,9 @@
       max-width: 500px;
       z-index: 99999;
       
+      /* 🌟 CRITICAL FIX: Clips any text/icons from spilling past rounded corners */
+      overflow: hidden !important; 
+      
       background: rgba(255, 255, 255, 0.85) !important;
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
@@ -543,13 +546,13 @@
       justify-content: space-around;
       align-items: center;
       
-      /* 🌟 STABILIZE BOX EXTENTS */
       height: 65px !important;
-      min-height: 65px !important; /* Prevents browser chrome from pinching it */
+      min-height: 65px !important;
       box-sizing: border-box;
       
-      padding: 0 10px;
-      padding-bottom: env(safe-area-inset-bottom, 12px);
+      /* 🌟 STRUCTURAL ADJUSTMENT: Snugs the items up slightly on scroll shifts */
+      padding: 0 10px !important;
+      padding-bottom: calc(env(safe-area-inset-bottom, 12px) - 6px) !important;
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
@@ -576,16 +579,18 @@
       justify-content: center;
       text-decoration: none;
       color: #333 !important;
-      font-size: 11px !important;    /* Forces text to remain legible */
+      font-size: 11px !important;
       font-weight: 600;
+      line-height: 1.2 !important; /* 🌟 Forces tight line wrap containment */
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
       flex: 1;
+      flex-shrink: 0 !important;
+      min-height: 45px !important;
       
-      /* 🌟 NEW DEFENSIVE LAYER: Stops the items from shrinking or collapsing */
-      flex-shrink: 0 !important; 
-      min-height: 45px !important; 
+      /* 🌟 Pushes the alignment up slightly away from the lower edge danger zone */
+      margin-top: -2px !important; 
+      gap: 1px !important; /* Tightens icon-to-text gaps */
       
-      gap: 2px;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
       box-sizing: border-box;
