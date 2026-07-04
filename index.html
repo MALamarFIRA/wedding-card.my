@@ -531,10 +531,10 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 500px; /* Adapts to your mobile layout container */
-      z-index: 999;
+      z-index: 99999;   /* 🌟 Pushed up slightly to stay above underlying scrolling content */
       
       /* Your elegant glassmorphism engine */
-      background: rgba(255, 255, 255, 0.12) !important;
+      background: rgba(255, 255, 255, 0.85) !important; /* 🌟 Increased opacity slightly so background content doesn't create text clutter underneath your icons */
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
       border-top: 1px solid rgba(255, 255, 255, 0.25);
@@ -545,8 +545,9 @@
       justify-content: space-around;
       align-items: center;
       height: 65px;
-      padding: 0; /* Height fixes item alignments */
-      padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
+      box-sizing: border-box; /* 🌟 CRITICAL: Forces height calculations to include padding so nothing pushes out the bottom */
+      padding: 0 10px;        /* Adds a tiny bit of side breathing room */
+      padding-bottom: env(safe-area-inset-bottom, 12px); /* 🌟 Standardized fallback for modern edge-to-edge screens */
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
@@ -573,17 +574,20 @@
       justify-content: center;
       text-decoration: none;
       color: #333 !important; /* Elegant text depth over glass */
+      font-size: 11px;         /*  CRITICAL: Explicitly bounds font size on all screens */
       font-weight: 600;
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
       flex: 1;
-      gap: 4px;
+      max-height: 100%;       /*  Restricts the flex item from scaling taller than the footer bar */
+      gap: 2px;               /*  Reduced from 4px to give vertical text breathing room */
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
+      box-sizing: border-box;  /* Ensures browser renders inside box boundaries */
     }
 
     .nav-item svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;            /* Shifted from 22px to prevent tall scaling on tight screens */
+      height: 20px;           /*  Shifted from 22px */
       fill: none;
       stroke: #333 !important; /* Crisp SVG lines */
       stroke-width: 1.8;
@@ -1142,17 +1146,22 @@
 
     #hiddenCatWrapper {
       position: fixed !important;
-      bottom: 50px; /* Aligns right above your bottom nav bar */
+      bottom: 75px !important; /* 🌟 Pushes the cat completely above your 65px glass bar height floor */
       
-      /* 🌟 CHANGED: Swapped right to left side alignment */
-      left: 20px !important; 
+      /* 🌟 Swapped to dynamic edge alignment to hug the 500px nav container wall */
+      left: calc(50% - 240px) !important; 
       right: auto !important;
+      
+      /* Mobile Fallback: If the screen width is tight, pull the cat flush to the viewport margin */
+      @media (max-width: 500px) {
+        left: 10px !important;
+      }
       
       z-index: 2490 !important;
       display: flex !important;
       flex-direction: column !important;
       
-      /* 🌟 CHANGED: Aligns the speech bubble to look natural from the left edge */
+      /* Aligns the speech bubble to look natural from the left edge */
       align-items: flex-start !important; 
       width: 90px !important;
       height: auto !important;
