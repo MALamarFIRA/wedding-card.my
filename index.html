@@ -24,10 +24,8 @@
 
     /* Scroll lock class when splash screen is active */
     body.no-scroll {
-      overflow: hidden !important;
-      position: fixed;
-      width: 100%;
-      height: 100dvh; /* Uses dynamic viewport height to account for mobile URL bars */
+      overflow: hidden;
+      height: 100vh;
     }
 
     body {
@@ -47,7 +45,7 @@
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100dvh;
+      height: 100vh;
       background: var(--maroon); /* Completely opaque solid color */
       display: flex;
       justify-content: center;
@@ -59,7 +57,7 @@
       transition: opacity 0.6s ease, pointer-events 0.6s ease;
     }
 
-    /*  ZOOM OUT GROUP: Animates everything inside except the typing effect */
+    /* 🌟 ZOOM OUT GROUP: Animates everything inside except the typing effect */
     .zoom-out-group {
       display: flex;
       flex-direction: column;
@@ -75,12 +73,7 @@
       margin-bottom: 10px;
     }
 
-    /* Keeps the components hidden on load without disrupting their native layout types */
-    .hidden-element {
-      display: none !important;
-    }
-
-    /*  SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
+    /* 🌟 SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
     .signature-wrapper {
       margin-bottom: 5px;
       display: flex;
@@ -530,30 +523,27 @@
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 500px;
-      z-index: 99999;
+      max-width: 500px; /* Adapts to your mobile layout container */
+      z-index: 999;
       
-      /* 🌟 REMOVED overflow:hidden so the "Ask AI" circle button can pop out above the border! */
-      overflow: visible !important; 
-      
-      background: rgba(255, 255, 255, 0.85) !important;
+      /* Your elegant glassmorphism engine */
+      background: rgba(255, 255, 255, 0.12) !important;
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
       border-top: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 20px 20px 0 0;
+      border-radius: 20px 20px 0 0; /* Smooth top corners for the panel */
       
+      /* Flex grid layout adjustments */
       display: flex;
       justify-content: space-around;
       align-items: center;
-      
-      /* 🌟 STABLE LAYOUT: Sets a hard structural height floor that ignores browser text compression */
-      height: 60px !important;
-      box-sizing: border-box;
-      padding: 0 10px !important;
+      height: 65px;
+      padding: 0; /* Height fixes item alignments */
+      padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color: transparent; /* Removes flash block frame on mobile touch */
     }
 
     /* Your ambient reflection keyframe engine preserved exactly */
@@ -575,22 +565,20 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      color: #333 !important;
-      font-size: 11px !important;
+      color: #333 !important; /* Elegant text depth over glass */
       font-weight: 600;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
       flex: 1;
-      flex-shrink: 0 !important; /* 🌟 Crucial: Forbids the phone frame from compressing item components */
-      height: 100% !important;
-      gap: 2px !important;
-      box-sizing: border-box;
+      gap: 4px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
     }
 
     .nav-item svg {
-      width: 20px !important;        /* 🌟 Locks down explicit pixel widths */
-      height: 20px !important;       /* 🌟 Locks down explicit pixel heights */
-      flex-shrink: 0 !important;     /* Stops vector lines from compressing */
+      width: 22px;
+      height: 22px;
       fill: none;
-      stroke: #333 !important;
+      stroke: #333 !important; /* Crisp SVG lines */
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -1147,18 +1135,17 @@
 
     #hiddenCatWrapper {
       position: fixed !important;
-      bottom: 60px !important; /* 🌟 Shifted down from 75px to dock neatly against the edge */
+      bottom: 50px; /* Aligns right above your bottom nav bar */
       
-      left: calc(50% - 240px) !important; 
+      /* 🌟 CHANGED: Swapped right to left side alignment */
+      left: 20px !important; 
       right: auto !important;
-      
-      @media (max-width: 500px) {
-        left: 10px !important;
-      }
       
       z-index: 2490 !important;
       display: flex !important;
       flex-direction: column !important;
+      
+      /* 🌟 CHANGED: Aligns the speech bubble to look natural from the left edge */
       align-items: flex-start !important; 
       width: 90px !important;
       height: auto !important;
@@ -1227,47 +1214,6 @@
       z-index: -1;
     }
 
-    /* Transition rules for a smooth slide-out effect */
-    .bottom-nav, #hiddenCatWrapper {
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-    
-    /* 🌟 This hides the navigation bar completely below the screen edge */
-    .bottom-nav.nav-hidden {
-      transform: translateX(-50%) translateY(100px) !important;
-    }
-    
-    /* 🌟 This slides the cat assistant down simultaneously */
-    #hiddenCatWrapper.nav-hidden {
-      transform: translateY(120px) !important;
-    }
-
-    /* 🌟 Fixes the central button so it hangs over the edge of the navbar frame */
-    .nav-item:nth-child(3) {
-      position: relative;
-      overflow: visible !important;
-    }
-
-    /* Target the icon circle structure in the middle */
-    .nav-item:nth-child(3) svg, 
-    .nav-item:nth-child(3) .icon-wrapper {
-      transform: translateY(-14px) scale(1.15); /* Pulls the button up to create the "bump" effect */
-      background: #ba0c2f !important; /* Your signature accent red theme color */
-      border-radius: 50%;
-      padding: 10px;
-      box-shadow: 0 4px 10px rgba(186, 12, 47, 0.3);
-      stroke: #ffffff !important; /* Makes the wand icon white inside the red circle */
-    }
-
-    /* Keep the "Ask AI" text label nicely tucked underneath the floating circle */
-    .nav-item:nth-child(3) span {
-      position: absolute;
-      bottom: 2px;
-      font-size: 10px !important;
-      width: 100%;
-      text-align: center;
-    }
-
   </style>
 </head>
 
@@ -1297,7 +1243,7 @@
     <div class="music-bar bar-3"></div>
   </div>
 
-  <div class="mobile-container hidden-element" id="top">
+  <div class="mobile-container" id="top">
 
     <div class="flip-container" id="locationSection">
       <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
@@ -1642,7 +1588,7 @@
     </div>
   </div>
 
-  <div class="bottom-nav hidden-element">
+  <div class="bottom-nav">
     <a href="javascript:void(0);" onclick="openCalendarModal()" class="nav-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       <span>Calendar</span>
@@ -1697,48 +1643,17 @@
 
     let scrollTimeout = null;
 
-    // --- SMART FOOTER & CAT AUTOMATION ENGINE ---
-    let lastScrollY = window.scrollY;
-    let isScrollingTimer = null;
-
     window.addEventListener('scroll', function() {
       const topBtn = document.getElementById('stickyTopBtn');
-      const footerNav = document.querySelector('.bottom-nav');
-      const catWrapper = document.getElementById('hiddenCatWrapper');
-      const currentScrollY = window.scrollY;
-
-      // --- 1. Manage Sticky Top Button ---
-      if (currentScrollY > 300) {
+      if (window.scrollY > 300) {
         topBtn.classList.add('show');
         if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => { topBtn.classList.remove('show'); }, 2000); 
+        scrollTimeout = setTimeout(() => {
+          topBtn.classList.remove('show');
+        }, 2000); 
       } else {
         topBtn.classList.remove('show');
       }
-
-      // --- 2. Hide on Scroll Down / Show on Scroll Up ---
-      if (footerNav && catWrapper) {
-        if (currentScrollY > lastScrollY && currentScrollY > 60) {
-          // User is scrolling DOWN - Hide elements smoothly
-          footerNav.classList.add('nav-hidden');
-          catWrapper.classList.add('nav-hidden');
-        } else {
-          // User is scrolling UP - Reveal elements instantly
-          footerNav.classList.remove('nav-hidden');
-          catWrapper.classList.remove('nav-hidden');
-        }
-      }
-      
-      lastScrollY = currentScrollY;
-
-      // --- 3. Reveal elements when scrolling STOPS entirely ---
-      if (isScrollingTimer) clearTimeout(isScrollingTimer);
-      isScrollingTimer = setTimeout(() => {
-        if (footerNav && catWrapper) {
-          footerNav.classList.remove('nav-hidden');
-          catWrapper.classList.remove('nav-hidden');
-        }
-      }, 250); // Fires exactly 250ms after the last touch movement stops
     });
     function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
@@ -1749,24 +1664,15 @@
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
       const splash = document.getElementById("splashScreen");
-    
-      // 🌟 SAFELY REVEAL EACH COMPONENT RETAINING NATIVE STYLES
-      document.querySelectorAll('.hidden-element').forEach(el => {
-        el.classList.remove('hidden-element');
-      });
-    
+
       splash.classList.add("fade-out");
       document.body.classList.remove("no-scroll");
-    
-      // Clean up any body locking styling
-      document.body.style.position = 'static'; 
-      document.body.style.height = 'auto';
-    
+
       myMusic.play().then(() => {
         musicBtn.classList.add("playing");
         musicBtn.classList.remove("paused");
       }).catch(err => console.log("Audio handler log:", err));
-    
+
       startPageAutoScroll();
     }
 
