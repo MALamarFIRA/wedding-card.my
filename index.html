@@ -530,28 +530,30 @@
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 500px; /* Adapts to your mobile layout container */
-      z-index: 99999;   /* 🌟 Pushed up slightly to stay above underlying scrolling content */
+      max-width: 500px;
+      z-index: 99999;
       
-      /* Your elegant glassmorphism engine */
-      background: rgba(255, 255, 255, 0.85) !important; /* 🌟 Increased opacity slightly so background content doesn't create text clutter underneath your icons */
+      background: rgba(255, 255, 255, 0.85) !important;
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
       border-top: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 20px 20px 0 0; /* Smooth top corners for the panel */
+      border-radius: 20px 20px 0 0;
       
-      /* Flex grid layout adjustments */
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 65px;
-      box-sizing: border-box; /* 🌟 CRITICAL: Forces height calculations to include padding so nothing pushes out the bottom */
-      padding: 0 10px;        /* Adds a tiny bit of side breathing room */
-      padding-bottom: env(safe-area-inset-bottom, 12px); /* 🌟 Standardized fallback for modern edge-to-edge screens */
+      
+      /* 🌟 STABILIZE BOX EXTENTS */
+      height: 65px !important;
+      min-height: 65px !important; /* Prevents browser chrome from pinching it */
+      box-sizing: border-box;
+      
+      padding: 0 10px;
+      padding-bottom: env(safe-area-inset-bottom, 12px);
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
-      -webkit-tap-highlight-color: transparent; /* Removes flash block frame on mobile touch */
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* Your ambient reflection keyframe engine preserved exactly */
