@@ -2262,6 +2262,7 @@
       const chatPanel = document.getElementById('aiChatPanel');
       const dragHandle = document.getElementById('chatDragHandle');
       const bottomTrigger = document.getElementById('pageBottomTrigger');
+      const chatHeader = document.querySelector('.chat-header'); // ⭐ Added to target the header
 
       // The scroll tracker now strictly handles opening the AI Chat Panel 
       if (bottomTrigger) {
@@ -2281,11 +2282,20 @@
       let isDragging = false;
 
       function handleTouchStart(e) {
-        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
+        const logEl = e.target.closest('.chat-log');
+        if (logEl && logEl.scrollTop > 0) return;
         
-        startY = e.touches[0].clientY;
-        isDragging = true;
-        chatPanel.classList.add('is-dragging');
+        // ⭐ Check if touch originates from the drag handle, the panel background, OR the header
+        if (
+          e.target === dragHandle || 
+          e.target.closest('.chat-header') || 
+          e.target === chatPanel || 
+          (logEl && logEl.scrollTop === 0)
+        ) {
+          startY = e.touches[0].clientY;
+          isDragging = true;
+          chatPanel.classList.add('is-dragging');
+        }
       }
 
       function handleTouchMove(e) {
@@ -2322,19 +2332,20 @@
         currentY = 0;
       }
 
+      // ⭐ Explicit touch start event listeners assigned to active drag elements
       if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+      if (chatHeader) chatHeader.addEventListener('touchstart', handleTouchStart, { passive: true });
       if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
       
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleTouchEnd);
 
-      // 🌟 ADDED RIGHT HERE: Dismiss the cat bubble when clicking outside it!
+      // 🌟 Dismiss the cat bubble when clicking outside it!
       window.addEventListener('touchstart', function(event) {
         const catWrapper = document.getElementById('hiddenCatWrapper');
         const catBubble = document.getElementById('catSpeechBubble');
         
         if (catBubble && catBubble.classList.contains('show-bubble')) {
-          // If the tap target is NOT inside the cat image or the text bubble, close it!
           if (catWrapper && !catWrapper.contains(event.target)) {
             catBubble.classList.remove('show-bubble');
           }
