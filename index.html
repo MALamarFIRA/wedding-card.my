@@ -75,8 +75,9 @@
       margin-bottom: 10px;
     }
 
-    .mobile-container, .bottom-nav {
-      display: none;
+    /* Keeps the components hidden on load without disrupting their native layout types */
+    .hidden-element {
+      display: none !important;
     }
 
     /* 🌟 SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
@@ -1249,7 +1250,7 @@
     <div class="music-bar bar-3"></div>
   </div>
 
-  <div class="mobile-container" id="top">
+  <div class="mobile-container hidden-element" id="top">
 
     <div class="flip-container" id="locationSection">
       <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
@@ -1594,7 +1595,7 @@
     </div>
   </div>
 
-  <div class="bottom-nav">
+  <div class="bottom-nav hidden-element">
     <a href="javascript:void(0);" onclick="openCalendarModal()" class="nav-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       <span>Calendar</span>
@@ -1671,16 +1672,15 @@
       const musicBtn = document.getElementById("musicControl");
       const splash = document.getElementById("splashScreen");
     
-      // 🌟 REVEAL CONTENT CARDS AT THE EXACT INSTANT OF INVITATION OPENING
-      document.querySelectorAll('.mobile-container, .bottom-nav').forEach(el => {
-        el.style.display = 'block'; // or 'flex' depending on your bottom nav setup
+      // 🌟 SAFELY REVEAL EACH COMPONENT RETAINING NATIVE STYLES
+      document.querySelectorAll('.hidden-element').forEach(el => {
+        el.classList.remove('hidden-element');
       });
     
       splash.classList.add("fade-out");
-      
-      // Release body restrictions safely
       document.body.classList.remove("no-scroll");
-      // If you used position: fixed in step 1, clear it here:
+    
+      // Clean up any body locking styling
       document.body.style.position = 'static'; 
       document.body.style.height = 'auto';
     
