@@ -841,6 +841,7 @@
       border-top-right-radius: 15px !important;
       overflow: hidden;
       overscroll-behavior: contain;
+      touch-action: pan-y;
     }
 
     .ai-chat-panel.is-dragging {
@@ -947,11 +948,12 @@
     .chat-log {
       flex: 1;
       padding: 16px;
-      overflow-y: auto;
+      overflow-y: auto !important;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling: touch !important;
+      touch-point: pan-y !important;
     }
 
     /* Message Bubble Settings */
@@ -990,6 +992,10 @@
       flex-direction: column;
       gap: 12px;
       animation: fadeIn 0.4s ease-out;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-x !important;
+      white-space: nowrap;
     }
 
     .suggestion-title {
@@ -2271,22 +2277,23 @@
       let isDragging = false;
     
       function handleTouchStart(e) {
-        const chatLog = document.getElementById('chatLog');
-        if (chatLog && chatLog.scrollTop > 0) return;
+        // Target checking: If the user is touching the suggestions or inside the chat log, 
+        // let them interact with those elements naturally instead of dragging the whole panel down.
+        if (e.target.closest('#chatLog') && document.getElementById('chatLog').scrollTop > 0) return;
+        if (e.target.closest('#centralSuggestions')) return; // 🌟 Fixes recommendation swiping blocking
         
         startY = e.touches[0].clientY;
         isDragging = true;
         chatPanel.classList.add('is-dragging');
     
-        // 1. Force the layout to center without using CSS transforms
         chatPanel.style.left = '0';
         chatPanel.style.right = '0';
         chatPanel.style.margin = '0 auto';
         
-        // 2. Kill all transitions completely so it moves matching your finger refresh rates
         chatPanel.style.setProperty('transition', 'none', 'important');
         chatPanel.style.setProperty('webkitTransition', 'none', 'important');
       }
+
     
       function handleTouchMove(e) {
         if (!isDragging) return;
