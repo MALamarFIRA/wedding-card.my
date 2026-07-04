@@ -567,9 +567,13 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 65px;
-      padding: 0; /* Height fixes item alignments */
+      
+      /* 🔥 FIXES: Rigid heights and box safety guards */
+      box-sizing: border-box; /* Crucial so padding doesn't distort height calculation */
+      height: calc(65px + env(safe-area-inset-bottom)); /* Locks entire height footprint regardless of scrolling */
+      padding: 0; 
       padding-bottom: env(safe-area-inset-bottom); /* Safe padding for modern screens */
+      overflow: visible !important; /* Forces the middle AI bump and cat wrapper to sit cleanly over the boundary line */
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
@@ -1165,13 +1169,16 @@
 
     #hiddenCatWrapper {
       position: fixed !important;
-      bottom: 50px; /* Aligns right above your bottom nav bar */
+      
+      /* 🔥 UPDATED: Height altered to sit perfectly flush above the 65px bar floor */
+      bottom: 65px !important; 
       
       /* 🌟 CHANGED: Swapped right to left side alignment */
       left: 20px !important; 
       right: auto !important;
       
-      z-index: 2490 !important;
+      /* 🔥 UPDATED: Boosted z-index slightly to guarantee it floats above your 999 nav layout */
+      z-index: 10000 !important; 
       display: flex !important;
       flex-direction: column !important;
       
@@ -1179,6 +1186,9 @@
       align-items: flex-start !important; 
       width: 90px !important;
       height: auto !important;
+      
+      /* 🔥 ADDED: Safety lock to prevent browser scrolling mechanics from causing layout shifts */
+      overflow: visible !important;
     }
 
     /* Tap target for the cat image element */
