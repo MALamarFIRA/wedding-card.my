@@ -2276,22 +2276,13 @@
       let deltaY = 0;
       let isDragging = false;
     
+
       function handleTouchStart(e) {
-        // Target checking: If the user is touching the suggestions or inside the chat log, 
-        // let them interact with those elements naturally instead of dragging the whole panel down.
-        if (e.target.closest('#chatLog') && document.getElementById('chatLog').scrollTop > 0) return;
-        if (e.target.closest('#centralSuggestions')) return; // 🌟 Fixes recommendation swiping blocking
+        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
         
         startY = e.touches[0].clientY;
         isDragging = true;
         chatPanel.classList.add('is-dragging');
-    
-        chatPanel.style.left = '0';
-        chatPanel.style.right = '0';
-        chatPanel.style.margin = '0 auto';
-        
-        chatPanel.style.setProperty('transition', 'none', 'important');
-        chatPanel.style.setProperty('webkitTransition', 'none', 'important');
       }
 
     
