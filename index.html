@@ -1168,25 +1168,20 @@
 
 
     #hiddenCatWrapper {
-      /* 🔥 CHANGED: Uses relative layout tracking so it preserves its flex slot location */
-      position: relative !important;
-      
-      /* 🔥 THE FIX: Pulls the cat upwards exactly out of the nav bar frame natively */
-      margin-top: -110px !important; 
-      
-      /* Reset old manually forced positions */
-      bottom: auto !important;
-      left: auto !important;
+      justify-content: space-around;
+      position: fixed !important;
+      margin-top: -140px !important;
+      top: 65px !important;
+      left: 40px !important;
       right: auto !important;
       transform: none !important;
-      
-      width: 70px !important; /* Slightly snug width so it doesn't push the text icons away */
+      width: 70px !important;
       height: 90px !important;
-      z-index: 10000 !important; 
+      z-index: 10000 !important;
       display: flex !important;
       flex-direction: column !important;
-      align-items: center !important; 
-      overflow: visible !important; 
+      align-items: center !important;
+      overflow: visible !important;
     }
 
     /* Keep your image filling this layout container cleanly */
@@ -1209,7 +1204,7 @@
       bottom: 100px; 
       
       /* 🌟 CHANGED: Anchors bubble alignment metrics from the left */
-      left: -5px;
+      left: -20px;
       right: auto;
       
       background: #ffffff;
