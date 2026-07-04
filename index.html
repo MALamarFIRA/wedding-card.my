@@ -573,23 +573,28 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      color: #333 !important; /* Elegant text depth over glass */
-      font-size: 11px;         /*  CRITICAL: Explicitly bounds font size on all screens */
+      color: #333 !important;
+      font-size: 11px !important;    /* Forces text to remain legible */
       font-weight: 600;
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
       flex: 1;
-      max-height: 100%;       /*  Restricts the flex item from scaling taller than the footer bar */
-      gap: 2px;               /*  Reduced from 4px to give vertical text breathing room */
+      
+      /* 🌟 NEW DEFENSIVE LAYER: Stops the items from shrinking or collapsing */
+      flex-shrink: 0 !important; 
+      min-height: 45px !important; 
+      
+      gap: 2px;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
-      box-sizing: border-box;  /* Ensures browser renders inside box boundaries */
+      box-sizing: border-box;
     }
 
     .nav-item svg {
-      width: 20px;            /* Shifted from 22px to prevent tall scaling on tight screens */
-      height: 20px;           /*  Shifted from 22px */
+      width: 20px !important;        /* 🌟 Locks down explicit pixel widths */
+      height: 20px !important;       /* 🌟 Locks down explicit pixel heights */
+      flex-shrink: 0 !important;     /* Stops vector lines from compressing */
       fill: none;
-      stroke: #333 !important; /* Crisp SVG lines */
+      stroke: #333 !important;
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -1146,13 +1151,11 @@
 
     #hiddenCatWrapper {
       position: fixed !important;
-      bottom: 75px !important; /* 🌟 Pushes the cat completely above your 65px glass bar height floor */
+      bottom: 60px !important; /* 🌟 Shifted down from 75px to dock neatly against the edge */
       
-      /* 🌟 Swapped to dynamic edge alignment to hug the 500px nav container wall */
       left: calc(50% - 240px) !important; 
       right: auto !important;
       
-      /* Mobile Fallback: If the screen width is tight, pull the cat flush to the viewport margin */
       @media (max-width: 500px) {
         left: 10px !important;
       }
@@ -1160,8 +1163,6 @@
       z-index: 2490 !important;
       display: flex !important;
       flex-direction: column !important;
-      
-      /* Aligns the speech bubble to look natural from the left edge */
       align-items: flex-start !important; 
       width: 90px !important;
       height: auto !important;
