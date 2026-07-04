@@ -42,11 +42,11 @@
     /* --- 100% SOLID SPLASH SCREEN OVERLAY --- */
     #splashScreen {
       position: fixed;
-      top: -1%; /* Bleed past the top edge */
-      left: -1%; /* Bleed past the left edge */
-      width: 102vw; /* Slightly wider to prevent sub-pixel gaps */
-      height: 102dvh; /* Slightly taller to hide mobile bar shifts */
-      background: var(--maroon); 
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--maroon); /* Completely opaque solid color */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -54,8 +54,7 @@
       color: var(--gold);
       text-align: center;
       padding: 20px;
-      /* Keep your transitions clean */
-      transition: opacity 0.6s ease, visibility 0.6s ease, pointer-events 0.6s ease;
+      transition: opacity 0.6s ease, pointer-events 0.6s ease;
     }
 
     /* 🌟 ZOOM OUT GROUP: Animates everything inside except the typing effect */
@@ -696,7 +695,7 @@
       width: 100%;
       max-width: 480px;
       margin: 0 !important;
-      padding: 28px 20px 150px 20px;
+      padding: 28px 20px 45px 20px;
       
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Quick fluid terminal pull up */
@@ -794,11 +793,12 @@
       top: 0; 
       left: 50% !important;
       width: 100% !important;
-      max-width: 480px;
+      max-width: 500px; 
       box-sizing: border-box; 
       
-      background: #f7f9fa !important; /* Forces a solid color so no content can bleed through */
-      height: 100dvh;
+      height: 100dvh; 
+      
+      background: #f7f9fa;
       z-index: 2500;
       display: flex;
       flex-direction: column;
@@ -812,8 +812,7 @@
       will-change: transform;
       border-top-left-radius: 15px !important;
       border-top-right-radius: 15px !important;
-      overflow: hidden;
-      overscroll-behavior: contain;
+      overflow: hidden; 
     }
 
     .ai-chat-panel.is-dragging {
@@ -1393,6 +1392,7 @@
         <br><span style="color: var(--gold); font-style: italic; opacity: 0.85; font-size: 10px;">(vibe coding)</span>
       </p>
     </footer>
+
   </div>
 
   <div class="top-btn" id="stickyTopBtn" onclick="scrollToTop()"><i class="fa-solid fa-chevron-up"></i>Top</div>
@@ -1514,7 +1514,7 @@
         <div class="ticket-header-badge">RESERVATION</div>
       </div>
       
-      <p>Save our official wedding date directly to your mobile calendar app!</p>
+      <p>Secure your seating entry by locking our official wedding date directly into your mobile personal schedule application:</p>
       
       <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; margin: 0 auto;">
         <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Wedding+Day+-+Akmal+%26+Musfirah+%23MALamarFira&dates=20270501T020000Z%2F20270501T043000Z&details=We+are+getting+married%21+We+look+forward+to+celebrating+our+special+day+with+you.+Please+remember+to+RSVP+before+30+January+2027.&location=Eastwood+Valley+Golf+%26+Country+Club%2C+Miri%2C+Sarawak&sf=true&output=xml" target="_blank" class="btn" style="background: #4285F4; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
@@ -1535,7 +1535,7 @@
         <div class="ticket-header-badge">SUPPORT</div>
       </div>
       
-      <p>Need help? Ask AKMU for instant answers, or contact us directly via WhatsApp if you need further assistance.</p>
+      <p>Have questions regarding travel plans, parking venues, or schedules? Reach out directly to the couple via WhatsApp:</p>
       
       <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;">
         <div class="ticket-contact-card">
@@ -1575,10 +1575,10 @@
         <div style="font-size: 12px; color: #444;">Grandball Room, Miri, Sarawak</div>
       </div>
       
-      <p>Ready to join us? Open your preferred navigation app and follow the route to our wedding venue.</p>
+      <p>Launch your dashboard global navigation platform tracking tool to plot your coordinates to the ceremony hall:</p>
       
       <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; margin: 0 auto;">
-        <a href="https://maps.google.com/?q=Eastwood+Valley+Golf+%26+Country+Club+Miri" target="_blank" class="btn" style="background: #EA4335; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+        <a href="http://googleusercontent.com/maps.google.com/4" target="_blank" class="btn" style="background: #EA4335; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
           <i class="fa-solid fa-map-pin"></i> Open Google Maps
         </a>
         <a href="https://ul.waze.com/ul?venue_id=74711084.747241909.2804519&overview=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank" class="btn" style="background: #33CCFF; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
@@ -1604,7 +1604,7 @@
         <div class="ai-circle">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
-        <span>AKMU</span>
+        <span>Ask AI</span>
       </a>
     </div>
 
@@ -1701,6 +1701,8 @@
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
 
+
+
     function openRSVP() {
       // 🗓️ CONFIGURE YOUR RSVP DEADLINE HERE (Format: YYYY-MM-DD)
       const RSVP_DUE_DATE = "2025-04-01"; // Updated to your wedding timeline year!
@@ -1781,14 +1783,21 @@
       document.getElementById('closeClosedRsvpBtn').onclick = closePopup;
       overlay.onclick = (e) => { if (e.target === overlay) closePopup(); };
     }
-  
+
+    // 🟢 KEEP THESE EXACTLY AS THEY ARE
     function closeRSVP() { 
       document.getElementById('rsvpModal').classList.remove('active'); 
       document.getElementById('rsvpForm').reset(); 
       document.getElementById('guestEmail').required = false;
       toggleAttendanceFields(""); 
     }
-    function closeRSVPOnBackdrop(event) { if(event.target.id === 'rsvpModal') closeRSVP(); }
+
+    function closeRSVPOnBackdrop(event) { 
+      if(event.target.id === 'rsvpModal') closeRSVP(); 
+    }
+
+
+    
 
     function handlePassportCardFlip(event) {
       if (event.target.closest('.barcode-area') || event.target.closest('#mapSelectionMenu')) return;
@@ -1991,6 +2000,7 @@
     function openAIModal() {
       const panel = document.getElementById('aiChatPanel');
       
+      // 🌟 Keeps the layout locked to the center-top view frame smoothly
       panel.style.transform = 'translateX(-50%) translateY(0)'; 
       panel.classList.add('active');
       
@@ -1999,24 +2009,14 @@
       
       const chatLog = document.getElementById('chatLog');
       chatLog.scrollTop = 0;
-    
-      // 🌟 FIX FOR SAFARI TOOLBARS: Freeze the home background layer completely
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.height = '100dvh';
     }
-    
+
     function closeAIChat() {
       const panel = document.getElementById('aiChatPanel');
       panel.classList.remove('active');
+      
+      // 🌟 Explicitly slide it down off-screen to clear any sub-pixel keyboard jitter
       panel.style.transform = 'translateX(-50%) translateY(100%)'; 
-    
-      // 🌟 RESTORE SCROLLING: Return background layout to normal
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
     }
 
     function useSuggestion(text) {
@@ -2154,7 +2154,7 @@
         if (showQr) {
           botBubble.innerHTML += `
             <div style="margin-top: 12px; text-align: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
-              <p style="font-size: 11px; color:#555; margin: 0 0 8px 0; font-weight: bold;">DuitNow QR Gift</p>
+              <p style="font-size: 11px; color:#555; margin: 0 0 8px 0; font-weight: bold;">DuitNow QR Gift Contribution</p>
               <img src="https://lh3.googleusercontent.com/d/1JZS9yx1ax4lT-Q_VjakVWSvEdT_ws3KA" alt="Wedding QR" style="width: 100%; max-width: 180px; display: block; margin: 0 auto; border-radius: 4px;">
             </div>
           `;
@@ -2224,12 +2224,11 @@
 
     // --- AI PANEL SWIPE-TO-CLOSE & FOOTER INTERSECTION TRIGGER ---
     document.addEventListener('DOMContentLoaded', () => {
-    
       const chatPanel = document.getElementById('aiChatPanel');
       const dragHandle = document.getElementById('chatDragHandle');
       const bottomTrigger = document.getElementById('pageBottomTrigger');
-    
-      // The scroll tracker handles opening the AI Chat Panel 
+
+      // The scroll tracker now strictly handles opening the AI Chat Panel 
       if (bottomTrigger) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -2238,186 +2237,75 @@
             }
           });
         }, { threshold: 0.1 });
+
         observer.observe(bottomTrigger);
       }
       
       let startY = 0;
       let currentY = 0;
-      let deltaY = 0;
       let isDragging = false;
-    
+
       function handleTouchStart(e) {
-        const chatLog = document.getElementById('chatLog');
-        if (chatLog && chatLog.scrollTop > 0) return;
+        if (e.target.closest('.chat-log') && e.target.closest('.chat-log').scrollTop > 0) return;
         
         startY = e.touches[0].clientY;
         isDragging = true;
         chatPanel.classList.add('is-dragging');
-    
-        // 1. Force the layout to center without using CSS transforms
-        chatPanel.style.left = '0';
-        chatPanel.style.right = '0';
-        chatPanel.style.margin = '0 auto';
-        
-        // 2. Kill all transitions completely so it moves matching your finger refresh rates
-        chatPanel.style.setProperty('transition', 'none', 'important');
-        chatPanel.style.setProperty('webkitTransition', 'none', 'important');
       }
-    
+
       function handleTouchMove(e) {
         if (!isDragging) return;
         
         currentY = e.touches[0].clientY;
-        deltaY = currentY - startY;
-    
-        if (e.cancelable) e.preventDefault();
-    
+        const deltaY = currentY - startY;
+
         if (deltaY > 0) {
-          // 3. Since translateX is gone, we can safely write a clean, single axis transform!
-          chatPanel.style.transform = `translateY(${deltaY}px)`;
-        } else {
-          // Pin at top baseline if dragged above start frame bounds
-          chatPanel.style.transform = 'translateY(0px)';
+          e.preventDefault();
+          chatPanel.style.transform = `translateX(-50%) translateY(${deltaY}px)`;
         }
       }
-    
+
       function handleTouchEnd() {
         if (!isDragging) return;
         isDragging = false;
         chatPanel.classList.remove('is-dragging');
-    
-        // Re-apply smooth native transition mechanics on finger lift
-        chatPanel.style.setProperty('transition', 'transform 0.3s cubic-bezier(0.15, 0.85, 0.45, 1)', 'important');
-        
-        const threshold = chatPanel.offsetHeight * 0.25; 
-    
+
+        const deltaY = currentY - startY;
+        const threshold = chatPanel.offsetHeight * 0.25;
+
         if (deltaY > threshold) {
-          // Dismissed
-          chatPanel.style.transform = 'translateY(100%)';
-          setTimeout(() => {
-            closeAIChat();
-            // Clear layout modifiers cleanly for next initialize sequence
-            chatPanel.style.transition = '';
-            chatPanel.style.transform = '';
-            chatPanel.style.left = '';
-            chatPanel.style.right = '';
-            chatPanel.style.margin = '';
-          }, 300);
+          chatPanel.style.transform = '';
+          closeAIChat(); 
         } else {
-          // Snap back up safely
-          chatPanel.style.transform = 'translateY(0px)';
+          chatPanel.style.transform = 'translateX(-50%) translateY(0)';
           setTimeout(() => {
-            chatPanel.style.transition = '';
             chatPanel.style.transform = '';
-            chatPanel.style.left = '';
-            chatPanel.style.right = '';
-            chatPanel.style.margin = '';
-          }, 300);
+          }, 400);
         }
         
         startY = 0;
         currentY = 0;
-        deltaY = 0;
       }
-    
-      // Double-bind touch endpoints for absolute tracking safety
+
       if (dragHandle) dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
       if (chatPanel) chatPanel.addEventListener('touchstart', handleTouchStart, { passive: true });
       
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('touchend', handleTouchEnd, { passive: true });
-    
-      // Dismiss the cat bubble when clicking outside it
+      window.addEventListener('touchend', handleTouchEnd);
+
+      // 🌟 ADDED RIGHT HERE: Dismiss the cat bubble when clicking outside it!
       window.addEventListener('touchstart', function(event) {
         const catWrapper = document.getElementById('hiddenCatWrapper');
         const catBubble = document.getElementById('catSpeechBubble');
         
         if (catBubble && catBubble.classList.contains('show-bubble')) {
+          // If the tap target is NOT inside the cat image or the text bubble, close it!
           if (catWrapper && !catWrapper.contains(event.target)) {
             catBubble.classList.remove('show-bubble');
           }
         }
       }, { passive: true });
-    
-    });
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // Track all interactive popups that need swipe-to-close behavior
-      const swipeModals = [
-        { id: 'calendarModal', closeFn: closeCalendarModal },
-        { id: 'contactModal', closeFn: closeContactModal },
-        { id: 'locationModal', closeFn: closeLocationModal }
-      ];
-    
-      swipeModals.forEach(modalConfig => {
-        const backdrop = document.getElementById(modalConfig.id);
-        if (!backdrop) return;
-        
-        const card = backdrop.querySelector('.rsvp-modal');
-        if (!card) return;
-    
-        let startY = 0;
-        let currentY = 0;
-        let isDragging = false;
-    
-        function handleModalTouchStart(e) {
-          // Ensure we don't disrupt internal scrolling inside the modal card if there is any
-          if (card.scrollTop > 0) return;
-          
-          startY = e.touches[0].clientY;
-          isDragging = true;
-          card.style.transition = 'none'; // Terminate CSS transitions while dragging active
-        }
-    
-        function handleModalTouchMove(e) {
-          if (!isDragging) return;
-          currentY = e.touches[0].clientY;
-          const deltaY = currentY - startY;
-    
-          if (deltaY > 0) {
-            e.preventDefault();
-            // Shift card down visually relative to touch tracking depth
-            card.style.transform = `translateY(${deltaY}px)`;
-          }
-        }
-    
-        function handleModalTouchEnd() {
-          if (!isDragging) return;
-          isDragging = false;
-          
-          const deltaY = currentY - startY;
-          const threshold = card.offsetHeight * 0.25; // 25% height requirement to trip trigger
-    
-          card.style.transition = 'transform 0.3s ease'; // Restore clean snapping transition mechanics
-    
-          if (deltaY > threshold) {
-            // Dragged past threshold: slide completely off-screen and execute targeted modal close routine
-            card.style.transform = 'translateY(100%)';
-            setTimeout(() => {
-              modalConfig.closeFn();
-              card.style.transform = ''; // Clean up inline transforms for next open instance
-            }, 300);
-          } else {
-            // Dragged below threshold: snap back into standard view positions comfortably
-            card.style.transform = 'translateY(0)';
-            setTimeout(() => { card.style.transform = ''; }, 300);
-          }
-          
-          startY = 0;
-          currentY = 0;
-        }
-    
-        // Attach listeners directly to both the whole card layer and its dedicated top drag bar handles
-        card.addEventListener('touchstart', handleModalTouchStart, { passive: true });
-        const handleEl = card.querySelector('.modal-drag-handle');
-        if (handleEl) {
-          handleEl.addEventListener('touchstart', handleModalTouchStart, { passive: true });
-        }
-    
-        backdrop.addEventListener('touchmove', handleModalTouchMove, { passive: false });
-        backdrop.addEventListener('touchend', handleModalTouchEnd);
-      });
     });
   </script>
 </body>
