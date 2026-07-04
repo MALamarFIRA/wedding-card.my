@@ -1238,6 +1238,21 @@
       z-index: -1;
     }
 
+    /* Transition rules for a smooth slide-out effect */
+    .bottom-nav, #hiddenCatWrapper {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* 🌟 This hides the navigation bar completely below the screen edge */
+    .bottom-nav.nav-hidden {
+      transform: translateX(-50%) translateY(100px) !important;
+    }
+    
+    /* 🌟 This slides the cat assistant down simultaneously */
+    #hiddenCatWrapper.nav-hidden {
+      transform: translateY(120px) !important;
+    }
+
   </style>
 </head>
 
@@ -1667,17 +1682,48 @@
 
     let scrollTimeout = null;
 
+    // --- SMART FOOTER & CAT AUTOMATION ENGINE ---
+    let lastScrollY = window.scrollY;
+    let isScrollingTimer = null;
+
     window.addEventListener('scroll', function() {
       const topBtn = document.getElementById('stickyTopBtn');
-      if (window.scrollY > 300) {
+      const footerNav = document.querySelector('.bottom-nav');
+      const catWrapper = document.getElementById('hiddenCatWrapper');
+      const currentScrollY = window.scrollY;
+
+      // --- 1. Manage Sticky Top Button ---
+      if (currentScrollY > 300) {
         topBtn.classList.add('show');
         if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          topBtn.classList.remove('show');
-        }, 2000); 
+        scrollTimeout = setTimeout(() => { topBtn.classList.remove('show'); }, 2000); 
       } else {
         topBtn.classList.remove('show');
       }
+
+      // --- 2. Hide on Scroll Down / Show on Scroll Up ---
+      if (footerNav && catWrapper) {
+        if (currentScrollY > lastScrollY && currentScrollY > 60) {
+          // User is scrolling DOWN - Hide elements smoothly
+          footerNav.classList.add('nav-hidden');
+          catWrapper.classList.add('nav-hidden');
+        } else {
+          // User is scrolling UP - Reveal elements instantly
+          footerNav.classList.remove('nav-hidden');
+          catWrapper.classList.remove('nav-hidden');
+        }
+      }
+      
+      lastScrollY = currentScrollY;
+
+      // --- 3. Reveal elements when scrolling STOPS entirely ---
+      if (isScrollingTimer) clearTimeout(isScrollingTimer);
+      isScrollingTimer = setTimeout(() => {
+        if (footerNav && catWrapper) {
+          footerNav.classList.remove('nav-hidden');
+          catWrapper.classList.remove('nav-hidden');
+        }
+      }, 250); // Fires exactly 250ms after the last touch movement stops
     });
     function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
