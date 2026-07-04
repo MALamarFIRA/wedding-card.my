@@ -533,8 +533,8 @@
       max-width: 500px;
       z-index: 99999;
       
-      /* 🌟 CRITICAL FIX: Clips any text/icons from spilling past rounded corners */
-      overflow: hidden !important; 
+      /* 🌟 REMOVED overflow:hidden so the "Ask AI" circle button can pop out above the border! */
+      overflow: visible !important; 
       
       background: rgba(255, 255, 255, 0.85) !important;
       backdrop-filter: blur(15px) saturate(180%);
@@ -546,13 +546,10 @@
       justify-content: space-around;
       align-items: center;
       
-      height: 65px !important;
-      min-height: 65px !important;
+      /* 🌟 STABLE LAYOUT: Sets a hard structural height floor that ignores browser text compression */
+      height: 60px !important;
       box-sizing: border-box;
-      
-      /* 🌟 STRUCTURAL ADJUSTMENT: Snugs the items up slightly on scroll shifts */
       padding: 0 10px !important;
-      padding-bottom: calc(env(safe-area-inset-bottom, 12px) - 6px) !important;
       
       animation: glassShimmer 8s ease-in-out infinite alternate;
       will-change: box-shadow, background-color;
@@ -581,18 +578,10 @@
       color: #333 !important;
       font-size: 11px !important;
       font-weight: 600;
-      line-height: 1.2 !important; /* 🌟 Forces tight line wrap containment */
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
       flex: 1;
-      flex-shrink: 0 !important;
-      min-height: 45px !important;
-      
-      /* 🌟 Pushes the alignment up slightly away from the lower edge danger zone */
-      margin-top: -2px !important; 
-      gap: 1px !important; /* Tightens icon-to-text gaps */
-      
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
+      flex-shrink: 0 !important; /* 🌟 Crucial: Forbids the phone frame from compressing item components */
+      height: 100% !important;
+      gap: 2px !important;
       box-sizing: border-box;
     }
 
@@ -1251,6 +1240,32 @@
     /* 🌟 This slides the cat assistant down simultaneously */
     #hiddenCatWrapper.nav-hidden {
       transform: translateY(120px) !important;
+    }
+
+    /* 🌟 Fixes the central button so it hangs over the edge of the navbar frame */
+    .nav-item:nth-child(3) {
+      position: relative;
+      overflow: visible !important;
+    }
+
+    /* Target the icon circle structure in the middle */
+    .nav-item:nth-child(3) svg, 
+    .nav-item:nth-child(3) .icon-wrapper {
+      transform: translateY(-14px) scale(1.15); /* Pulls the button up to create the "bump" effect */
+      background: #ba0c2f !important; /* Your signature accent red theme color */
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(186, 12, 47, 0.3);
+      stroke: #ffffff !important; /* Makes the wand icon white inside the red circle */
+    }
+
+    /* Keep the "Ask AI" text label nicely tucked underneath the floating circle */
+    .nav-item:nth-child(3) span {
+      position: absolute;
+      bottom: 2px;
+      font-size: 10px !important;
+      width: 100%;
+      text-align: center;
     }
 
   </style>
