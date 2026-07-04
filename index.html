@@ -454,7 +454,24 @@
     }
     .modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-    .rsvp-modal { background: var(--cream); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; position: relative; transform: translateY(-20px); transition: transform 0.3s; }
+    /* Update your existing block to this */
+    .rsvp-modal { 
+      background: var(--cream); 
+      width: 90%; 
+      max-width: 400px; 
+      border-radius: 15px; 
+      padding: 25px; 
+      position: relative; 
+      transform: translateY(-20px); 
+      
+      /* 🔥 UPDATED FOR SMOOTH DRAGGING & SNAPPING */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; 
+    }
+    
+    /* 🔥 ADD THIS NEW CLASS RIGHT BELOW IT */
+    .rsvp-modal.is-dragging {
+      transition: none !important;
+    }
     .modal-backdrop.active .rsvp-modal { transform: translateY(0); }
     .modal-close { position: absolute; top: 15px; right: 15px; font-size: 20px; cursor: pointer; color: #777; }
     .modal-title { font-family: 'Cinzel', serif; color: var(--maroon); text-align: center; margin-bottom: 20px; font-size: 20px; }
@@ -2325,6 +2342,65 @@
       }, { passive: true });
 
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    // Target the structural inner cards of your three modal setups
+    const modalCards = document.querySelectorAll('#calendarModal .rsvp-modal, #contactModal .rsvp-modal, #locationModal .rsvp-modal');
+  
+    modalCards.forEach(card => {
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+  
+      card.addEventListener('touchstart', (e) => {
+        // If the guest is scrolling content inside the modal, don't trigger drag-to-close
+        if (card.scrollTop > 0) return;
+  
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        card.classList.add('is-dragging');
+      }, { passive: true });
+  
+      card.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+  
+        currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+  
+        // Only allow downward dragging (positive Y movement)
+        if (deltaY > 0) {
+          e.preventDefault(); // Stop page from bouncing behind modal
+          card.style.transform = `translateY(${deltaY}px)`;
+        }
+      }, { passive: false });
+  
+      card.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        card.classList.remove('is-dragging');
+  
+        const deltaY = currentY - startY;
+        const closeThreshold = card.offsetHeight * 0.25; // Trigger close if dragged 25% down
+  
+        if (deltaY > closeThreshold) {
+          // Find which parent backdrop wrapper is active and shut it down
+          const parentModal = card.closest('.modal-backdrop');
+          if (parentModal) {
+            parentModal.classList.remove('active');
+          }
+          // Clean up the style transform property after it slides away
+          setTimeout(() => { card.style.transform = ''; }, 400);
+        } else {
+          // Snap the card back up into its normal centered view position if let go early
+          card.style.transform = 'translateY(0)';
+          setTimeout(() => { card.style.transform = ''; }, 400);
+        }
+  
+        startY = 0;
+        currentY = 0;
+      });
+    });
+  });
   </script>
 </body>
 </html>
