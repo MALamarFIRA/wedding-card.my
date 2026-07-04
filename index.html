@@ -157,6 +157,7 @@
       }
     }
 
+    /* Update your existing block to this */
     .mobile-container {
       width: 100%;
       max-width: 450px;
@@ -164,6 +165,17 @@
       padding: 25px 15px;
       border-radius: 12px;
       padding-bottom: 80px;
+      
+      /* 🔥 ADD THESE THREE LINES TO HIDE IT ON LOAD */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    
+    /* 🔥 ADD THIS NEW CLASS RIGHT BELOW IT */
+    .mobile-container.active {
+      opacity: 1;
+      visibility: visible;
     }
 
     .section-divider {
@@ -1665,15 +1677,20 @@
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
       const splash = document.getElementById("splashScreen");
-
+      const mainContent = document.getElementById("top"); // This grabs your mobile-container by its ID
+    
       splash.classList.add("fade-out");
+      
+      // 🔥 This activates the transition we just set up in the CSS
+      if (mainContent) mainContent.classList.add("active"); 
+    
       document.body.classList.remove("no-scroll");
-
+    
       myMusic.play().then(() => {
         musicBtn.classList.add("playing");
         musicBtn.classList.remove("paused");
       }).catch(err => console.log("Audio handler log:", err));
-
+    
       startPageAutoScroll();
     }
 
