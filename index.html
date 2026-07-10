@@ -2113,20 +2113,25 @@
       const submitBtn = event.target.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerText;
       submitBtn.innerText = "SAVING RSVP..."; submitBtn.disabled = true;
-
+    
       const status = document.getElementById('attendance').value;
       const rawWishes = document.getElementById('wishes').value.trim();
-
+    
+      // ✨ NEW: Get email value from the updated rsvpEmail input field
+      // If the field is hidden or empty, it will gracefully fallback to an empty string or 'N/A'
+      const emailInput = document.getElementById('rsvpEmail');
+      const extractedEmail = (status === 'attend' && emailInput && emailInput.value.trim() !== "") ? emailInput.value.trim() : 'N/A';
+    
       const formData = {
         name: document.getElementById('guestName').value,
         status: status === 'attend' ? 'Attending' : 'Not Attending',
         pax: status === 'attend' ? document.getElementById('paxCount').value : '0',
-        email: status === 'attend' ? document.getElementById('guestEmail').value : 'N/A',
+        email: extractedEmail, // ✅ Uses fixed element pointer reference
         wishes: rawWishes
       };
-
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbzI-ENWNr5K1naIwyvpCgd7wi_g87ez1Z81gJsdkxJ09Lu80SyZ0yPkVdhoeKUKKwnZ/exec"; // 🌟 Paste your Web App URL here!
-
+    
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbzI-ENWNr5K1naIwyvpCgd7wi_g87ez1Z81gJsdkxJ09Lu80SyZ0yPkVdhoeKUKKwnZ/exec"; 
+    
       fetch(webAppUrl, {
         method: "POST",
         mode: "cors",
@@ -2138,7 +2143,7 @@
       })
       .then(response => response.json())
       .then(data => {
-        const response = data.result; // Read the status string returned by backend
+        const response = data.result; 
         
         if (response === "Success") {
           alert(`Thank you ${formData.name}! Your RSVP has been recorded.`);
@@ -2150,10 +2155,7 @@
             newWish.className = 'wish-bubble';
             newWish.innerHTML = `<div class="wish-author"><span>${escapeHtml(formData.name)}</span></div><div class="wish-text">"${escapeHtml(rawWishes)}"</div>`;
             
-            // Insert new entry right at the top of your vertical layout tree
             wall.insertBefore(newWish, wall.firstChild);
-            
-            // Reset baseline values and snap scroll focal window back to top row smoothly
             scrollDirection = 1;
             wall.scrollTo({ top: 0, behavior: 'smooth' });
           }
