@@ -1887,7 +1887,19 @@
         showClosedRsvpPopup(RSVP_DUE_DATE);
         return; // 🛑 Stops the regular RSVP form from popping up
       }
-
+    
+      // ✨ NEW: Clean reset everything right before displaying the form to clear previous input remnants
+      const form = document.getElementById('rsvpForm');
+      if (form) form.reset();
+    
+      const paxField = document.querySelector('.class-pax');
+      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
+      const emailWrapper = document.getElementById('emailFieldWrapper');
+    
+      if (paxField) paxField.style.display = 'none';
+      if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
+      if (emailWrapper) emailWrapper.classList.remove('show');
+    
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
     }
@@ -1960,7 +1972,12 @@
     function closeRSVP() { 
       document.getElementById('rsvpModal').classList.remove('active'); 
       document.getElementById('rsvpForm').reset(); 
-      document.getElementById('guestEmail').required = false;
+      
+      // Updated from guestEmail to your new input ID rsvpEmail just to prevent console errors
+      const emailInput = document.getElementById('rsvpEmail');
+      if (emailInput) emailInput.required = false;
+    
+      // This automatically resets and hides all conditional fields via the function we updated!
       toggleAttendanceFields(""); 
     }
 
