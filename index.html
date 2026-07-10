@@ -1772,42 +1772,53 @@
 
 <script>
     //Checkbox
-    document.addEventListener("DOMContentLoaded", function() {
-      const attendanceSelect = document.getElementById("rsvpAttendance");
-      const attendanceDependentWrapper = document.getElementById("attendanceDependentWrapper");
+    // Existing function update to handle conditional blocks smoothly
+    function toggleAttendanceFields(value) {
+      const paxField = document.querySelector('.conditional-field.class-pax');
+      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
       
+      const emailCheckbox = document.getElementById('toggleEmailCheckbox');
+      const emailWrapper = document.getElementById('emailFieldWrapper');
+      const emailInput = document.getElementById('rsvpEmail');
+    
+      if (value === 'attend') {
+        // Show Pax and Email option if attending
+        if (paxField) paxField.style.display = 'block';
+        if (emailDependentWrapper) emailDependentWrapper.style.display = 'block';
+      } else {
+        // Hide Pax and Email option if unable to attend
+        if (paxField) paxField.style.display = 'none';
+        if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
+        
+        // Reset fields back to clean/default state when hidden
+        if (emailCheckbox) emailCheckbox.checked = false;
+        if (emailWrapper) emailWrapper.classList.remove('show');
+        if (emailInput) emailInput.value = '';
+      }
+    }
+    
+    // Separate structure tracking logic initialized on load
+    document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
       const emailWrapper = document.getElementById("emailFieldWrapper");
       const emailInput = document.getElementById("rsvpEmail");
     
-      // 1. Attendance choice tracker
-      if (attendanceSelect && attendanceDependentWrapper) {
-        attendanceSelect.addEventListener("change", function() {
-          if (this.value === "yes") {
-            // Smooth show via block / your custom animations
-            attendanceDependentWrapper.style.display = "block";
-          } else {
-            // Hide completely if choosing No / Empty
-            attendanceDependentWrapper.style.display = "none";
-            
-            // Reset values completely if they change their mind
-            if (emailCheckbox) emailCheckbox.checked = false;
-            if (emailWrapper) emailWrapper.classList.remove("show");
-            if (emailInput) emailInput.value = "";
-          }
-        });
-      }
-    
-      // 2. Email checkbox voluntary tracker
+      // Handle slide/opacity toggle for the voluntary email input field
       if (emailCheckbox && emailWrapper) {
         emailCheckbox.addEventListener("change", function() {
           if (this.checked) {
             emailWrapper.classList.add("show");
           } else {
             emailWrapper.classList.remove("show");
-            if (emailInput) emailInput.value = ""; // Clear data if unchecked
+            if (emailInput) emailInput.value = ""; // Erases typed data if unchecked
           }
         });
+      }
+      
+      // Make sure the container starts hidden correctly until explicit select triggers it
+      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
+      if (emailDependentWrapper) {
+        emailDependentWrapper.style.display = 'none';
       }
     });
 
