@@ -1772,25 +1772,25 @@
 
 <script>
     //Checkbox
-    // Separate structure tracking logic initialized on load
     document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
       const emailWrapper = document.getElementById("emailFieldWrapper");
       const emailInput = document.getElementById("rsvpEmail");
     
-      // Handle slide/opacity toggle for the voluntary email input field
-      if (emailCheckbox && emailWrapper) {
+      if (emailCheckbox && emailWrapper && emailInput) {
         emailCheckbox.addEventListener("change", function() {
           if (this.checked) {
             emailWrapper.classList.add("show");
+            emailInput.required = true;  // 🔴 Make it mandatory when checked
           } else {
             emailWrapper.classList.remove("show");
-            if (emailInput) emailInput.value = ""; // Erases typed data if unchecked
+            emailInput.required = false; // 🟢 Remove restriction when unchecked
+            emailInput.value = "";       // Clear out input data if unchecked
           }
         });
       }
-      
-      // Make sure the container starts hidden correctly until explicit select triggers it
+    
+      // Ensure the wrapper starts hidden on a fresh page load
       const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
       if (emailDependentWrapper) {
         emailDependentWrapper.style.display = 'none';
@@ -2002,14 +2002,12 @@
     function toggleAttendanceFields(val) {
       const displayStyle = val === 'attend' ? 'block' : 'none';
       
-      // 1. Toggle the Pax field and the Email Checkbox Wrapper
       const paxField = document.querySelector('.class-pax');
       const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
       
       if (paxField) paxField.style.display = displayStyle;
       if (emailDependentWrapper) emailDependentWrapper.style.display = displayStyle;
     
-      // 2. If guest chooses "No" (unable), completely reset the checkbox and email input
       if (val !== 'attend') {
         const emailCheckbox = document.getElementById('toggleEmailCheckbox');
         const emailWrapper = document.getElementById('emailFieldWrapper');
@@ -2019,7 +2017,7 @@
         if (emailWrapper) emailWrapper.classList.remove('show');
         if (emailInput) {
           emailInput.value = "";
-          emailInput.required = false; // Kept safe (not required as per your rules)
+          emailInput.required = false; // 🟢 Clear restriction if they select "Unable to attend"
         }
       }
     }
