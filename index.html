@@ -1253,6 +1253,98 @@
       z-index: -1;
     }
 
+
+
+    /* --- Email Toggle & Tooltip Enhancements --- */
+    .email-container-wrapper {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.4s ease-out;
+      margin-bottom: 0;
+    }
+    
+    .email-container-wrapper.show {
+      max-height: 120px; /* Adjust if needed to fit your input layout */
+      opacity: 1;
+      margin-bottom: 15px;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+      position: relative;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: var(--dark-text);
+      cursor: pointer;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      accent-color: var(--maroon);
+      cursor: pointer;
+    }
+    
+    /* Tooltip container element */
+    .info-tooltip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      cursor: help;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+    
+    /* Tooltip text popup styling */
+    .info-tooltip::after {
+      content: "Provide your email to receive early notifications regarding your table and seating arrangements!";
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background-color: var(--dark-text);
+      color: var(--white);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.4;
+      white-space: normal;
+      width: 220px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    /* Tooltip arrow pointer */
+    .info-tooltip::before {
+      content: "";
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--dark-text) transparent transparent transparent;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    /* Show tooltip on hover or focus */
+    .info-tooltip:hover::after,
+    .info-tooltip:hover::before {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
   </style>
 </head>
 
@@ -1464,15 +1556,21 @@
             <button type="button" class="pax-btn" onclick="changePax(1)">+</button>
           </div>
         </div>
-        <div class="form-group conditional-field class-email">
-          <label for="guestEmail" style="display: flex; align-items: center; gap: 6px; position: relative;">
-            Email <span style="color: var(--maroon);">*</span>
-            <span class="tooltip-container">
-              <i class="fa-solid fa-circle-info" style="color: #888; cursor: pointer; font-size: 14px;"></i>
-              <span class="tooltip-box">This email will be used for your RSVP double confirmation and seating arrangement details.</span>
-            </span>
-          </label>
-          <input type="email" id="guestEmail" placeholder="name@example.com">
+        <label class="checkbox-group">
+          <input type="checkbox" id="toggleEmailCheckbox">
+          <span>Keep me updated via email</span>
+          <span class="info-tooltip" aria-label="Why provide email?">
+            <i class="fa-regular fa-circle-question"></i>
+          </span>
+        </label>
+        <div class="email-container-wrapper" id="emailFieldWrapper">
+          <div class="form-group">
+            <label for="rsvpEmail">Email Address</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="rsvpEmail" placeholder="e.g., example@email.com">
+            </div>
+          </div>
         </div>
         <div class="form-group"><label for="wishes">Wishes</label><textarea id="wishes" rows="3" placeholder="Write wishes here..."></textarea></div>
         <button type="submit" class="btn">SUBMIT RSVP</button>
@@ -1669,6 +1767,24 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const emailCheckbox = document.getElementById("toggleEmailCheckbox");
+      const emailWrapper = document.getElementById("emailFieldWrapper");
+      const emailInput = document.getElementById("rsvpEmail");
+    
+      if (emailCheckbox && emailWrapper) {
+        emailCheckbox.addEventListener("change", function() {
+          if (this.checked) {
+            emailWrapper.classList.add("show");
+          } else {
+            emailWrapper.classList.remove("show");
+            if (emailInput) emailInput.value = ""; // Clear out input data if unchecked
+          }
+        });
+      }
+    });
+
+  
     // Countdown Engine
     const targetDate = new Date("May 1, 2027 10:00:00").getTime();
     function updateCountdown() {
