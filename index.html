@@ -1772,31 +1772,6 @@
 
 <script>
     //Checkbox
-    // Existing function update to handle conditional blocks smoothly
-    function toggleAttendanceFields(value) {
-      const paxField = document.querySelector('.conditional-field.class-pax');
-      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
-      
-      const emailCheckbox = document.getElementById('toggleEmailCheckbox');
-      const emailWrapper = document.getElementById('emailFieldWrapper');
-      const emailInput = document.getElementById('rsvpEmail');
-    
-      if (value === 'attend') {
-        // Show Pax and Email option if attending
-        if (paxField) paxField.style.display = 'block';
-        if (emailDependentWrapper) emailDependentWrapper.style.display = 'block';
-      } else {
-        // Hide Pax and Email option if unable to attend
-        if (paxField) paxField.style.display = 'none';
-        if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
-        
-        // Reset fields back to clean/default state when hidden
-        if (emailCheckbox) emailCheckbox.checked = false;
-        if (emailWrapper) emailWrapper.classList.remove('show');
-        if (emailInput) emailInput.value = '';
-      }
-    }
-    
     // Separate structure tracking logic initialized on load
     document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
@@ -2009,13 +1984,26 @@
 
     function toggleAttendanceFields(val) {
       const displayStyle = val === 'attend' ? 'block' : 'none';
-      const emailInput = document.getElementById('guestEmail');
-      document.querySelectorAll('.class-pax, .class-email').forEach(el => el.style.display = displayStyle);
-      if (val === 'attend') {
-        emailInput.required = true;
-      } else {
-        emailInput.required = false;
-        emailInput.value = "";
+      
+      // 1. Toggle the Pax field and the Email Checkbox Wrapper
+      const paxField = document.querySelector('.class-pax');
+      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
+      
+      if (paxField) paxField.style.display = displayStyle;
+      if (emailDependentWrapper) emailDependentWrapper.style.display = displayStyle;
+    
+      // 2. If guest chooses "No" (unable), completely reset the checkbox and email input
+      if (val !== 'attend') {
+        const emailCheckbox = document.getElementById('toggleEmailCheckbox');
+        const emailWrapper = document.getElementById('emailFieldWrapper');
+        const emailInput = document.getElementById('rsvpEmail');
+    
+        if (emailCheckbox) emailCheckbox.checked = false;
+        if (emailWrapper) emailWrapper.classList.remove('show');
+        if (emailInput) {
+          emailInput.value = "";
+          emailInput.required = false; // Kept safe (not required as per your rules)
+        }
       }
     }
 
