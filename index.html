@@ -465,7 +465,13 @@
       transform: translateY(-20px); 
       
       /* 🔥 UPDATED FOR SMOOTH DRAGGING & SNAPPING */
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; 
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      max-height: 85vh; /* 🟢 Prevents the card from stretching all the way to the absolute bottom */
+      overflow-y: auto; /* 🟢 Allows scrolling inside the modal if the phone screen is small */
+      margin-bottom: env(safe-area-inset-bottom, 20px); /* 🟢 Forces iPhones to push the content up past the home bar line */
+    }
+    #rsvpForm {
+      padding-bottom: 40px; /* 🟢 Creates a 40px safety buffer zone at the bottom of the form */
     }
     
     /* 🔥 ADD THIS NEW CLASS RIGHT BELOW IT */
