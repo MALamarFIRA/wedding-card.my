@@ -1269,10 +1269,10 @@
       opacity: 1;s
     }
     
-   /* --- Checkbox & Tooltip Layout --- */
+    /* --- Decoupled Layout Settings --- */
     .checkbox-group {
       display: flex;
-      align-items: flex-start; /* Keeps checkbox pinned to the first line of text */
+      align-items: flex-start; /* Pins the checkbox to the first line of text */
       gap: 10px;
       margin-top: 15px;
       margin-bottom: 15px;
@@ -1280,25 +1280,26 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       color: var(--dark-text);
-      cursor: pointer;
       line-height: 1.5;
     }
     
     .checkbox-group input[type="checkbox"] {
       accent-color: var(--maroon);
       cursor: pointer;
-      margin-top: 3px; /* Centers checkbox perfectly with your text font height */
+      margin-top: 3px; /* Keeps box centered with first row layout text */
       width: 16px;
       height: 16px;
-      flex-shrink: 0; /* Prevents checkbox from flattening or distorting */
+      flex-shrink: 0; /* Prevents checkbox from flattening */
     }
     
+    /* Clicking text STILL checks the box gracefully, but tooltip is immune */
     .checkbox-text-wrapper {
-      display: block;
+      cursor: pointer;
+      display: inline;
       word-break: break-word;
     }
     
-    /* Tooltip container element */
+    /* Tooltip layout alignment settings */
     .info-tooltip {
       display: inline-flex;
       align-items: center;
@@ -1306,7 +1307,8 @@
       color: #888;
       cursor: help;
       font-size: 13px;
-      margin-left: 4px;
+      margin-top: 3px; /* Keeps question mark aligned horizontally with the text row */
+      flex-shrink: 0;
       vertical-align: middle;
     }
     
@@ -1578,7 +1580,7 @@
         <div class="form-group"><label for="wishes">Wishes</label><textarea id="wishes" rows="3" placeholder="Write wishes here..."></textarea></div>
 
         <div id="attendanceDependentWrapper" class="conditional-field" style="position: relative;">
-          <label class="checkbox-group">
+          <div class="checkbox-group">
             <input type="checkbox" id="toggleEmailCheckbox">
             <div class="checkbox-text-wrapper">
               I agree to receive my final attendance confirmation and seating information via email.
@@ -1586,7 +1588,7 @@
                 <i class="fa-regular fa-circle-question"></i>
               </span>
             </div>
-          </label>
+          </div>
           
           <div class="email-container-wrapper" id="emailFieldWrapper">
             <div class="form-group">
