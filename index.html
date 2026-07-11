@@ -1269,21 +1269,33 @@
       opacity: 1;s
     }
     
+   /* --- Checkbox & Tooltip Layout --- */
     .checkbox-group {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      align-items: flex-start; /* Keeps checkbox pinned to the first line of text */
+      gap: 10px;
+      margin-top: 15px;
       margin-bottom: 15px;
       position: relative;
       font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       color: var(--dark-text);
       cursor: pointer;
+      line-height: 1.5;
     }
     
     .checkbox-group input[type="checkbox"] {
       accent-color: var(--maroon);
       cursor: pointer;
+      margin-top: 3px; /* Centers checkbox perfectly with your text font height */
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0; /* Prevents checkbox from flattening or distorting */
+    }
+    
+    .checkbox-text-wrapper {
+      display: block;
+      word-break: break-word;
     }
     
     /* Tooltip container element */
@@ -1292,40 +1304,41 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: #777;
+      color: #888;
       cursor: help;
-      font-size: 14px;
+      font-size: 13px;
       margin-left: 4px;
+      vertical-align: middle;
     }
     
-    /* Tooltip text popup styling */
+    /* Tooltip popup box layout styling */
     .info-tooltip::after {
       content: "Optional. Provide your email to receive your seating information before the wedding and allow us to reconfirm your attendance. If you don't provide an email, your RSVP is still confirmed, but we may not be able to send these details in advance.";
       position: absolute;
-      bottom: 130%;
+      bottom: 140%;
       left: 50%;
       transform: translateX(-50%) translateY(5px);
       background-color: var(--dark-text);
       color: var(--white);
-      padding: 8px 12px;
+      padding: 10px 14px; /* Added slightly more padding for a cleaner block layout */
       border-radius: 6px;
       font-size: 11px;
-      line-height: 1.4;
+      line-height: 1.45; /* Adjusted row height slightly for better text legibility */
       white-space: normal;
-      width: 220px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      width: 280px; /* Expanded width to let the extended text breathe comfortably */
+      text-align: justify; /* Aligns text cleanly along both edges inside the tooltip bubble */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
       opacity: 0;
       pointer-events: none;
       transition: all 0.3s ease;
-      z-index: 10;
+      z-index: 99;
     }
     
-    /* Tooltip arrow pointer */
+    /* Tooltip bottom little pointer arrow */
     .info-tooltip::before {
       content: "";
       position: absolute;
-      bottom: 110%;
+      bottom: 120%;
       left: 50%;
       transform: translateX(-50%) translateY(5px);
       border-width: 6px;
@@ -1334,10 +1347,10 @@
       opacity: 0;
       pointer-events: none;
       transition: all 0.3s ease;
-      z-index: 10;
+      z-index: 99;
     }
     
-    /* Show tooltip on hover or focus */
+    /* Show tooltip details on hover */
     .info-tooltip:hover::after,
     .info-tooltip:hover::before {
       opacity: 1;
@@ -1557,12 +1570,14 @@
         </div>
         <div id="attendanceDependentWrapper" class="conditional-field">
           
-          <label class="checkbox-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; cursor: pointer; font-size: 13px;">
+          <label class="checkbox-group">
             <input type="checkbox" id="toggleEmailCheckbox">
-            <span>I agree to receive my final attendance confirmation and seating information via email.</span>
-            <span class="info-tooltip" aria-label="Why provide email?">
-              <i class="fa-regular fa-circle-question"></i>
-            </span>
+            <div class="checkbox-text-wrapper">
+              I agree to receive my final attendance confirmation and seating information via email.
+              <span class="info-tooltip" aria-label="Why provide email?">
+                <i class="fa-regular fa-circle-question"></i>
+              </span>
+            </div>
           </label>
           <div class="email-container-wrapper" id="emailFieldWrapper">
             <div class="form-group">
