@@ -1927,19 +1927,16 @@
       const paxField = document.querySelector('.class-pax');
       const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
       const emailWrapper = document.getElementById('emailFieldWrapper');
-      // Reset form inputs completely (our previous fix)
-      const form = document.getElementById('rsvpForm');
-      if (form) form.reset();
+    
       if (paxField) paxField.style.display = 'none';
       if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
       if (emailWrapper) emailWrapper.classList.remove('show');
     
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
-      // Activate the modal backdrop
-      document.getElementById('rsvpModal').classList.add('active');
-      // 🟢 Strictly lock body scrolling across all Android and iOS frames
-      document.body.classList.add('no-scroll');
+      
+      // 🟢 CRITICAL: Lock body scrolling right as the modal becomes active to prevent background leaking
+      document.body.classList.add('no-scroll'); 
     }
 
     // 🌟 GORGEOUS CUSTOM MODAL POPUP ENGINE
@@ -2006,17 +2003,21 @@
       overlay.onclick = (e) => { if (e.target === overlay) closePopup(); };
     }
 
-    // 🟢 KEEP THESE EXACTLY AS THEY ARE
     function closeRSVP() { 
+      // 1. Hide the modal backdrop visually
       document.getElementById('rsvpModal').classList.remove('active'); 
-      document.getElementById('rsvpForm').reset();
-      document.body.classList.remove('no-scroll');
       
-      // Updated from guestEmail to your new input ID rsvpEmail just to prevent console errors
+      // 2. 🟢 CRITICAL: Release the background scroll lock so guests can scroll the main invitation page again
+      document.body.classList.remove('no-scroll'); 
+      
+      // 3. Reset all standard input fields inside the form
+      document.getElementById('rsvpForm').reset(); 
+      
+      // 4. Safely strip the required validation flag from the email field
       const emailInput = document.getElementById('rsvpEmail');
       if (emailInput) emailInput.required = false;
     
-      // This automatically resets and hides all conditional fields via the function we updated!
+      // 5. Automatically reset, hide, and clean out all your conditional panels
       toggleAttendanceFields(""); 
     }
 
