@@ -1350,24 +1350,6 @@
       z-index: 99;
     }
     
-    /* Hidden pointer arrow for mobile look clean-up */
-    .info-tooltip::before {
-      content: "";
-      position: absolute;
-      bottom: 100%;
-      
-      /* Safely aligns right underneath the icon target point area */
-      left: 80%; /* Adjust this percentage slightly left or right to line up perfectly underneath your (?) icon position */
-      transform: translateX(-50%);
-      
-      border-width: 6px;
-      border-style: solid;
-      border-color: var(--dark-text) transparent transparent transparent;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s ease;
-      z-index: 99;
-    }
     
     /* Show tooltip details on hover */
     .info-tooltip:hover::after,
