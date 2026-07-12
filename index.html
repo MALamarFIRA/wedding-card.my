@@ -26,6 +26,8 @@
     body.no-scroll {
       overflow: hidden;
       height: 100vh;
+      position: fixed; /* 🟢 Prevents iOS Safari rubber-band background scrolling entirely */
+      width: 100%;
     }
 
     body {
@@ -466,7 +468,7 @@
       
       /* 🔥 UPDATED FOR SMOOTH DRAGGING & SNAPPING */
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-      max-height: 100vh; /* 🟢 Prevents the card from stretching all the way to the absolute bottom */
+      max-height: 85vh; /* 🟢 Prevents the card from stretching all the way to the absolute bottom */
       overflow-y: auto; /* 🟢 Allows scrolling inside the modal if the phone screen is small */
       margin-bottom: env(safe-area-inset-bottom, 20px); /* 🟢 Forces iPhones to push the content up past the home bar line */
     }
@@ -1925,13 +1927,19 @@
       const paxField = document.querySelector('.class-pax');
       const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
       const emailWrapper = document.getElementById('emailFieldWrapper');
-    
+      // Reset form inputs completely (our previous fix)
+      const form = document.getElementById('rsvpForm');
+      if (form) form.reset();
       if (paxField) paxField.style.display = 'none';
       if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
       if (emailWrapper) emailWrapper.classList.remove('show');
     
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
+      // Activate the modal backdrop
+      document.getElementById('rsvpModal').classList.add('active');
+      // 🟢 Strictly lock body scrolling across all Android and iOS frames
+      document.body.classList.add('no-scroll');
     }
 
     // 🌟 GORGEOUS CUSTOM MODAL POPUP ENGINE
@@ -2001,7 +2009,8 @@
     // 🟢 KEEP THESE EXACTLY AS THEY ARE
     function closeRSVP() { 
       document.getElementById('rsvpModal').classList.remove('active'); 
-      document.getElementById('rsvpForm').reset(); 
+      document.getElementById('rsvpForm').reset();
+      document.body.classList.remove('no-scroll');
       
       // Updated from guestEmail to your new input ID rsvpEmail just to prevent console errors
       const emailInput = document.getElementById('rsvpEmail');
