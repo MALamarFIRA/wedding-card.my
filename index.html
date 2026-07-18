@@ -1586,23 +1586,34 @@
         <button class="btn-wish-only" onclick="toggleWishModal(true)">✨ Leave a Wish Only</button>
     </div>
     
-    <!-- Simple Overlay Modal for Wishes -->
-    <div id="wishModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;">
-      <div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; border-radius:8px; position:relative;">
-        <h3>Write a Wish for the Couple</h3>
+    <!-- Clean Overlay Modal for Wishes matching RSVP style -->
+    <div id="wishModal">
+      <div class="wish-modal-card">
+        <h3 style="font-family: inherit; margin-top: 0; margin-bottom: 15px; font-size: 20px; font-weight: bold; color: #222;">Write a Wish for the Couple</h3>
         
         <form id="pureWishForm" onsubmit="submitPureWish(event)">
-          <div style="margin-bottom:12px;">
-            <label>Your Name:</label>
-            <input type="text" id="wishGuestName" required style="width:100%; padding:8px; box-sizing:border-box;">
-          </div>
-          <div style="margin-bottom:12px;">
-            <label>Your Blessings / Wishes:</label>
-            <textarea id="wishGuestText" required style="width:100%; height:100px; padding:8px; box-sizing:border-box;"></textarea>
+          <div style="margin-bottom: 15px; display: flex; flex-direction: column; align-items: flex-start;">
+            <label style="font-size: 14px; margin-bottom: 5px; color: #333;">Your Name:</label>
+            <input type="text" id="wishGuestName" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
           </div>
           
-          <button type="submit" style="width:100%; padding:10px; background:#d4af37; color:#fff; border:none; border-radius:4px; cursor:pointer;">Submit Wish</button>
-          <button type="button" onclick="toggleWishModal(false)" style="width:100%; margin-top:8px; background:none; border:none; color:#666; cursor:pointer;">Cancel</button>
+          <div style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: flex-start;">
+            <label style="font-size: 14px; margin-bottom: 5px; color: #333;">Your Blessings / Wishes:</label>
+            <textarea id="wishGuestText" required style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical;"></textarea>
+          </div>
+          
+          <!-- Styled Submit Button -->
+          <button type="submit" style="
+            display: block; width: 100%; background: var(--maroon); color: var(--gold);
+            text-align: center; padding: 14px; border-radius: 25px; font-weight: bold;
+            font-size: 14px; letter-spacing: 1px; border: none; cursor: pointer; box-sizing: border-box;
+          ">Submit Wish</button>
+          
+          <!-- Styled Cancel Link -->
+          <button type="button" onclick="toggleWishModal(false)" style="
+            background: none; border: none; color: #666; cursor: pointer; text-align: center;
+            margin-top: 15px; font-size: 14px; width: 100%; font-weight: normal;
+          ">Cancel</button>
         </form>
       </div>
     </div>
