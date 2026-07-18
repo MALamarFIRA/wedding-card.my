@@ -25,8 +25,8 @@
     /* Scroll lock class when splash screen is active */
     body.no-scroll {
       overflow: hidden !important;
-      height: 100vh !important;
       width: 100% !important;
+      padding-right: 0px; /* Prevents scrollbar layout shifting */
     }
 
     body {
@@ -476,6 +476,27 @@
     }
     
     #rsvpModal.active, #wishModal.active {
+      display: flex !important;
+    }
+
+    #wishModal {
+      position: fixed !important;
+      top: -20dvh !important; /* Extra deep upward reach to offset search bar drops */
+      left: 0 !important;
+      width: 100vw !important;
+      height: 140dvh !important; /* Massively oversized canvas buffer to hide any viewport shifts */
+      
+      background-color: rgba(0, 0, 0, 0.6) !important;
+      backdrop-filter: blur(5px) !important;
+      -webkit-backdrop-filter: blur(5px) !important;
+      
+      z-index: 100000 !important;
+      display: none; 
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    #wishModal.active {
       display: flex !important;
     }
     
@@ -2070,7 +2091,7 @@
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
 
-
+    let savedScrollTop = 0;
     function openRSVP() {
       // 🗓️ CONFIGURE YOUR RSVP DEADLINE HERE (Format: YYYY-MM-DD)
       const RSVP_DUE_DATE = "2027-04-01"; 
@@ -2083,6 +2104,9 @@
         showClosedRsvpPopup(RSVP_DUE_DATE);
         return; // 🛑 Stops the regular RSVP form from popping up
       }
+    
+      // 🟢 CRITICAL: Capture exact scroll position right before opening to prevent jumping
+      savedScrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
       // ✨ Clean reset everything right before displaying the form to clear previous input remnants
       const form = document.getElementById('rsvpForm');
@@ -2099,7 +2123,7 @@
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
       
-      // 🟢 CRITICAL: Lock body scrolling safely right as the modal becomes active
+      // Lock body scrolling safely right as the modal becomes active
       document.body.classList.add('no-scroll'); 
     }
 
@@ -2175,7 +2199,7 @@
     }
 
     function closeRSVP() { 
-      // 🟢 FIX: Force the browser to drop focus so it doesn't jump the background page
+      // Force the browser to drop focus so it doesn't jump the background page
       if (document.activeElement) {
         document.activeElement.blur();
       }
@@ -2185,6 +2209,9 @@
       
       // 2. Release the background scroll lock safely without shifting your view position
       document.body.classList.remove('no-scroll'); 
+      
+      // 🟢 CRITICAL FIX: Instantly lock the background back to your exact pixel coordinate
+      window.scrollTo(0, savedScrollTop);
       
       // 3. Reset all standard input fields inside the form
       document.getElementById('rsvpForm').reset(); 
@@ -2805,21 +2832,28 @@
   });
 
   function toggleWishModal(show) {
-    const modal = document.getElementById('wishModal');
-    if (!modal) return;
-    
-    if (show) {
-      modal.classList.add('active');
-      document.body.classList.add('no-scroll'); 
-    } else {
-      // 🟢 FIX: Force the browser to drop focus here too before closing
-      if (document.activeElement) {
-        document.activeElement.blur();
+      const modal = document.getElementById('wishModal');
+      if (!modal) return;
+      
+      if (show) {
+        // 🟢 CRITICAL: Capture exact scroll position right before opening the Wish Modal
+        savedScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        modal.classList.add('active');
+        document.body.classList.add('no-scroll'); 
+      } else {
+        // Force the browser to drop focus here too before closing
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+        
+        modal.classList.remove('active');
+        document.body.classList.remove('no-scroll'); 
+        
+        // 🟢 CRITICAL FIX: Instantly lock the background back to your exact pixel coordinate upon close
+        window.scrollTo(0, savedScrollTop);
       }
-      modal.classList.remove('active');
-      document.body.classList.remove('no-scroll'); 
     }
-  }
   
   function submitPureWish(event) {
     event.preventDefault();
