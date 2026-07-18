@@ -128,13 +128,14 @@
       top: 50%;
       transform: translate(-50%, -50%);
       font-family: 'Montserrat', sans-serif !important;
+      text-shadow: 0 0 8px var(--gold), 0 0 2px var(--gold);
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--gold);
-      opacity: 0.4; /* Soft and non-intrusive appearance */
+      opacity: 0.6; /* Soft and non-intrusive appearance */
       pointer-events: none; /* Allows click-through dragging directly onto the range thumb track */
-      z-index: 2;
+      z-index: 5;
       white-space: nowrap;
       transition: opacity 0.2s ease;
     }
@@ -169,7 +170,7 @@
       border-radius: 1px;
       outline: none;
       position: relative;
-      z-index: 3;
+      z-index: 4;
       cursor: pointer;
     }
 
@@ -198,6 +199,7 @@
       cursor: grab;
       transform: rotate(90deg);
       transition: transform 0.1s;
+      z-index: 10 !important; /* Forces the airplane asset to the top visible layer */
     }
 
     #flightSlider::-webkit-slider-thumb:active { cursor: grabbing; }
@@ -213,6 +215,7 @@
       background-position: center;
       cursor: grab;
       transform: rotate(90deg);
+      z-index: 10 !important; /* Fix for Firefox on Android */
     }
 
     #splashScreen.fade-out {
