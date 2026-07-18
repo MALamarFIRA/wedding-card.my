@@ -109,7 +109,7 @@
       color: var(--gold);
     }
 
-     /* ✈️ CUSTOM FLIGHT SLIDER ENGINE TRACK */
+    /* ✈️ CUSTOM FLIGHT SLIDER ENGINE TRACK */
     .slider-track-wrapper {
       display: flex;
       align-items: center;
@@ -126,7 +126,7 @@
       width: 100%;
       overflow: hidden;
 
-      /* 🟢 FIXED: Smooth center-out horizontal wipe animation */
+      /* FIXED: Smooth center-out horizontal wipe animation */
       animation: centerWipe 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.8s both;
     }
 
@@ -147,8 +147,10 @@
       position: relative;
       flex-grow: 1;
       margin: 0 15px;
-      height: 30px;
+      height: 50px; /* 🟢 Increased to give room for text below the airplane track */
       display: flex;
+      flex-direction: column; /* 🟢 Stacks slider track and description vertically */
+      justify-content: center;
       align-items: center;
     }
 
@@ -163,16 +165,34 @@
       position: relative;
       z-index: 4;
       cursor: pointer;
+      margin: 0;
     }
 
     .flight-progress-line {
       position: absolute;
       left: 0;
+      top: 24px; /* 🟢 Repositioned line vertically to align perfectly with the airplane track */
       height: 2px;
       background: var(--gold);
       width: 0%;
       z-index: 1;
       pointer-events: none;
+    }
+
+    /* 🟢 NEW HINT STYLE: Placed cleanly beneath the track lane */
+    .slider-hint-text {
+      font-family: 'Montserrat', sans-serif !important;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-shadow: 0 0 6px rgba(223, 186, 107, 0.4);
+      opacity: 0.7;
+      margin-top: 12px; /* 🟢 Adds clear space directly under the plane */
+      pointer-events: none;
+      z-index: 2;
+      white-space: nowrap;
+      transition: opacity 0.2s ease;
     }
 
     /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
@@ -212,7 +232,7 @@
       z-index: 10 !important;
     }
 
-    /* 🟢 HORIZONTAL WIPE KEYFRAMES */
+    /* HORIZONTAL WIPE KEYFRAMES */
     @keyframes centerWipe {
       0% {
         width: 0%;
@@ -1611,6 +1631,9 @@
             
             <!-- The airplane drag trigger -->
             <input type="range" id="flightSlider" min="0" max="100" value="0" aria-label="Slide airplane to open invitation">
+            
+            <!-- 🟢 NEW PLACE: Clean guideline text sitting underneath the track -->
+            <div class="slider-hint-text" id="sliderHint">Slide to open invitation</div>
           </div>
           
           <span class="city-label">MYY</span>
