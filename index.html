@@ -40,14 +40,14 @@
       padding: 10px;
     }
 
-    /* --- 100% SOLID SPLASH SCREEN OVERLAY --- */
+    /* --- 100% SOLID FLIGHT PATH SPLASH SCREEN OVERLAY --- */
     #splashScreen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100dvh;
-      background: var(--maroon); /* Completely opaque solid color */
+      background: var(--maroon); /* Maintains your solid background identity */
       background-color: var(--maroon);
       display: flex;
       justify-content: center;
@@ -56,15 +56,18 @@
       color: var(--gold);
       text-align: center;
       padding: 20px;
-      transition: opacity 0.6s ease, pointer-events 0.6s ease;
+      box-sizing: border-box;
+      transition: opacity 0.6s ease, transform 0.6s ease, pointer-events 0.6s ease;
     }
 
-    /*  ZOOM OUT GROUP: Animates everything inside except the typing effect */
+    /* ZOOM OUT GROUP: Animates everything inside smoothly */
     .zoom-out-group {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      width: 100%;
+      max-width: 480px;
       animation: splashZoomOut 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
@@ -73,9 +76,10 @@
       letter-spacing: 3px;
       font-size: 16px;
       margin-bottom: 10px;
+      color: var(--gold);
     }
 
-    /* SIGNATURE WRAPPER: Centers the handwriting animation and hides overflow */
+    /* SIGNATURE WRAPPER: Centers the handwriting typography asset */
     .signature-wrapper {
       margin-bottom: 5px;
       display: flex;
@@ -93,69 +97,124 @@
       display: inline-block;
       width: 0;
       overflow: hidden;
-      /* 🌟 SIGNATURE ANIMATION: Starts after a slight delay (0.5s) */
       animation: drawSignature 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
     }
 
     #splashScreen p {
       font-family: 'Montserrat', sans-serif !important;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 1px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
       opacity: 0.8;
       color: var(--gold);
     }
 
-    .open-btn {
-      background: transparent;
-      color: var(--gold);
-      border: 2px solid var(--gold);
-      padding: 12px 30px;
-      font-size: 14px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      border-radius: 30px;
-      cursor: pointer;
+    /* ✈️ CUSTOM FLIGHT SLIDER ENGINE TRACK */
+    .slider-track-wrapper {
       display: flex;
       align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      justify-content: space-between;
+      position: relative;
+      background: rgba(255, 255, 255, 0.08); /* Sophisticated dark translucent track base */
+      padding: 20px 20px;
+      border-radius: 50px;
+      border: 1.5px solid var(--gold);
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    .open-btn:hover {
+    .city-label {
+      font-family: 'Montserrat', sans-serif !important;
+      font-weight: bold;
+      font-size: 12px;
+      color: var(--gold);
+      z-index: 2;
+      pointer-events: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .input-container {
+      position: relative;
+      flex-grow: 1;
+      margin: 0 15px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Invisible control rail over the layout path */
+    #flightSlider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      height: 2px;
+      border-radius: 1px;
+      outline: none;
+      position: relative;
+      z-index: 3;
+      cursor: pointer;
+    }
+
+    /* Live gold track line following behind the moving plane */
+    .flight-progress-line {
+      position: absolute;
+      left: 0;
+      height: 2px;
       background: var(--gold);
-      color: var(--maroon);
+      width: 0%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
+    #flightSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 35px;
+      height: 35px;
+      /* Injected custom Gold SVG Vector path */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23dfba6b' d='M448 336v-40L288 192V79.2c0-30.5-24.5-55.2-56-55.2s-56 24.7-56 55.2V192L16 296v40l160-48v117.6l-48 35.4v33.4l88-26.2 88 26.2v-33.4l-48-35.4V288z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: grab;
+      transform: rotate(90deg);
+      transition: transform 0.1s;
+    }
+
+    #flightSlider::-webkit-slider-thumb:active { cursor: grabbing; }
+
+    /* ✈️ Firefox Flight Thumb Asset */
+    #flightSlider::-moz-range-thumb {
+      width: 35px;
+      height: 35px;
+      border: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23dfba6b' d='M448 336v-40L288 192V79.2c0-30.5-24.5-55.2-56-55.2s-56 24.7-56 55.2V192L16 296v40l160-48v117.6l-48 35.4v33.4l88-26.2 88 26.2v-33.4l-48-35.4V288z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: grab;
+      transform: rotate(90deg);
     }
 
     #splashScreen.fade-out {
       opacity: 0;
+      transform: scale(1.05);
       pointer-events: none;
     }
 
-    /* --- 🌟 NEW ANIMATION TIMELINES --- */
+    /* --- ANIMATION KEYFRAMES --- */
     @keyframes splashZoomOut {
-      0% {
-        transform: scale(1.1);
-        opacity: 0;
-      }
-      30% {
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(1.1); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     @keyframes drawSignature {
-      0% {
-        width: 0;
-      }
-      100% {
-        /* Adjust this to 100% or slightly max-content if text wraps on smaller viewports */
-        width: 100%; 
-      }
+      0% { width: 0; }
+      100% { width: 100%; }
     }
 
     /* Update your existing block to this */
@@ -1500,6 +1559,7 @@
 
 <body class="no-scroll"> <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
 
+  <!-- ✈️ UPDATED FLIGHT PATH SPLASH SCREEN ENGINE -->
   <div id="splashScreen">
     <div class="splash-container">
       <div class="zoom-out-group">
@@ -1511,9 +1571,20 @@
         
         <p>01.05.2027 • Miri, Sarawak</p>
         
-        <button class="open-btn" onclick="openInvitationPackage()">
-          <i class="fa-solid fa-envelope-open"></i> OPEN INVITATION
-        </button>
+        <!-- Interactive Flight Track Slider Control -->
+        <div class="slider-track-wrapper">
+          <span class="city-label">Kuala Lumpur</span>
+          
+          <div class="input-container">
+            <!-- Dynamic gold path line following behind the plane -->
+            <div class="flight-progress-line" id="flightProgress"></div>
+            
+            <!-- The airplane drag trigger -->
+            <input type="range" id="flightSlider" min="0" max="100" value="0" aria-label="Slide airplane to open invitation">
+          </div>
+          
+          <span class="city-label">Miri</span>
+        </div>
       </div>
     </div>
   </div>
@@ -2045,26 +2116,60 @@
     // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
     let pageScrollTimer = null;
 
-    function openInvitationPackage() {
+    document.addEventListener("DOMContentLoaded", () => {
+      const slider = document.getElementById("flightSlider");
+      const progress = document.getElementById("flightProgress");
+      const splash = document.getElementById("splashScreen");
+      const mainContent = document.getElementById("top");
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
-      const splash = document.getElementById("splashScreen");
-      const mainContent = document.getElementById("top"); // This grabs your mobile-container by its ID
-    
-      splash.classList.add("fade-out");
-      
-      // 🔥 This activates the transition we just set up in the CSS
-      if (mainContent) mainContent.classList.add("active"); 
-    
-      document.body.classList.remove("no-scroll");
-    
-      myMusic.play().then(() => {
-        musicBtn.classList.add("playing");
-        musicBtn.classList.remove("paused");
-      }).catch(err => console.log("Audio handler log:", err));
-    
-      startPageAutoScroll();
-    }
+
+      if (!slider) return;
+
+      // Track the live movement of the airplane
+      slider.addEventListener("input", (e) => {
+        const value = e.target.value;
+        if (progress) progress.style.width = `${value}%`;
+
+        // Trigger unlock when the plane lands in Miri (100%)
+        if (value >= 100) {
+          splash.classList.add("fade-out");
+          
+          if (mainContent) mainContent.classList.add("active"); 
+          document.body.classList.remove("no-scroll");
+        
+          if (myMusic && musicBtn) {
+            myMusic.play().then(() => {
+              musicBtn.classList.add("playing");
+              musicBtn.classList.remove("paused");
+            }).catch(err => console.log("Audio handler log:", err));
+          }
+        
+          if (typeof startPageAutoScroll === "function") {
+            startPageAutoScroll();
+          }
+
+          // Clean up the splash screen from the DOM after it fades out
+          setTimeout(() => splash.remove(), 600);
+        }
+      });
+
+      // Snap the plane back to Kuala Lumpur if released early
+      slider.addEventListener("change", (e) => {
+        if (e.target.value < 100) {
+          slider.style.transition = "value 0.3s ease";
+          if (progress) progress.style.transition = "width 0.3s ease";
+          
+          slider.value = 0;
+          if (progress) progress.style.width = "0%";
+
+          setTimeout(() => {
+            slider.style.transition = "";
+            if (progress) progress.style.transition = "";
+          }, 300);
+        }
+      });
+    });
 
     function startPageAutoScroll() {
       if (pageScrollTimer) clearInterval(pageScrollTimer);
