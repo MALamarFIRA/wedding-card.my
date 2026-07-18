@@ -459,17 +459,16 @@
     /* 🟢 Shared background blur rules applied directly to both modas */
     #rsvpModal, #wishModal {
       position: fixed;
-      top: 0;
+      top: -10vh; /* 🟢 Stretches the backdrop 10% past the top boundary */
       left: 0;
-      width: 100%;
-      height: 100%;
-      height: -webkit-fill-available; /* Tells iOS to use the real visual window space */
-      background-color: rgba(0, 0, 0, 0.6); /* Darker backdrop to emphasize layout */
+      width: 100vw;
       
-      /* 🔥 THE BLUR FIX */
+      /* 🟢 Dynamic units tell the browser to recalculate height live when bars move */
+      height: 120dvh; /* 🟢 Extra 20% safety buffer to completely eliminate bottom gaps */
+      
+      background-color: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px); /* Safari support */
-      
+      -webkit-backdrop-filter: blur(5px);
       z-index: 10000;
       display: none; 
       align-items: center;
