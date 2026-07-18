@@ -1411,40 +1411,46 @@
     }
 
 
-    /* Backdrop layer for the Wish Modal */
+    /* Backdrop layer for the Wish Modal - Drags container directly to screen center */
     #wishModal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      height: -webkit-fill-available;
-      background-color: rgba(0, 0, 0, 0.4);
-      z-index: 1000;
-      display: none;
+      height: -webkit-fill-available; /* Smooth window scaling for iOS Safari */
+      background-color: rgba(0, 0, 0, 0.5); /* Dimmed background layer */
+      z-index: 10000;
+      display: none; /* Controlled via script active toggles */
+      
+      /* Flex centering rules */
       align-items: center;
       justify-content: center;
     }
+    
+    /* Forces modal active state to display cleanly */
     #wishModal.active {
-      display: flex;
+      display: flex !important;
     }
     
-    /* Internal Card Layout matching your .rsvp-modal styling */
+    /* Internal Card Layout - Matches your exact .rsvp-modal specs */
     .wish-modal-card { 
       background: var(--cream); 
       width: 90%; 
       max-width: 400px; 
       border-radius: 15px; 
       padding: 25px; 
-      position: relative; 
-      transform: translateY(-20px); 
+      position: relative;
+      box-sizing: border-box; 
       
+      /* Transition offsets for layout physics */
+      transform: translateY(0);
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
       
-      max-height: 75vh; 
+      /* Mobile responsiveness boundaries */
+      max-height: 80vh; 
       overflow-y: auto; 
       -webkit-overflow-scrolling: touch; 
-      box-sizing: border-box; 
     }
     
     /* Form structure layout */
@@ -2743,7 +2749,16 @@
   });
 
   function toggleWishModal(show) {
-    document.getElementById('wishModal').style.display = show ? 'block' : 'none';
+    const modal = document.getElementById('wishModal');
+    if (!modal) return;
+    
+    if (show) {
+      modal.classList.add('active');
+      document.body.classList.add('no-scroll'); // Prevents background scrolling on mobile
+    } else {
+      modal.classList.remove('active');
+      document.body.classList.remove('no-scroll'); // Restores scrolling
+    }
   }
   
   function submitPureWish(event) {
