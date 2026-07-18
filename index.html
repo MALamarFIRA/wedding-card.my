@@ -2175,10 +2175,15 @@
     }
 
     function closeRSVP() { 
+      // 🟢 FIX: Force the browser to drop focus so it doesn't jump the background page
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+    
       // 1. Hide the modal backdrop visually
       document.getElementById('rsvpModal').classList.remove('active'); 
       
-      // 2. 🟢 Release the background scroll lock safely without shifting your view position
+      // 2. Release the background scroll lock safely without shifting your view position
       document.body.classList.remove('no-scroll'); 
       
       // 3. Reset all standard input fields inside the form
@@ -2805,10 +2810,14 @@
     
     if (show) {
       modal.classList.add('active');
-      document.body.classList.add('no-scroll'); // Prevents background scrolling on mobile
+      document.body.classList.add('no-scroll'); 
     } else {
+      // 🟢 FIX: Force the browser to drop focus here too before closing
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
       modal.classList.remove('active');
-      document.body.classList.remove('no-scroll'); // Restores scrolling
+      document.body.classList.remove('no-scroll'); 
     }
   }
   
