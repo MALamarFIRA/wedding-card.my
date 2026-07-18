@@ -1637,19 +1637,37 @@
     </div>
     
     <!-- Clean Overlay Modal for Wishes matching RSVP style -->
-    <div id="wishModal">
+    <div id="wishModal" onclick="closeWishModalOnBackdrop(event)">
       <div class="wish-modal-card">
-        <h3 style="font-family: inherit; margin-top: 0; margin-bottom: 15px; font-size: 20px; font-weight: bold; color: #222;">Write a Wish for the Couple</h3>
+        
+        <!-- Top Right ✕ Close Button -->
+        <button type="button" onclick="toggleWishModal(false)" style="
+          position: absolute;
+          top: 15px;
+          right: 20px;
+          background: none;
+          border: none;
+          font-size: 22px;
+          font-weight: bold;
+          color: #777;
+          cursor: pointer;
+          line-height: 1;
+          padding: 5px;
+        ">✕</button>
+    
+        <h3 style="font-family: serif; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; margin-bottom: 25px; font-size: 22px; font-weight: bold; color: var(--maroon); text-align: center;">
+          Leave a Wish
+        </h3>
         
         <form id="pureWishForm" onsubmit="submitPureWish(event)">
           <div style="margin-bottom: 15px; display: flex; flex-direction: column; align-items: flex-start;">
-            <label style="font-size: 14px; margin-bottom: 5px; color: #333;">Your Name:</label>
-            <input type="text" id="wishGuestName" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            <label style="font-size: 13px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; color: #333; letter-spacing: 0.5px;">Your Name *</label>
+            <input type="text" id="wishGuestName" required placeholder="Enter name" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px;">
           </div>
           
-          <div style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: flex-start;">
-            <label style="font-size: 14px; margin-bottom: 5px; color: #333;">Your Blessings / Wishes:</label>
-            <textarea id="wishGuestText" required style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical;"></textarea>
+          <div style="margin-bottom: 25px; display: flex; flex-direction: column; align-items: flex-start;">
+            <label style="font-size: 13px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; color: #333; letter-spacing: 0.5px;">Wishes</label>
+            <textarea id="wishGuestText" required placeholder="Write wishes here..." style="width: 100%; height: 110px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; resize: none;"></textarea>
           </div>
           
           <!-- Styled Submit Button -->
@@ -1657,13 +1675,8 @@
             display: block; width: 100%; background: var(--maroon); color: var(--gold);
             text-align: center; padding: 14px; border-radius: 25px; font-weight: bold;
             font-size: 14px; letter-spacing: 1px; border: none; cursor: pointer; box-sizing: border-box;
+            text-transform: uppercase;
           ">Submit Wish</button>
-          
-          <!-- Styled Cancel Link -->
-          <button type="button" onclick="toggleWishModal(false)" style="
-            background: none; border: none; color: #666; cursor: pointer; text-align: center;
-            margin-top: 15px; font-size: 14px; width: 100%; font-weight: normal;
-          ">Cancel</button>
         </form>
       </div>
     </div>
@@ -2815,6 +2828,12 @@
     .catch(err => {
       console.error("Error submitting wish:", err);
     });
+  }
+  function closeWishModalOnBackdrop(event) { 
+    // If the guest clicks the dark translucent backdrop space rather than inside the card
+    if (event.target.id === 'wishModal') {
+      toggleWishModal(false); 
+    }
   }
   </script>
 </body>
