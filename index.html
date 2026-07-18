@@ -2690,11 +2690,28 @@
         toggleWishModal(false);
         document.getElementById('pureWishForm').reset();
         
-        // 🟢 FIX: Trigger your live wall update immediately without reloading the page
-        // Replace 'loadWishesWall' with the actual function name you use to populate your wishes wall
-        if (typeof loadWishesWall === "function") {
-          loadWishesWall(); 
-        }
+        // 🟢 FORCE IMMEDIATE FRESH FETCH
+        // This mimics exactly what happens when the page loads or when the main RSVP finishes
+        fetch(scriptUrl, {
+          method: "POST",
+          body: JSON.stringify({ action: "getWishes" })
+        })
+        .then(res => res.json())
+        .then(wishesData => {
+          // Find whatever your live wishes container element is called
+          const wallContainer = document.getElementById("liveWishesWall"); 
+          if (wallContainer) {
+            wallContainer.innerHTML = ""; // Clear the old list
+            
+            // Re-render the cards exactly how your layout builds them
+            wishesData.wishes.forEach(item => {
+              const card = document.createElement("div");
+              card.className = "wish-card"; // Match your CSS class name
+              card.innerHTML = `<strong>${item.name}</strong><p>${item.wishes}</p>`;
+              wallContainer.appendChild(card);
+            });
+          }
+        });
         
       } else {
         alert("Oops, something went wrong saving your wish.");
