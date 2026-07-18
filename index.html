@@ -185,37 +185,47 @@
       pointer-events: none;
     }
 
-    /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
+    /* ✈️ Fix for iOS / Safari / Chrome / Android */
     #flightSlider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 35px;
       height: 35px;
-      /* Injected custom Gold SVG Vector path */
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23dfba6b' d='M448 336v-40L288 192V79.2c0-30.5-24.5-55.2-56-55.2s-56 24.7-56 55.2V192L16 296v40l160-48v117.6l-48 35.4v33.4l88-26.2 88 26.2v-33.4l-48-35.4V288z'/%3E%3C/svg%3E");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      
+      /* 🟢 FIX: Strip mobile browser native card structures */
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      
       cursor: grab;
       transform: rotate(90deg);
       transition: transform 0.1s;
-      z-index: 10 !important; /* Forces the airplane asset to the top visible layer */
+      z-index: 10 !important;
     }
 
     #flightSlider::-webkit-slider-thumb:active { cursor: grabbing; }
 
-    /* ✈️ Firefox Flight Thumb Asset */
+    /* ✈️ Fix for Firefox Mobile */
     #flightSlider::-moz-range-thumb {
       width: 35px;
       height: 35px;
-      border: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23dfba6b' d='M448 336v-40L288 192V79.2c0-30.5-24.5-55.2-56-55.2s-56 24.7-56 55.2V192L16 296v40l160-48v117.6l-48 35.4v33.4l88-26.2 88 26.2v-33.4l-48-35.4V288z'/%3E%3C/svg%3E");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      
+      /* 🟢 FIX: Strip mobile browser native card structures */
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      
       cursor: grab;
       transform: rotate(90deg);
-      z-index: 10 !important; /* Fix for Firefox on Android */
+      z-index: 10 !important;
     }
 
     #splashScreen.fade-out {
