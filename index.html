@@ -114,14 +114,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative; /* 🟢 CRITICAL: Centers the absolute hint text container layer inside */
-      background: rgba(255, 255, 255, 0.08); /* Sophisticated dark translucent track base */
+      position: relative;
+      background: rgba(255, 255, 255, 0.08); /* Translucent track base */
       padding: 20px 20px;
       border-radius: 50px;
       border: 1.5px solid var(--gold);
       width: 100%;
       box-sizing: border-box;
+      
+      /* 🟢 NEW: Squish-to-expand entrance animation */
+      animation: squishExpand 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both;
     }
+    
     .slider-hint-text {
       position: absolute;
       left: 50%;
@@ -140,7 +144,7 @@
       transition: opacity 0.2s ease;
     }
 
-    .city-label {
+   .city-label {
       font-family: 'Montserrat', sans-serif !important;
       font-weight: bold;
       font-size: 12px;
@@ -160,7 +164,6 @@
       align-items: center;
     }
 
-    /* Invisible control rail over the layout path */
     #flightSlider {
       -webkit-appearance: none;
       appearance: none;
@@ -174,7 +177,6 @@
       cursor: pointer;
     }
 
-    /* Live gold track line following behind the moving plane */
     .flight-progress-line {
       position: absolute;
       left: 0;
@@ -185,7 +187,7 @@
       pointer-events: none;
     }
 
-    /* ✈️ Fix for iOS / Safari / Chrome / Android */
+    /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
     #flightSlider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -195,12 +197,9 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      
-      /* 🟢 FIX: Strip mobile browser native card structures */
       background-color: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      
       cursor: grab;
       transform: rotate(90deg);
       transition: transform 0.1s;
@@ -209,23 +208,35 @@
 
     #flightSlider::-webkit-slider-thumb:active { cursor: grabbing; }
 
-    /* ✈️ Fix for Firefox Mobile */
+    /* ✈️ Firefox Flight Thumb Asset */
     #flightSlider::-moz-range-thumb {
       width: 35px;
       height: 35px;
+      border: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23dfba6b' d='M448 336v-40L288 192V79.2c0-30.5-24.5-55.2-56-55.2s-56 24.7-56 55.2V192L16 296v40l160-48v117.6l-48 35.4v33.4l88-26.2 88 26.2v-33.4l-48-35.4V288z'/%3E%3C/svg%3E");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      
-      /* 🟢 FIX: Strip mobile browser native card structures */
       background-color: transparent !important;
-      border: none !important;
       box-shadow: none !important;
-      
       cursor: grab;
       transform: rotate(90deg);
       z-index: 10 !important;
+    }
+
+    /* 🟢 ANIMATION KEYFRAMES: Starts narrow/squished, pops open wide */
+    @keyframes squishExpand {
+      0% {
+        transform: scaleX(0.3) scaleY(0.6);
+        opacity: 0;
+      }
+      60% {
+        opacity: 1;
+      }
+      100% {
+        transform: scaleX(1) scaleY(1);
+        opacity: 1;
+      }
     }
 
     #splashScreen.fade-out {
@@ -1602,10 +1613,7 @@
         
         <!-- Interactive Flight Track Slider Control -->
         <div class="slider-track-wrapper">
-          <span class="city-label">KUL</span>
-          
-          <!-- 🟢 NEW: Translucent guideline text sitting behind the flight lane -->
-          <div class="slider-hint-text" id="sliderHint">Slide to open invitation</div>
+          <span class="city-label">Kuala Lumpur</span>
           
           <div class="input-container">
             <!-- Dynamic gold path line following behind the plane -->
@@ -1615,7 +1623,7 @@
             <input type="range" id="flightSlider" min="0" max="100" value="0" aria-label="Slide airplane to open invitation">
           </div>
           
-          <span class="city-label">MYY</span>
+          <span class="city-label">Miri</span>
         </div>
       </div>
     </div>
