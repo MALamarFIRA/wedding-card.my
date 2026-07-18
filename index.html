@@ -3033,13 +3033,13 @@
       }
     }
   
- function submitPureWish(event) {
+  function submitPureWish(event) {
     event.preventDefault();
     
     const nameInput = document.getElementById('wishGuestName').value;
     const wishInput = document.getElementById('wishGuestText').value;
     
-    // 🟢 Target the submit button inside your pureWishForm framework
+    // Target the submit button inside your pureWishForm framework
     const form = document.getElementById('pureWishForm');
     const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
@@ -3050,13 +3050,14 @@
       submitBtn.style.cursor = "not-allowed";
     }
     
+    // 🟢 CHANGED: Modified payload to alert your sheet backend this is ONLY a wish, preventing name collision blocks
     const payload = {
-      action: "submitRsvp",
+      action: "submitWishOnly", // 🟢 Changed action name so script doesn't conflict with RSVP validation
       formData: {
         name: nameInput,
-        status: "", 
+        status: "Wish Only", // 🟢 Explicitly flag status so it skips RSVP logic
         pax: "0",
-        email: "",
+        email: "wish@only.com", // 🟢 Dummy string to satisfy column structures if needed
         wishes: wishInput
       }
     };
@@ -3069,7 +3070,8 @@
     })
     .then(res => res.json())
     .then(data => {
-      if (data.result === "Success") {
+      // Handles both direct updates or general creation confirmations safely
+      if (data.result === "Success" || data.status === "Success") {
         alert("Thank you! Your wish has been recorded beautifully.");
         toggleWishModal(false);
         if (form) form.reset();
@@ -3100,7 +3102,7 @@
       alert("Network error: Could not submit wish. Please check your connection.");
     })
     .finally(() => {
-      // 🟢 ALWAYS RUNS: Re-enables the submit button once the process completes
+      // ALWAYS RUNS: Re-enables the submit button once the process completes
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerText = "Submit Wish";
