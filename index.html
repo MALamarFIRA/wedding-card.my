@@ -2155,16 +2155,41 @@
       const mainContent = document.getElementById("top");
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
-      const hint = document.getElementById("sliderHint"); // 🟢 Tracks the hint text
+      const hint = document.getElementById("sliderHint");
 
       if (!slider) return;
 
-      // Track the live movement of the airplane
+      // Cleanly handles the invitation unlock sequence inside user-initiated events
+      function triggerUnlock() {
+        // Prevent accidental double firing if the splash screen is already fading
+        if (splash.classList.contains("fade-out")) return;
+
+        splash.classList.add("fade-out");
+        
+        if (mainContent) mainContent.classList.add("active"); 
+        document.body.classList.remove("no-scroll");
+      
+        // 🟢 FIXED: Preserves user intent so mobile browsers allow audio playback
+        if (myMusic && musicBtn) {
+          myMusic.play().then(() => {
+            musicBtn.classList.add("playing");
+            musicBtn.classList.remove("paused");
+          }).catch(err => console.log("Audio engine bypass log:", err));
+        }
+      
+        if (typeof startPageAutoScroll === "function") {
+          startPageAutoScroll();
+        }
+
+        setTimeout(() => splash.remove(), 600);
+      }
+
+      // Track the live structural movement of the plane
       slider.addEventListener("input", (e) => {
         const value = e.target.value;
         if (progress) progress.style.width = `${value}%`;
 
-        // 🟢 Dynamically fade out text as the user moves past 10%
+        // Dynamically fade out text as the user moves past 10%
         if (hint) {
           if (value > 10) {
             hint.style.opacity = "0";
@@ -2173,39 +2198,23 @@
           }
         }
 
-        // Trigger unlock when the plane lands in Miri (100%)
+        // Handles immediate completion (mostly on desktop viewports)
         if (value >= 100) {
-          splash.classList.add("fade-out");
-          
-          if (mainContent) mainContent.classList.add("active"); 
-          document.body.classList.remove("no-scroll");
-        
-          if (myMusic && musicBtn) {
-            myMusic.play().then(() => {
-              musicBtn.classList.add("playing");
-              musicBtn.classList.remove("paused");
-            }).catch(err => console.log("Audio handler log:", err));
-          }
-        
-          if (typeof startPageAutoScroll === "function") {
-            startPageAutoScroll();
-          }
-
-          // Clean up the splash screen from the DOM after it fades out
-          setTimeout(() => splash.remove(), 600);
+          triggerUnlock();
         }
       });
 
-      // Snap the plane back to Kuala Lumpur if released early
-      slider.addEventListener("change", (e) => {
-        if (e.target.value < 100) {
+      // 🟢 MOBILE SECURITY FIX: Catch the exact moment a touch or click is lifted
+      const handleRelease = (e) => {
+        if (slider.value >= 100) {
+          triggerUnlock();
+        } else {
+          // Snap the plane back to Kuala Lumpur if released early
           slider.style.transition = "value 0.3s ease";
           if (progress) progress.style.transition = "width 0.3s ease";
           
           slider.value = 0;
           if (progress) progress.style.width = "0%";
-          
-          // 🟢 Restore text hint visibility if they let go early
           if (hint) hint.style.opacity = "0.4";
 
           setTimeout(() => {
@@ -2213,7 +2222,12 @@
             if (progress) progress.style.transition = "";
           }, 300);
         }
-      });
+      };
+
+      // Bind all forms of user-action interaction release to pass mobile media checks
+      slider.addEventListener("change", handleRelease);
+      slider.addEventListener("touchend", handleRelease);
+      slider.addEventListener("mouseup", handleRelease);
     });
 
     function startPageAutoScroll() {
