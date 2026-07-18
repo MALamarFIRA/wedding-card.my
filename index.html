@@ -3033,11 +3033,22 @@
       }
     }
   
-  function submitPureWish(event) {
+ function submitPureWish(event) {
     event.preventDefault();
     
     const nameInput = document.getElementById('wishGuestName').value;
     const wishInput = document.getElementById('wishGuestText').value;
+    
+    // 🟢 Target the submit button inside your pureWishForm framework
+    const form = document.getElementById('pureWishForm');
+    const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Submitting...";
+      submitBtn.style.opacity = "0.6";
+      submitBtn.style.cursor = "not-allowed";
+    }
     
     const payload = {
       action: "submitRsvp",
@@ -3061,9 +3072,9 @@
       if (data.result === "Success") {
         alert("Thank you! Your wish has been recorded beautifully.");
         toggleWishModal(false);
-        document.getElementById('pureWishForm').reset();
+        if (form) form.reset();
         
-        // 🟢 FIX: Prepends the new wish to the wall instantly with identical styles & quotes
+        // Prepends the new wish to the wall instantly with identical styles & quotes
         const wall = document.getElementById('liveWishesWall');
         if (wall) {
           const placeholder = document.getElementById('noWishesPlaceholder');
@@ -3086,6 +3097,16 @@
     })
     .catch(err => {
       console.error("Error submitting wish:", err);
+      alert("Network error: Could not submit wish. Please check your connection.");
+    })
+    .finally(() => {
+      // 🟢 ALWAYS RUNS: Re-enables the submit button once the process completes
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Wish";
+        submitBtn.style.opacity = "1";
+        submitBtn.style.cursor = "pointer";
+      }
     });
   }
   function closeWishModalOnBackdrop(event) { 
