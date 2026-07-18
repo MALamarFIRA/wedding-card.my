@@ -1558,6 +1558,30 @@
       </div>
     </div>
 
+    <!-- The Button below Live Wishes Wall -->
+    <button id="openWishBtn" onclick="toggleWishModal(true)">✨ Leave a Wish Only</button>
+    
+    <!-- Simple Overlay Modal for Wishes -->
+    <div id="wishModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;">
+      <div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; border-radius:8px; position:relative;">
+        <h3>Write a Wish for the Couple</h3>
+        
+        <form id="pureWishForm" onsubmit="submitPureWish(event)">
+          <div style="margin-bottom:12px;">
+            <label>Your Name:</label>
+            <input type="text" id="wishGuestName" required style="width:100%; padding:8px; box-sizing:border-box;">
+          </div>
+          <div style="margin-bottom:12px;">
+            <label>Your Blessings / Wishes:</label>
+            <textarea id="wishGuestText" required style="width:100%; height:100px; padding:8px; box-sizing:border-box;"></textarea>
+          </div>
+          
+          <button type="submit" style="width:100%; padding:10px; background:#d4af37; color:#fff; border:none; border-radius:4px; cursor:pointer;">Submit Wish</button>
+          <button type="button" onclick="toggleWishModal(false)" style="width:100%; margin-top:8px; background:none; border:none; color:#666; cursor:pointer;">Cancel</button>
+        </form>
+      </div>
+    </div>
+
     <footer style="text-align: center; padding: 20px; font-size: 12px; letter-spacing: 1px;">
       <p style="margin: 0; color: #000000;">
         Made by 
@@ -2631,6 +2655,55 @@
       });
     });
   });
+
+  function toggleWishModal(show) {
+    document.getElementById('wishModal').style.display = show ? 'block' : 'none';
+  }
+  
+  function submitPureWish(event) {
+    event.preventDefault();
+    
+    const nameInput = document.getElementById('wishGuestName').value;
+    const wishInput = document.getElementById('wishGuestText').value;
+    
+    // Package matching your backend schema structure
+    const payload = {
+      action: "submitRsvp", // Reuses your robust backend destination route
+      formData: {
+        name: nameInput,
+        status: "", // Sent empty so it won't check for attendance duplicates
+        pax: "0",
+        email: "",
+        wishes: wishInput
+      }
+    };
+  
+    // Replace with your operational Google Apps Script Web App Deployment URL
+    const scriptUrl = "https://script.google.com/macros/s/.../exec"; 
+  
+    fetch(scriptUrl, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === "Success") {
+        alert("Thank you! Your wish has been recorded beautifully.");
+        toggleWishModal(false);
+        document.getElementById('pureWishForm').reset();
+        
+        // OPTIONAL: Call your front-end refresh function for the wishes wall 
+        // e.g., if you have a function named loadWishesWall(), run it here:
+        if (typeof loadWishesWall === "function") loadWishesWall();
+      } else {
+        alert("Oops, something went wrong saving your wish. Please try again!");
+      }
+    })
+    .catch(err => {
+      console.error("Error submitting wish:", err);
+      alert("Network error. Please try again later.");
+    });
+  }
   </script>
 </body>
 </html>
