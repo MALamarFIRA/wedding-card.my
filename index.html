@@ -2159,19 +2159,7 @@
 
       if (!slider) return;
 
-      // 🟢 CREATE A HIDDEN AUDIO BYPASS OVERLAY LAYER
-      const audioBypassLayer = document.createElement("div");
-      audioBypassLayer.style.position = "fixed";
-      audioBypassLayer.style.top = "0";
-      audioBypassLayer.style.left = "0";
-      audioBypassLayer.style.width = "100vw";
-      audioBypassLayer.style.height = "100dvh";
-      audioBypassLayer.style.zIndex = "9999999"; // Absolute top layer
-      audioBypassLayer.style.background = "transparent";
-      audioBypassLayer.style.display = "none";
-      document.body.appendChild(audioBypassLayer);
-
-      // Cleanly handles the invitation unlock sequence inside a guaranteed user click frame
+      // Cleanly handles the invitation unlock sequence instantly
       function triggerUnlock() {
         if (splash.classList.contains("fade-out")) return;
 
@@ -2179,26 +2167,24 @@
         if (mainContent) mainContent.classList.add("active"); 
         document.body.classList.remove("no-scroll");
       
-        // Play the music now that the interaction block has been completely bypassed
+        // 🟢 Direct Play inside the active sliding event framework
         if (myMusic && musicBtn) {
           myMusic.play().then(() => {
             musicBtn.classList.add("playing");
             musicBtn.classList.remove("paused");
-          }).catch(err => console.log("Audio layout engine bypass log:", err));
+          }).catch(err => console.log("Audio engine bypass log:", err));
         }
       
         if (typeof startPageAutoScroll === "function") {
           startPageAutoScroll();
         }
 
-        // Clean up everything from the DOM layout
-        audioBypassLayer.remove();
         setTimeout(() => splash.remove(), 600);
       }
 
       // Track the live structural movement of the plane
       slider.addEventListener("input", (e) => {
-        const value = e.target.value;
+        const value = parseInt(e.target.value, 10);
         if (progress) progress.style.width = `${value}%`;
 
         // Dynamically fade out text as the user moves past 10%
@@ -2210,26 +2196,21 @@
           }
         }
 
-        // 🟢 As the plane snaps onto Miri, instantly intercept the touch frame with our tap catcher
+        // 🟢 INSTANT TRIGGER: Open immediately the exact millisecond it hits 100% while sliding
         if (value >= 100) {
-          audioBypassLayer.style.display = "block";
+          triggerUnlock();
         }
       });
 
-      // Catch the release action context to verify progress depth
+      // Reset handler if let go anywhere before 100%
       const handleRelease = (e) => {
-        if (slider.value >= 100) {
-          // If already at 100, wait for the overlay click to execute
-          audioBypassLayer.style.display = "block";
-        } else {
-          // Snap the plane back to Kuala Lumpur if released early
+        if (parseInt(slider.value, 10) < 100) {
           slider.style.transition = "value 0.3s ease";
           if (progress) progress.style.transition = "width 0.3s ease";
           
           slider.value = 0;
           if (progress) progress.style.width = "0%";
           if (hint) hint.style.opacity = "0.4";
-          audioBypassLayer.style.display = "none";
 
           setTimeout(() => {
             slider.style.transition = "";
@@ -2237,15 +2218,6 @@
           }, 300);
         }
       };
-
-      // 🟢 The Golden Fix: Intercept the touch release as a concrete click event window
-      audioBypassLayer.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        triggerUnlock();
-      });
-      audioBypassLayer.addEventListener("click", () => {
-        triggerUnlock();
-      });
 
       slider.addEventListener("change", handleRelease);
       slider.addEventListener("touchend", handleRelease);
@@ -2276,7 +2248,6 @@
     window.addEventListener('wheel', stopPageAutoScroll);
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
-
     let savedScrollTop = 0;
     function openRSVP() {
       // 🗓️ CONFIGURE YOUR RSVP DEADLINE HERE (Format: YYYY-MM-DD)
