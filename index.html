@@ -2159,28 +2159,40 @@
 
       if (!slider) return;
 
-      // Cleanly handles the invitation unlock sequence inside user-initiated events
+      // 🟢 CREATE A HIDDEN AUDIO BYPASS OVERLAY LAYER
+      const audioBypassLayer = document.createElement("div");
+      audioBypassLayer.style.position = "fixed";
+      audioBypassLayer.style.top = "0";
+      audioBypassLayer.style.left = "0";
+      audioBypassLayer.style.width = "100vw";
+      audioBypassLayer.style.height = "100dvh";
+      audioBypassLayer.style.zIndex = "9999999"; // Absolute top layer
+      audioBypassLayer.style.background = "transparent";
+      audioBypassLayer.style.display = "none";
+      document.body.appendChild(audioBypassLayer);
+
+      // Cleanly handles the invitation unlock sequence inside a guaranteed user click frame
       function triggerUnlock() {
-        // Prevent accidental double firing if the splash screen is already fading
         if (splash.classList.contains("fade-out")) return;
 
         splash.classList.add("fade-out");
-        
         if (mainContent) mainContent.classList.add("active"); 
         document.body.classList.remove("no-scroll");
       
-        // 🟢 FIXED: Preserves user intent so mobile browsers allow audio playback
+        // Play the music now that the interaction block has been completely bypassed
         if (myMusic && musicBtn) {
           myMusic.play().then(() => {
             musicBtn.classList.add("playing");
             musicBtn.classList.remove("paused");
-          }).catch(err => console.log("Audio engine bypass log:", err));
+          }).catch(err => console.log("Audio layout engine bypass log:", err));
         }
       
         if (typeof startPageAutoScroll === "function") {
           startPageAutoScroll();
         }
 
+        // Clean up everything from the DOM layout
+        audioBypassLayer.remove();
         setTimeout(() => splash.remove(), 600);
       }
 
@@ -2198,16 +2210,17 @@
           }
         }
 
-        // Handles immediate completion (mostly on desktop viewports)
+        // 🟢 As the plane snaps onto Miri, instantly intercept the touch frame with our tap catcher
         if (value >= 100) {
-          triggerUnlock();
+          audioBypassLayer.style.display = "block";
         }
       });
 
-      // 🟢 MOBILE SECURITY FIX: Catch the exact moment a touch or click is lifted
+      // Catch the release action context to verify progress depth
       const handleRelease = (e) => {
         if (slider.value >= 100) {
-          triggerUnlock();
+          // If already at 100, wait for the overlay click to execute
+          audioBypassLayer.style.display = "block";
         } else {
           // Snap the plane back to Kuala Lumpur if released early
           slider.style.transition = "value 0.3s ease";
@@ -2216,6 +2229,7 @@
           slider.value = 0;
           if (progress) progress.style.width = "0%";
           if (hint) hint.style.opacity = "0.4";
+          audioBypassLayer.style.display = "none";
 
           setTimeout(() => {
             slider.style.transition = "";
@@ -2224,7 +2238,15 @@
         }
       };
 
-      // Bind all forms of user-action interaction release to pass mobile media checks
+      // 🟢 The Golden Fix: Intercept the touch release as a concrete click event window
+      audioBypassLayer.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        triggerUnlock();
+      });
+      audioBypassLayer.addEventListener("click", () => {
+        triggerUnlock();
+      });
+
       slider.addEventListener("change", handleRelease);
       slider.addEventListener("touchend", handleRelease);
       slider.addEventListener("mouseup", handleRelease);
