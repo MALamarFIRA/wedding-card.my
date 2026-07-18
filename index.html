@@ -114,13 +114,29 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative;
+      position: relative; /* 🟢 CRITICAL: Centers the absolute hint text container layer inside */
       background: rgba(255, 255, 255, 0.08); /* Sophisticated dark translucent track base */
       padding: 20px 20px;
       border-radius: 50px;
       border: 1.5px solid var(--gold);
       width: 100%;
       box-sizing: border-box;
+    }
+    .slider-hint-text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Montserrat', sans-serif !important;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.4; /* Soft and non-intrusive appearance */
+      pointer-events: none; /* Allows click-through dragging directly onto the range thumb track */
+      z-index: 2;
+      white-space: nowrap;
+      transition: opacity 0.2s ease;
     }
 
     .city-label {
@@ -1573,7 +1589,10 @@
         
         <!-- Interactive Flight Track Slider Control -->
         <div class="slider-track-wrapper">
-          <span class="city-label">Kuala Lumpur</span>
+          <span class="city-label">KUL</span>
+          
+          <!-- 🟢 NEW: Translucent guideline text sitting behind the flight lane -->
+          <div class="slider-hint-text" id="sliderHint">Slide to open invitation</div>
           
           <div class="input-container">
             <!-- Dynamic gold path line following behind the plane -->
@@ -1583,7 +1602,7 @@
             <input type="range" id="flightSlider" min="0" max="100" value="0" aria-label="Slide airplane to open invitation">
           </div>
           
-          <span class="city-label">Miri</span>
+          <span class="city-label">MYY</span>
         </div>
       </div>
     </div>
@@ -2123,6 +2142,7 @@
       const mainContent = document.getElementById("top");
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
+      const hint = document.getElementById("sliderHint"); // 🟢 Tracks the hint text
 
       if (!slider) return;
 
@@ -2130,6 +2150,15 @@
       slider.addEventListener("input", (e) => {
         const value = e.target.value;
         if (progress) progress.style.width = `${value}%`;
+
+        // 🟢 Dynamically fade out text as the user moves past 10%
+        if (hint) {
+          if (value > 10) {
+            hint.style.opacity = "0";
+          } else {
+            hint.style.opacity = "0.4";
+          }
+        }
 
         // Trigger unlock when the plane lands in Miri (100%)
         if (value >= 100) {
@@ -2162,6 +2191,9 @@
           
           slider.value = 0;
           if (progress) progress.style.width = "0%";
+          
+          // 🟢 Restore text hint visibility if they let go early
+          if (hint) hint.style.opacity = "0.4";
 
           setTimeout(() => {
             slider.style.transition = "";
