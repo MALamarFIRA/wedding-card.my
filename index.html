@@ -2690,29 +2690,11 @@
         toggleWishModal(false);
         document.getElementById('pureWishForm').reset();
         
-        // 🟢 FORCE IMMEDIATE FRESH FETCH
-        // This mimics exactly what happens when the page loads or when the main RSVP finishes
-        fetch(scriptUrl, {
-          method: "POST",
-          body: JSON.stringify({ action: "getWishes" })
-        })
-        .then(res => res.json())
-        .then(wishesData => {
-          // Find whatever your live wishes container element is called
-          const wallContainer = document.getElementById("liveWishesWall"); 
-          if (wallContainer) {
-            wallContainer.innerHTML = ""; // Clear the old list
-            
-            // Re-render the cards exactly how your layout builds them
-            wishesData.wishes.forEach(item => {
-              const card = document.createElement("div");
-              card.className = "wish-card"; // Match your CSS class name
-              card.innerHTML = `<strong>${item.name}</strong><p>${item.wishes}</p>`;
-              wallContainer.appendChild(card);
-            });
-          }
-        });
-        
+        // Call your website's actual native wall loader function here
+        // Replace 'loadWishes' with whatever your existing load function is named
+        if (typeof loadWishes === "function") {
+          loadWishes(); 
+        }
       } else {
         alert("Oops, something went wrong saving your wish.");
       }
