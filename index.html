@@ -24,10 +24,10 @@
 
     /* Scroll lock class when splash screen is active */
     body.no-scroll {
-      overflow: hidden;
-      height: 100vh;
-      position: fixed; /* 🟢 Prevents iOS Safari rubber-band background scrolling entirely */
-      width: 100%;
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100% !important;
+      /* position: fixed; REMOVED to stop the page from snapping to the top */
     }
 
     body {
@@ -2061,10 +2061,9 @@
     window.addEventListener('keydown', stopPageAutoScroll);
 
 
-
     function openRSVP() {
       // 🗓️ CONFIGURE YOUR RSVP DEADLINE HERE (Format: YYYY-MM-DD)
-      const RSVP_DUE_DATE = "2027-04-01"; // Updated to your wedding timeline year!
+      const RSVP_DUE_DATE = "2027-04-01"; 
       
       const currentDate = new Date();
       const deadlineDate = new Date(RSVP_DUE_DATE);
@@ -2075,7 +2074,7 @@
         return; // 🛑 Stops the regular RSVP form from popping up
       }
     
-      // ✨ NEW: Clean reset everything right before displaying the form to clear previous input remnants
+      // ✨ Clean reset everything right before displaying the form to clear previous input remnants
       const form = document.getElementById('rsvpForm');
       if (form) form.reset();
     
@@ -2090,13 +2089,16 @@
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
       
-      // 🟢 CRITICAL: Lock body scrolling right as the modal becomes active to prevent background leaking
+      // 🟢 CRITICAL: Lock body scrolling safely right as the modal becomes active
       document.body.classList.add('no-scroll'); 
     }
 
     // 🌟 GORGEOUS CUSTOM MODAL POPUP ENGINE
     function showClosedRsvpPopup(deadlineStr) {
       if (document.getElementById('rsvpClosedModal')) return;
+
+      // 🟢 CRITICAL: Lock body scrolling safely so background doesn't jump
+      document.body.classList.add('no-scroll');
 
       const overlay = document.createElement('div');
       overlay.id = 'rsvpClosedModal';
@@ -2151,7 +2153,11 @@
       const closePopup = () => {
         overlay.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
-        setTimeout(() => overlay.remove(), 400);
+        setTimeout(() => {
+          overlay.remove();
+          // 🟢 CRITICAL: Safely unlock main background scrolling when this window is destroyed
+          document.body.classList.remove('no-scroll');
+        }, 400);
       };
 
       document.getElementById('closeClosedRsvpBtn').onclick = closePopup;
@@ -2162,7 +2168,7 @@
       // 1. Hide the modal backdrop visually
       document.getElementById('rsvpModal').classList.remove('active'); 
       
-      // 2. 🟢 CRITICAL: Release the background scroll lock so guests can scroll the main invitation page again
+      // 2. 🟢 Release the background scroll lock safely without shifting your view position
       document.body.classList.remove('no-scroll'); 
       
       // 3. Reset all standard input fields inside the form
@@ -2173,7 +2179,9 @@
       if (emailInput) emailInput.required = false;
     
       // 5. Automatically reset, hide, and clean out all your conditional panels
-      toggleAttendanceFields(""); 
+      if (typeof toggleAttendanceFields === "function") {
+        toggleAttendanceFields(""); 
+      }
     }
 
     function closeRSVPOnBackdrop(event) { 
