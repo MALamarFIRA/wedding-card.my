@@ -1410,6 +1410,50 @@
         box-sizing: border-box;
     }
 
+
+    /* Backdrop layer for the Wish Modal */
+    #wishModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      height: -webkit-fill-available;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #wishModal.active {
+      display: flex;
+    }
+    
+    /* Internal Card Layout matching your .rsvp-modal styling */
+    .wish-modal-card { 
+      background: var(--cream); 
+      width: 90%; 
+      max-width: 400px; 
+      border-radius: 15px; 
+      padding: 25px; 
+      position: relative; 
+      transform: translateY(-20px); 
+      
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      
+      max-height: 75vh; 
+      overflow-y: auto; 
+      -webkit-overflow-scrolling: touch; 
+      box-sizing: border-box; 
+    }
+    
+    /* Form structure layout */
+    #pureWishForm {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 25px;
+    }
+
   </style>
 </head>
 
