@@ -2475,48 +2475,70 @@
       else { myMusic.pause(); musicBtn.classList.remove("playing"); musicBtn.classList.add("paused"); }
     }
 
-    // --- VERTICAL CAROUSEL ENGINE LOGIC ---
+   // --- VERTICAL CAROUSEL ENGINE LOGIC ---
     let carouselTimer = null;
-    let scrollDirection = 1; // 1 = downward scrolling, -1 = upward scrolling
+    let autoScrollPaused = false;
+    let resumeTimeout = null;
+    let currentScrollTop = 0;
+    const scrollSpeed = 0.5; // 🟢 Adjust speed here: lower is slower/smoother, higher is faster
 
     function startWishAutoScroll() {
-      if (carouselTimer) clearInterval(carouselTimer);
-      
-      carouselTimer = setInterval(() => {
-        const wall = document.getElementById('liveWishesWall');
-        if (!wall) return;
+      const wall = document.getElementById('liveWishesWall');
+      if (!wall) return;
 
-        // Calculate max vertical scroll depth limit
+      function renderFrame() {
+        // If the system is paused by human touch, halt frame tracking adjustments
+        if (autoScrollPaused) {
+          carouselTimer = requestAnimationFrame(renderFrame);
+          return;
+        }
+
         const maxScroll = wall.scrollHeight - wall.clientHeight;
-        if (maxScroll <= 0) return; // Not enough wishes to slide yet
-
-        // If scrolling downwards and hit the bottom floor
-        if (scrollDirection === 1 && wall.scrollTop >= maxScroll - 2) {
-          scrollDirection = -1; // Reverse path to upward scroll
-          return; 
-        } 
-        // If scrolling upwards and reached the top floor
-        else if (scrollDirection === -1 && wall.scrollTop <= 2) {
-          scrollDirection = 1; // Reverse path to downward scroll
+        if (maxScroll <= 0) {
+          carouselTimer = requestAnimationFrame(renderFrame);
           return; 
         }
 
-        // Increment or decrement the vertical scroll position cleanly by 40px
-        const nextScrollTarget = wall.scrollTop + (40 * scrollDirection);
-        wall.scrollTo({ top: nextScrollTarget, behavior: 'smooth' });
-      }, 4000); // Transitions automatically every 4 seconds
+        // Keep internal tracker synced to match programmatic or manual positions
+        currentScrollTop += scrollSpeed;
+
+        // Infinite loop wrap: if it scrolls to the absolute bottom floor, reset instantly to top
+        if (currentScrollTop >= maxScroll) {
+          currentScrollTop = 0;
+        }
+
+        wall.scrollTop = currentScrollTop;
+        carouselTimer = requestAnimationFrame(renderFrame);
+      }
+
+      // Safeguard against stacking animation loop frameworks
+      if (carouselTimer) cancelAnimationFrame(carouselTimer);
+      carouselTimer = requestAnimationFrame(renderFrame);
     }
 
+    function handleUserInteraction() {
+      autoScrollPaused = true;
+      
+      const wall = document.getElementById('liveWishesWall');
+      if (wall) currentScrollTop = wall.scrollTop; // Resync coordinates accurately to user position
+
+      // Clear any existing timer loops running down the clock
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+
+      // 🟢 Pauses everything for exactly 10 seconds before letting the layout roll again
+      resumeTimeout = setTimeout(() => {
+        autoScrollPaused = false;
+      }, 10000);
+    }
+
+    // Bind listeners to catch both click drags and touch configurations seamlessly
     const wallEl = document.getElementById('liveWishesWall');
     if (wallEl) {
-      // Pause animation if a guest touches or manually drags the wall container list
-      wallEl.addEventListener('touchstart', () => { 
-        if (carouselTimer) clearInterval(carouselTimer); 
-      }, { passive: true });
+      wallEl.addEventListener('touchstart', handleUserInteraction, { passive: true });
+      wallEl.addEventListener('mousedown', handleUserInteraction);
       
-      wallEl.addEventListener('touchend', () => {
-        startWishAutoScroll();
-      }, { passive: true });
+      // Let scrolling pause if the user scrolls using a mouse wheel trackpad
+      wallEl.addEventListener('wheel', handleUserInteraction, { passive: true });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -2526,11 +2548,11 @@
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ action: "getWishes" }) // Tell backend what action to run
+        body: JSON.stringify({ action: "getWishes" })
       })
       .then(response => response.json())
       .then(data => {
-        const existingWishes = data.wishes; // Access the array returned from backend
+        const existingWishes = data.wishes; 
         const wall = document.getElementById('liveWishesWall');
         
         if (existingWishes && existingWishes.length > 0) {
