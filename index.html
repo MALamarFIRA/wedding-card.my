@@ -2479,33 +2479,39 @@
     let carouselTimer = null;
     let autoScrollPaused = false;
     let resumeTimeout = null;
-    const scrollSpeed = 0.5; // 🟢 Adjust speed here: lower is slower/smoother, higher is faster
+    
+    // 🟢 SLOWER SPEED: Reduced to 0.25 for a steady, easy-to-read drift
+    const scrollSpeed = 0.25; 
 
     function startWishAutoScroll() {
       const wall = document.getElementById('liveWishesWall');
       if (!wall) return;
 
+      // 🟢 SEAMLESS LOOP PREPARATION: Clone items if not done already
+      // This fills the bottom gap so it loops endlessly without a harsh reset snap
+      if (!wall.dataset.looped && wall.children.length > 0) {
+        const originalItems = Array.from(wall.children);
+        originalItems.forEach(item => {
+          const clone = item.cloneNode(true);
+          wall.appendChild(clone);
+        });
+        wall.dataset.looped = "true";
+      }
+
       function renderFrame() {
-        // If the system is paused by human touch, keep the animation loop alive but don't move the scroll
         if (autoScrollPaused) {
           carouselTimer = requestAnimationFrame(renderFrame);
           return;
         }
 
-        const maxScroll = wall.scrollHeight - wall.clientHeight;
-        if (maxScroll <= 0) {
-          carouselTimer = requestAnimationFrame(renderFrame);
-          return; 
-        }
-
-        // 🟢 FIXED: Constantly read the live DOM position to prevent manual scroll snapping bugs
+        // Calculate the halfway mark (height of original elements before clones)
+        const halfScrollHeight = wall.scrollHeight / 2;
+        
         let currentScroll = wall.scrollTop;
-
-        // Increment the scroll position frame by frame
         currentScroll += scrollSpeed;
 
-        // Infinite loop wrap: if it rolls to the absolute bottom floor, reset cleanly to the top
-        if (currentScroll >= maxScroll - 0.5) {
+        // 🟢 SEAMLESS LOOP RESET: Instantly reset back to 0 the millisecond it rolls past original items
+        if (currentScroll >= halfScrollHeight) {
           currentScroll = 0;
         }
 
@@ -2513,7 +2519,6 @@
         carouselTimer = requestAnimationFrame(renderFrame);
       }
 
-      // Safeguard against stacking animation loop frameworks
       if (carouselTimer) cancelAnimationFrame(carouselTimer);
       carouselTimer = requestAnimationFrame(renderFrame);
     }
@@ -2521,16 +2526,15 @@
     function handleUserInteraction() {
       autoScrollPaused = true;
 
-      // Clear any existing timer loops running down the clock
       if (resumeTimeout) clearTimeout(resumeTimeout);
 
-      // 🟢 Pauses everything for exactly 10 seconds before letting the layout roll again
+      // Freeze movement for exactly 10 seconds on guest interaction
       resumeTimeout = setTimeout(() => {
         autoScrollPaused = false;
-      }, 5000);
+      }, 10000);
     }
 
-    // Bind listeners to catch both click drags, touch configurations, and mouse wheels seamlessly
+    // Bind listeners to catch click drags, touch configurations, and mouse wheels
     const wallEl = document.getElementById('liveWishesWall');
     if (wallEl) {
       wallEl.addEventListener('touchstart', handleUserInteraction, { passive: true });
@@ -2580,8 +2584,6 @@
       const status = document.getElementById('attendance').value;
       const rawWishes = document.getElementById('wishes').value.trim();
     
-      // ✨ NEW: Get email value from the updated rsvpEmail input field
-      // If the field is hidden or empty, it will gracefully fallback to an empty string or 'N/A'
       const emailInput = document.getElementById('rsvpEmail');
       const extractedEmail = (status === 'attend' && emailInput && emailInput.value.trim() !== "") ? emailInput.value.trim() : 'N/A';
     
@@ -2589,7 +2591,7 @@
         name: document.getElementById('guestName').value,
         status: status === 'attend' ? 'Attending' : 'Not Attending',
         pax: status === 'attend' ? document.getElementById('paxCount').value : '0',
-        email: extractedEmail, // ✅ Uses fixed element pointer reference
+        email: extractedEmail, 
         wishes: rawWishes
       };
     
@@ -2616,20 +2618,22 @@
             if (placeholder) placeholder.remove();
             
             const newWish = document.createElement('div');
-            
-            // 🟢 FIX: Matches the exact CSS classes and typography layout used on initial page load
             newWish.className = 'wish-bubble';
             newWish.innerHTML = `
               <div class="wish-author"><span>${escapeHtml(formData.name)}</span></div>
               <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
             `;
             
+            // Insert the new comment at the top
             wall.insertBefore(newWish, wall.firstChild);
-            scrollDirection = 1;
-            wall.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Clear the old loop cache flag so it forces a recalculation with the new comment included
+            delete wall.dataset.looped;
+            
+            wall.scrollTop = 0;
           }
           startWishAutoScroll();
-          closeRSVP();
+          if (typeof closeRSVP === "function") closeRSVP();
         } else if (response === "Duplicate") {
           alert(`⚠️ Error: The name "${formData.name}" has already submitted an RSVP response.`);
         } else {
@@ -2644,17 +2648,20 @@
       });
     }
 
-    function escapeHtml(text) { return text.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">"); }
+    function escapeHtml(text) { 
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+    }
 
     // Manual Arrow Navigation Button Click Hooks
     function moveCarousel(direction) {
       const wall = document.getElementById('liveWishesWall');
       if (!wall) return;
-      if (carouselTimer) clearInterval(carouselTimer);
+      
+      handleUserInteraction(); // Freezes auto scroll momentarily on button press
       
       // Shift viewport vertical container up or down cleanly by 80px custom offsets
       wall.scrollBy({ top: 80 * direction, behavior: 'smooth' });
-      startWishAutoScroll();
     }
 
     // Modal Window Controllers
