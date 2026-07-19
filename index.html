@@ -179,21 +179,25 @@
       pointer-events: none;
     }
 
-    /* 🟢 NEW HINT STYLE: Placed cleanly beneath the track lane */
-    .slider-hint-text {
-      font-family: 'Montserrat', sans-serif !important;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-shadow: 0 0 6px rgba(223, 186, 107, 0.4);
-      opacity: 0.7;
-      margin-top: 12px; /* 🟢 Adds clear space directly under the plane */
-      pointer-events: none;
-      z-index: 2;
-      white-space: nowrap;
-      transition: opacity 0.2s ease;
-    }
+    /* 🟢 UPDATED: Indicates a simple tap is needed */
+        .slider-hint-text {
+          font-family: 'Montserrat', sans-serif !important;
+          font-size: 10px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--gold);
+          text-shadow: 0 0 6px rgba(223, 186, 107, 0.4);
+          margin-top: 12px;
+          pointer-events: none;
+          z-index: 2;
+          white-space: nowrap;
+          animation: pulseText 1.8s infinite ease-in-out;
+        }
+    
+        @keyframes pulseText {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
+        }
 
     /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
     #flightSlider::-webkit-slider-thumb {
@@ -1622,22 +1626,17 @@
         <p>01.05.2027 • Miri, Sarawak</p>
         
         <!-- Interactive Flight Track Slider Control -->
-        <div class="slider-track-wrapper">
+        <!-- Ensure your slider wrapper element looks like this: -->
+        <div class="slider-track-wrapper" onclick="triggerAutoOpenSequence()" style="cursor: pointer;">
           <span class="city-label">KUL</span>
-          
           <div class="input-container">
-            <!-- Dynamic gold path line following behind the plane -->
-            <div class="flight-progress-line" id="flightProgress"></div>
-            
-            <!-- The airplane drag trigger -->
-            <input type="range" id="flightSlider" min="0" max="100" value="0" aria-label="Slide airplane to open invitation">
-            
-            <!-- 🟢 NEW PLACE: Clean guideline text sitting underneath the track -->
-            <div class="slider-hint-text" id="sliderHint">Slide to open invitation</div>
+            <input type="range" id="flightSlider" min="0" max="100" value="0" style="pointer-events: none;">
+            <div class="flight-progress-line" id="customProgressLine"></div>
+            <div class="slider-hint-text">✨ Tap Screen to Fly ✨</div>
           </div>
-          
           <span class="city-label">MYY</span>
         </div>
+      
       </div>
     </div>
   </div>
@@ -2113,6 +2112,66 @@
 </div>
 
 <script>
+
+    let isOpening = false;
+    
+    function triggerAutoOpenSequence() {
+      // Prevent duplicate trigger taps if animation is already firing
+      if (isOpening) return;
+      isOpening = true;
+    
+      const slider = document.getElementById('flightSlider');
+      const progressLine = document.getElementById('customProgressLine');
+      const audio = document.getElementById('bgMusic');
+      
+      // 🟢 1. Play background music instantly upon verified user tap
+      if (audio) {
+        audio.play().catch(err => {
+          console.log("Audio play postponed or blocked by audio policy context:", err);
+        });
+      }
+    
+      let currentVal = 0;
+      const targetVal = 100;
+      const duration = 1200; // Time in milliseconds matching your centerWipe length
+      const startTime = performance.now();
+    
+      // 🟢 2. Auto-drive the slider frame track smoothly from left to right
+      function animateSlider(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth acceleration/deceleration curve
+        const easeQuad = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
+        currentVal = Math.floor(easeQuad * targetVal);
+        
+        if (slider) slider.value = currentVal;
+        if (progressLine) progressLine.style.width = currentVal + '%';
+    
+        if (progress < 1) {
+          requestAnimationFrame(animateSlider);
+        } else {
+          // 🟢 3. Slide complete! Fire your existing invitation entry/reveal sequence function here
+          setTimeout(() => {
+            revealMainInvitationScreen(); 
+          }, 150);
+        }
+      }
+    
+      requestAnimationFrame(animateSlider);
+    }
+    
+    function revealMainInvitationScreen() {
+      // Add your code here to hide the overlay wrapper, e.g.:
+      const overlay = document.getElementById('welcomeOverlay');
+      if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 500);
+      }
+    }
+
+  
     //Checkbox
     document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
