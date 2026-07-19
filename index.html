@@ -2475,10 +2475,11 @@
       else { myMusic.pause(); musicBtn.classList.remove("playing"); musicBtn.classList.add("paused"); }
     }
 
-     // --- VERTICAL CAROUSEL ENGINE LOGIC ---
+ // --- VERTICAL CAROUSEL ENGINE LOGIC ---
     let carouselTimer = null;
     let autoScrollPaused = false;
     let resumeTimeout = null;
+    let originalTotalHeight = 0; // Tracks precise boundary height including flex gaps
     
     // 🟢 SLOWER SPEED: Steady, easy-to-read drift
     const scrollSpeed = 0.25; 
@@ -2493,11 +2494,10 @@
           return;
         }
 
-        // Calculate the halfway mark (height of original elements before clones)
-        const halfScrollHeight = wall.scrollHeight / 2;
+        // Use the exact pixel heights captured during clone setup
+        const loopBoundary = originalTotalHeight > 0 ? originalTotalHeight : (wall.scrollHeight / 2);
         
-        // If layout elements aren't ready yet, skip frame safely
-        if (halfScrollHeight <= 0) {
+        if (loopBoundary <= 0) {
           carouselTimer = requestAnimationFrame(renderFrame);
           return;
         }
@@ -2506,7 +2506,7 @@
         currentScroll += scrollSpeed;
 
         // 🟢 SEAMLESS LOOP RESET: Instantly reset back to 0 the millisecond it rolls past original items
-        if (currentScroll >= halfScrollHeight) {
+        if (currentScroll >= loopBoundary) {
           currentScroll = 0;
         }
 
@@ -2522,8 +2522,17 @@
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
       
-      // Clear out any previous clones first to avoid duplicates if recalled
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
+      
+      // 🟢 FIXED: Calculate precise rendering footprint including the 15px flex gaps
+      originalTotalHeight = 0;
+      originalBubbles.forEach((item, index) => {
+        // getBoundingClientRect ensures sub-pixel accuracy 
+        originalTotalHeight += item.getBoundingClientRect().height;
+        if (index < originalBubbles.length) {
+          originalTotalHeight += 15; // Adds your CSS gap layout spacing explicitly
+        }
+      });
       
       // Remove existing clones if any exist
       wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
@@ -2581,11 +2590,11 @@
             wall.appendChild(wishCard);
           });
 
-          // 🟢 FIXED: Force a micro-delay so the browser processes layout heights correctly before cloning
+          // Allow structural elements to mount fully, calculate metrics, and initialize loop
           setTimeout(() => {
             setupSeamlessClones();
             startWishAutoScroll();
-          }, 100);
+          }, 300);
         } else {
           startWishAutoScroll();
         }
@@ -2645,14 +2654,12 @@
               <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
             `;
             
-            // Insert the new comment at the very top
             wall.insertBefore(newWish, wall.firstChild);
             
-            // Re-run setup to refresh structural balance with the new wish included
             setTimeout(() => {
               setupSeamlessClones();
               wall.scrollTop = 0;
-            }, 50);
+            }, 100);
           }
           startWishAutoScroll();
           if (typeof closeRSVP === "function") closeRSVP();
@@ -2673,6 +2680,15 @@
     function escapeHtml(text) { 
       if (!text) return '';
       return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+    }
+
+    // Manual Arrow Navigation Button Click Hooks
+    function moveCarousel(direction) {
+      const wall = document.getElementById('liveWishesWall');
+      if (!wall) return;
+      
+      handleUserInteraction();
+      wall.scrollBy({ top: 80 * direction, behavior: 'smooth' });
     }
 
     // Modal Window Controllers
