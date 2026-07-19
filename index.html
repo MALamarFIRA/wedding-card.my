@@ -2480,23 +2480,12 @@
     let autoScrollPaused = false;
     let resumeTimeout = null;
     
-    // 🟢 SLOWER SPEED: Reduced to 0.25 for a steady, easy-to-read drift
+    // 🟢 SLOWER SPEED: Steady, easy-to-read drift
     const scrollSpeed = 0.25; 
 
     function startWishAutoScroll() {
       const wall = document.getElementById('liveWishesWall');
       if (!wall) return;
-
-      // 🟢 SEAMLESS LOOP PREPARATION: Clone items if not done already
-      // This fills the bottom gap so it loops endlessly without a harsh reset snap
-      if (!wall.dataset.looped && wall.children.length > 0) {
-        const originalItems = Array.from(wall.children);
-        originalItems.forEach(item => {
-          const clone = item.cloneNode(true);
-          wall.appendChild(clone);
-        });
-        wall.dataset.looped = "true";
-      }
 
       function renderFrame() {
         if (autoScrollPaused) {
@@ -2506,6 +2495,10 @@
 
         // Calculate the halfway mark (height of original elements before clones)
         const halfScrollHeight = wall.scrollHeight / 2;
+        if (halfScrollHeight <= 0) {
+          carouselTimer = requestAnimationFrame(renderFrame);
+          return;
+        }
         
         let currentScroll = wall.scrollTop;
         currentScroll += scrollSpeed;
@@ -2521,6 +2514,25 @@
 
       if (carouselTimer) cancelAnimationFrame(carouselTimer);
       carouselTimer = requestAnimationFrame(renderFrame);
+    }
+
+    function setupSeamlessClones() {
+      const wall = document.getElementById('liveWishesWall');
+      if (!wall || wall.children.length === 0) return;
+      
+      // Clear out any previous clones first to avoid duplicates if recalled
+      const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
+      
+      // Remove existing clones if any exist
+      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+
+      // Clone original items to create the continuous loop illusion
+      originalBubbles.forEach(item => {
+        const clone = item.cloneNode(true);
+        clone.classList.add('cloned-bubble');
+        wall.appendChild(clone);
+      });
+      wall.dataset.looped = "true";
     }
 
     function handleUserInteraction() {
@@ -2566,6 +2578,9 @@
             wishCard.innerHTML = `<div class="wish-author"><span>${escapeHtml(item.name)}</span></div><div class="wish-text">"${escapeHtml(item.wishes)}"</div>`;
             wall.appendChild(wishCard);
           });
+
+          // 🟢 FIXED: Clone only AFTER data strings have completely generated in the DOM
+          setupSeamlessClones();
         }
         startWishAutoScroll();
       })
@@ -2624,12 +2639,11 @@
               <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
             `;
             
-            // Insert the new comment at the top
+            // Insert the new comment at the very top
             wall.insertBefore(newWish, wall.firstChild);
             
-            // Clear the old loop cache flag so it forces a recalculation with the new comment included
-            delete wall.dataset.looped;
-            
+            // Re-run setup to refresh structural balance with the new wish included
+            setupSeamlessClones();
             wall.scrollTop = 0;
           }
           startWishAutoScroll();
