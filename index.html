@@ -1614,7 +1614,7 @@
 <body class="no-scroll"> <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
 
   <!-- ✈️ UPDATED FLIGHT PATH SPLASH SCREEN ENGINE -->
-  <div id="splashScreen">
+  <div id="splashScreen" style="cursor: pointer;">
     <div class="splash-container">
       <div class="zoom-out-group">
         <h2>THE WEDDING OF</h2>
@@ -1626,16 +1626,17 @@
         <p>01.05.2027 • Miri, Sarawak</p>
         
         <!-- Interactive Flight Track Slider Control -->
-        <!-- Ensure your slider wrapper element looks like this: -->
-        <div class="slider-track-wrapper" onclick="triggerAutoOpenSequence()" style="cursor: pointer;">
+        <div class="slider-track-wrapper">
           <span class="city-label">KUL</span>
           <div class="input-container">
-            <input type="range" id="flightSlider" min="0" max="100" value="0" style="pointer-events: none;">
-            <div class="flight-progress-line" id="customProgressLine"></div>
-            <div class="slider-hint-text">✨ Tap Screen to Fly ✨</div>
+            <input type="range" id="flightSlider" min="0" max="100" value="0">
+            <div class="flight-progress-line"></div>
           </div>
           <span class="city-label">MYY</span>
         </div>
+        
+        <!-- 🟢 MOVED OUTSIDE: Positioned below the slider box so it can be styled independently -->
+        <div id="sliderHint" class="slider-hint-text">✨ TAP ANYWHERE TO FLY ✨</div>
       
       </div>
     </div>
@@ -2165,27 +2166,25 @@
     });
     function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
-     // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
+    // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
     let pageScrollTimer = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       const slider = document.getElementById("flightSlider");
-      
-      // 🟢 FIXED: Automatically matches the custom progress line class so it fills with gold text
       const progress = document.querySelector(".flight-progress-line");
-      
       const splash = document.getElementById("splashScreen");
       const mainContent = document.getElementById("top");
       const myMusic = document.getElementById("bgMusic");
       const musicBtn = document.getElementById("musicControl");
       const hint = document.getElementById("sliderHint");
 
-      if (!slider) return;
+      if (!slider || !splash) return;
 
-      // 1. Make the slider look like a normal element that clicks can pass through
+      // 1. Prevent the slider track and text from blocking taps
       slider.style.pointerEvents = "none";
+      if (hint) hint.style.pointerEvents = "none";
 
-      // 2. Track whether the opening sequence has already been triggered
+      // 2. Track animation operational state
       let isAnimating = false;
 
       // Cleanly handles the invitation unlock sequence instantly
@@ -2211,7 +2210,7 @@
         setTimeout(() => splash.remove(), 600);
       }
 
-      // 3. New Auto-drive animation function triggered by clicking/tapping the splash screen
+      // 3. Auto-drive animation function triggered by clicking/tapping anywhere on the splash screen
       function startTapToOpenSequence() {
         if (isAnimating) return;
         isAnimating = true;
@@ -2247,7 +2246,7 @@
           if (progressRatio < 1) {
             requestAnimationFrame(animate);
           } else {
-            // Animation finished! Fire your untouched unlock logic
+            // Animation finished! Fire unlock logic
             triggerUnlock();
           }
         }
@@ -2255,8 +2254,7 @@
         requestAnimationFrame(animate);
       }
 
-      // 4. Listen for a tap/click anywhere on the splash screen overlay to start everything
-      splash.style.cursor = "pointer";
+      // 4. 🟢 LISTEN TO THE WHOLE SCREEN: Tap anywhere on splash container to open
       splash.addEventListener("click", startTapToOpenSequence);
     });
 
