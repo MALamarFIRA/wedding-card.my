@@ -2675,17 +2675,6 @@
       return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
     }
 
-    // Manual Arrow Navigation Button Click Hooks
-    function moveCarousel(direction) {
-      const wall = document.getElementById('liveWishesWall');
-      if (!wall) return;
-      
-      handleUserInteraction(); // Freezes auto scroll momentarily on button press
-      
-      // Shift viewport vertical container up or down cleanly by 80px custom offsets
-      wall.scrollBy({ top: 80 * direction, behavior: 'smooth' });
-    }
-
     // Modal Window Controllers
     function openCalendarModal() { document.getElementById('calendarModal').classList.add('active'); }
     function closeCalendarModal() { document.getElementById('calendarModal').classList.remove('active'); }
