@@ -2112,66 +2112,6 @@
 </div>
 
 <script>
-
-    let isOpening = false;
-    
-    function triggerAutoOpenSequence() {
-      // Prevent duplicate trigger taps if animation is already firing
-      if (isOpening) return;
-      isOpening = true;
-    
-      const slider = document.getElementById('flightSlider');
-      const progressLine = document.getElementById('customProgressLine');
-      const audio = document.getElementById('bgMusic');
-      
-      // 🟢 1. Play background music instantly upon verified user tap
-      if (audio) {
-        audio.play().catch(err => {
-          console.log("Audio play postponed or blocked by audio policy context:", err);
-        });
-      }
-    
-      let currentVal = 0;
-      const targetVal = 100;
-      const duration = 1200; // Time in milliseconds matching your centerWipe length
-      const startTime = performance.now();
-    
-      // 🟢 2. Auto-drive the slider frame track smoothly from left to right
-      function animateSlider(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function for smooth acceleration/deceleration curve
-        const easeQuad = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-        
-        currentVal = Math.floor(easeQuad * targetVal);
-        
-        if (slider) slider.value = currentVal;
-        if (progressLine) progressLine.style.width = currentVal + '%';
-    
-        if (progress < 1) {
-          requestAnimationFrame(animateSlider);
-        } else {
-          // 🟢 3. Slide complete! Fire your existing invitation entry/reveal sequence function here
-          setTimeout(() => {
-            revealMainInvitationScreen(); 
-          }, 150);
-        }
-      }
-    
-      requestAnimationFrame(animateSlider);
-    }
-    
-    function revealMainInvitationScreen() {
-      // Add your code here to hide the overlay wrapper, e.g.:
-      const overlay = document.getElementById('welcomeOverlay');
-      if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 500);
-      }
-    }
-
-  
     //Checkbox
     document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
@@ -2239,6 +2179,12 @@
 
       if (!slider) return;
 
+      // 1. Make the slider look like a normal element that clicks can pass through
+      slider.style.pointerEvents = "none";
+
+      // 2. Track whether the opening sequence has already been triggered
+      let isAnimating = false;
+
       // Cleanly handles the invitation unlock sequence instantly
       function triggerUnlock() {
         if (splash.classList.contains("fade-out")) return;
@@ -2247,7 +2193,7 @@
         if (mainContent) mainContent.classList.add("active"); 
         document.body.classList.remove("no-scroll");
       
-        // 🟢 Direct Play inside the active sliding event framework
+        // Direct Play inside the active sliding event framework
         if (myMusic && musicBtn) {
           myMusic.play().then(() => {
             musicBtn.classList.add("playing");
@@ -2262,46 +2208,53 @@
         setTimeout(() => splash.remove(), 600);
       }
 
-      // Track the live structural movement of the plane
-      slider.addEventListener("input", (e) => {
-        const value = parseInt(e.target.value, 10);
-        if (progress) progress.style.width = `${value}%`;
+      // 3. New Auto-drive animation function triggered by clicking/tapping the splash screen
+      function startTapToOpenSequence() {
+        if (isAnimating) return;
+        isAnimating = true;
 
-        // Dynamically fade out text as the user moves past 10%
-        if (hint) {
-          if (value > 10) {
-            hint.style.opacity = "0";
+        // Instantly fade out hint text when clicked
+        if (hint) hint.style.opacity = "0";
+
+        // Play the music immediately inside the user click scope to bypass browser blocks
+        if (myMusic && musicBtn) {
+          myMusic.play().then(() => {
+            musicBtn.classList.add("playing");
+            musicBtn.classList.remove("paused");
+          }).catch(err => console.log("Audio tap pre-play bypass log:", err));
+        }
+
+        let currentVal = 0;
+        const targetVal = 100;
+        const duration = 1000; // Animation takes exactly 1 second
+        const startTime = performance.now();
+
+        function animate(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progressRatio = Math.min(elapsed / duration, 1);
+          
+          // Smooth ease-out acceleration curve
+          const easeQuad = progressRatio * (2 - progressRatio);
+          currentVal = Math.floor(easeQuad * targetVal);
+          
+          // Drive the slider values forward
+          slider.value = currentVal;
+          if (progress) progress.style.width = `${currentVal}%`;
+
+          if (progressRatio < 1) {
+            requestAnimationFrame(animate);
           } else {
-            hint.style.opacity = "0.4";
+            // Animation finished! Fire your untouched unlock logic
+            triggerUnlock();
           }
         }
 
-        // 🟢 INSTANT TRIGGER: Open immediately the exact millisecond it hits 100% while sliding
-        if (value >= 100) {
-          triggerUnlock();
-        }
-      });
+        requestAnimationFrame(animate);
+      }
 
-      // Reset handler if let go anywhere before 100%
-      const handleRelease = (e) => {
-        if (parseInt(slider.value, 10) < 100) {
-          slider.style.transition = "value 0.3s ease";
-          if (progress) progress.style.transition = "width 0.3s ease";
-          
-          slider.value = 0;
-          if (progress) progress.style.width = "0%";
-          if (hint) hint.style.opacity = "0.4";
-
-          setTimeout(() => {
-            slider.style.transition = "";
-            if (progress) progress.style.transition = "";
-          }, 300);
-        }
-      };
-
-      slider.addEventListener("change", handleRelease);
-      slider.addEventListener("touchend", handleRelease);
-      slider.addEventListener("mouseup", handleRelease);
+      // 4. Listen for a tap/click anywhere on the splash screen overlay to start everything
+      splash.style.cursor = "pointer";
+      splash.addEventListener("click", startTapToOpenSequence);
     });
 
     function startPageAutoScroll() {
@@ -2328,6 +2281,7 @@
     window.addEventListener('wheel', stopPageAutoScroll);
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
+  
     let savedScrollTop = 0;
     function openRSVP() {
       // 🗓️ CONFIGURE YOUR RSVP DEADLINE HERE (Format: YYYY-MM-DD)
