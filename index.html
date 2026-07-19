@@ -180,24 +180,28 @@
     }
 
     /* 🟢 UPDATED: Indicates a simple tap is needed */
-        .slider-hint-text {
-          font-family: 'Montserrat', sans-serif !important;
-          font-size: 10px;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: var(--gold);
-          text-shadow: 0 0 6px rgba(223, 186, 107, 0.4);
-          margin-top: 12px;
-          pointer-events: none;
-          z-index: 2;
-          white-space: nowrap;
-          animation: pulseText 1.8s infinite ease-in-out;
-        }
-    
-        @keyframes pulseText {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
-        }
+    .slider-hint-text {
+      font-family: 'Montserrat', sans-serif !important;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-shadow: 0 0 6px rgba(223, 186, 107, 0.4);
+      margin-top: 20px;
+      pointer-events: none;
+      z-index: 2;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: pulseText 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.4; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
 
     /* ✈️ Webkit / Safari / Chrome / Android Flight Thumb Asset */
     #flightSlider::-webkit-slider-thumb {
@@ -1635,8 +1639,13 @@
           <span class="city-label">MYY</span>
         </div>
         
-        <!-- 🟢 MOVED OUTSIDE: Positioned below the slider box so it can be styled independently -->
-        <div id="sliderHint" class="slider-hint-text">✨ TAP ANYWHERE TO FLY ✨</div>
+        <!-- 🟢 MOVED OUTSIDE: Positioned below the slider box with fingerprint icon -->
+        <div id="sliderHint" class="slider-hint-text">
+          <div>TAP SCREEN TO FLY</div>
+          <div style="margin-top: 15px; font-size: 28px; opacity: 0.85;">
+            <i class="fa-solid fa-fingerprint"></i>
+          </div>
+        </div>
       
       </div>
     </div>
