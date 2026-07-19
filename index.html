@@ -2475,11 +2475,10 @@
       else { myMusic.pause(); musicBtn.classList.remove("playing"); musicBtn.classList.add("paused"); }
     }
 
-   // --- VERTICAL CAROUSEL ENGINE LOGIC ---
+    // --- VERTICAL CAROUSEL ENGINE LOGIC ---
     let carouselTimer = null;
     let autoScrollPaused = false;
     let resumeTimeout = null;
-    let currentScrollTop = 0;
     const scrollSpeed = 0.5; // 🟢 Adjust speed here: lower is slower/smoother, higher is faster
 
     function startWishAutoScroll() {
@@ -2487,7 +2486,7 @@
       if (!wall) return;
 
       function renderFrame() {
-        // If the system is paused by human touch, halt frame tracking adjustments
+        // If the system is paused by human touch, keep the animation loop alive but don't move the scroll
         if (autoScrollPaused) {
           carouselTimer = requestAnimationFrame(renderFrame);
           return;
@@ -2499,15 +2498,18 @@
           return; 
         }
 
-        // Keep internal tracker synced to match programmatic or manual positions
-        currentScrollTop += scrollSpeed;
+        // 🟢 FIXED: Constantly read the live DOM position to prevent manual scroll snapping bugs
+        let currentScroll = wall.scrollTop;
 
-        // Infinite loop wrap: if it scrolls to the absolute bottom floor, reset instantly to top
-        if (currentScrollTop >= maxScroll) {
-          currentScrollTop = 0;
+        // Increment the scroll position frame by frame
+        currentScroll += scrollSpeed;
+
+        // Infinite loop wrap: if it rolls to the absolute bottom floor, reset cleanly to the top
+        if (currentScroll >= maxScroll - 0.5) {
+          currentScroll = 0;
         }
 
-        wall.scrollTop = currentScrollTop;
+        wall.scrollTop = currentScroll;
         carouselTimer = requestAnimationFrame(renderFrame);
       }
 
@@ -2518,9 +2520,6 @@
 
     function handleUserInteraction() {
       autoScrollPaused = true;
-      
-      const wall = document.getElementById('liveWishesWall');
-      if (wall) currentScrollTop = wall.scrollTop; // Resync coordinates accurately to user position
 
       // Clear any existing timer loops running down the clock
       if (resumeTimeout) clearTimeout(resumeTimeout);
@@ -2528,16 +2527,14 @@
       // 🟢 Pauses everything for exactly 10 seconds before letting the layout roll again
       resumeTimeout = setTimeout(() => {
         autoScrollPaused = false;
-      }, 10000);
+      }, 5000);
     }
 
-    // Bind listeners to catch both click drags and touch configurations seamlessly
+    // Bind listeners to catch both click drags, touch configurations, and mouse wheels seamlessly
     const wallEl = document.getElementById('liveWishesWall');
     if (wallEl) {
       wallEl.addEventListener('touchstart', handleUserInteraction, { passive: true });
       wallEl.addEventListener('mousedown', handleUserInteraction);
-      
-      // Let scrolling pause if the user scrolls using a mouse wheel trackpad
       wallEl.addEventListener('wheel', handleUserInteraction, { passive: true });
     }
 
