@@ -2475,7 +2475,7 @@
       else { myMusic.pause(); musicBtn.classList.remove("playing"); musicBtn.classList.add("paused"); }
     }
 
-    // --- VERTICAL CAROUSEL ENGINE LOGIC ---
+     // --- VERTICAL CAROUSEL ENGINE LOGIC ---
     let carouselTimer = null;
     let autoScrollPaused = false;
     let resumeTimeout = null;
@@ -2495,6 +2495,8 @@
 
         // Calculate the halfway mark (height of original elements before clones)
         const halfScrollHeight = wall.scrollHeight / 2;
+        
+        // If layout elements aren't ready yet, skip frame safely
         if (halfScrollHeight <= 0) {
           carouselTimer = requestAnimationFrame(renderFrame);
           return;
@@ -2540,7 +2542,7 @@
 
       if (resumeTimeout) clearTimeout(resumeTimeout);
 
-      // Freeze movement for exactly 10 seconds on guest interaction
+      // Freeze movement for exactly 5 seconds on guest interaction
       resumeTimeout = setTimeout(() => {
         autoScrollPaused = false;
       }, 5000);
@@ -2579,10 +2581,14 @@
             wall.appendChild(wishCard);
           });
 
-          // 🟢 FIXED: Clone only AFTER data strings have completely generated in the DOM
-          setupSeamlessClones();
+          // 🟢 FIXED: Force a micro-delay so the browser processes layout heights correctly before cloning
+          setTimeout(() => {
+            setupSeamlessClones();
+            startWishAutoScroll();
+          }, 100);
+        } else {
+          startWishAutoScroll();
         }
-        startWishAutoScroll();
       })
       .catch(err => {
         console.error("Could not look up past guestbook entries:", err);
@@ -2643,8 +2649,10 @@
             wall.insertBefore(newWish, wall.firstChild);
             
             // Re-run setup to refresh structural balance with the new wish included
-            setupSeamlessClones();
-            wall.scrollTop = 0;
+            setTimeout(() => {
+              setupSeamlessClones();
+              wall.scrollTop = 0;
+            }, 50);
           }
           startWishAutoScroll();
           if (typeof closeRSVP === "function") closeRSVP();
