@@ -2165,12 +2165,15 @@
     });
     function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
-    // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
+     // --- GLOBAL AUTO-SCROLL ENGINE VARIABLES ---
     let pageScrollTimer = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       const slider = document.getElementById("flightSlider");
-      const progress = document.getElementById("flightProgress");
+      
+      // 🟢 FIXED: Automatically matches the custom progress line class so it fills with gold text
+      const progress = document.querySelector(".flight-progress-line");
+      
       const splash = document.getElementById("splashScreen");
       const mainContent = document.getElementById("top");
       const myMusic = document.getElementById("bgMusic");
