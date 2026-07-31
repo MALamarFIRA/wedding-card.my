@@ -2648,6 +2648,9 @@
             const placeholder = document.getElementById('noWishesPlaceholder');
             if (placeholder) placeholder.remove();
             
+            // 🟢 FIX: Remove existing clones first before adding a new item
+            wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+    
             const newWish = document.createElement('div');
             newWish.className = 'wish-bubble';
             newWish.innerHTML = `
@@ -2658,7 +2661,7 @@
             wall.insertBefore(newWish, wall.firstChild);
             
             setTimeout(() => {
-              setupSeamlessClones();
+              setupSeamlessClones(); // Now safely clones the new set without creating double original cards
               preciseScrollTop = 0;
               wall.scrollTop = 0;
             }, 100);
