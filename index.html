@@ -2522,18 +2522,27 @@
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
       
+      // 1. Clean up any previous clones first
+      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+    
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
       
+      // 🟢 FIX: If there is only 1 wish (or items don't exceed container height), don't clone!
+      // This prevents the single wish from showing a duplicate right below it.
+      if (originalBubbles.length <= 1) {
+        originalTotalHeight = 0;
+        return;
+      }
+    
       originalTotalHeight = 0;
       originalBubbles.forEach((item, index) => {
         originalTotalHeight += item.getBoundingClientRect().height;
         if (index < originalBubbles.length - 1) {
-          originalTotalHeight += 15; // Account for the 15px gap in your flex structure
+          originalTotalHeight += 15; // Account for 15px gap
         }
       });
-      
-      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
-
+    
+      // Only clone if total height exceeds wall viewport or has multiple items
       originalBubbles.forEach(item => {
         const clone = item.cloneNode(true);
         clone.classList.add('cloned-bubble');
