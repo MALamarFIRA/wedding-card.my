@@ -2522,13 +2522,15 @@
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
       
-      // 1. ALWAYS strip existing clones first so we never clone clones!
-      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+      // 1. HARD PURGE: Remove ALL cloned bubbles from the wall
+      const existingClones = wall.querySelectorAll('.cloned-bubble');
+      existingClones.forEach(el => el.remove());
 
+      // 2. Fetch strictly true original bubbles
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
       
-      // 2. Only clone if there are AT LEAST 3+ wishes OR the content height exceeds the scrollable area
-      // (This prevents short lists of 1-2 wishes from cloning themselves needlessly on screen)
+      // 3. DO NOT CLONE if there are less than 3 wishes
+      // (1 or 2 wishes should remain single static cards)
       if (originalBubbles.length < 3) {
         originalTotalHeight = 0;
         return;
@@ -2542,7 +2544,7 @@
         }
       });
 
-      // 3. Clone each true original card
+      // 4. Create fresh clones for seamless looping
       originalBubbles.forEach(item => {
         const clone = item.cloneNode(true);
         clone.classList.add('cloned-bubble');
@@ -2657,32 +2659,23 @@
             const placeholder = document.getElementById('noWishesPlaceholder');
             if (placeholder) placeholder.remove();
             
-            // 🛑 STEP 1: Remove ALL cloned bubbles first so we don't count them
+            // 🟢 STEP 1: Purge any old cloned bubbles before modifying the wall
             wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
 
-            // 🛑 STEP 2: Check if this exact wish already exists on the DOM wall to prevent doubling
-            const existingAuthors = Array.from(wall.querySelectorAll('.wish-author span')).map(el => el.innerText.trim());
-            const existingTexts = Array.from(wall.querySelectorAll('.wish-text')).map(el => el.innerText.replace(/"/g, '').trim());
-
-            const isDuplicateOnDom = existingAuthors.some((author, i) => author === formData.name && existingTexts[i] === rawWishes);
-
-            if (!isDuplicateOnDom) {
-              const newWish = document.createElement('div');
-              newWish.className = 'wish-bubble';
-              newWish.innerHTML = `
-                <div class="wish-author"><span>${escapeHtml(formData.name)}</span></div>
-                <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
-              `;
-              
-              wall.insertBefore(newWish, wall.firstChild);
-            }
-
-            // 🛑 STEP 3: Re-setup clones only if there are 2 or more wishes total
-            setTimeout(() => {
-              setupSeamlessClones();
-              preciseScrollTop = 0;
-              wall.scrollTop = 0;
-            }, 100);
+            // 🟢 STEP 2: Create and prepend ONLY the new real wish
+            const newWish = document.createElement('div');
+            newWish.className = 'wish-bubble';
+            newWish.innerHTML = `
+              <div class="wish-author"><span>${escapeHtml(formData.name)}</span></div>
+              <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
+            `;
+            
+            wall.insertBefore(newWish, wall.firstChild);
+            
+            // 🟢 STEP 3: Re-clone cleanly
+            setupSeamlessClones();
+            preciseScrollTop = 0;
+            wall.scrollTop = 0;
           }
           startWishAutoScroll();
           if (typeof closeRSVP === "function") closeRSVP();
@@ -3168,9 +3161,10 @@
           const placeholder = document.getElementById('noWishesPlaceholder');
           if (placeholder) placeholder.remove();
           
-          // 🟢 CRITICAL FIX: Clean out existing clones BEFORE adding the new wish
+          // 🟢 STEP 1: Purge any old cloned bubbles first
           wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
 
+          // 🟢 STEP 2: Prepend the new wish bubble
           const newWish = document.createElement('div');
           newWish.className = 'wish-bubble';
           newWish.innerHTML = `
@@ -3180,12 +3174,10 @@
           
           wall.insertBefore(newWish, wall.firstChild);
 
-          // 🟢 Re-run setupSeamlessClones safely after a short delay
-          setTimeout(() => {
-            setupSeamlessClones();
-            preciseScrollTop = 0;
-            wall.scrollTop = 0;
-          }, 100);
+          // 🟢 STEP 3: Re-setup clones cleanly
+          setupSeamlessClones();
+          preciseScrollTop = 0;
+          wall.scrollTop = 0;
         }
       } else {
         alert("Oops, something went wrong saving your wish.");
