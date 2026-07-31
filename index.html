@@ -2522,24 +2522,17 @@
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
       
-      // Clean out existing clones first
-      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
-
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
       
-      // Only clone if there are 3 or more wishes to prevent short lists from showing duplicates
-      if (originalBubbles.length < 3) {
-        originalTotalHeight = 0;
-        return;
-      }
-
       originalTotalHeight = 0;
       originalBubbles.forEach((item, index) => {
         originalTotalHeight += item.getBoundingClientRect().height;
         if (index < originalBubbles.length - 1) {
-          originalTotalHeight += 15;
+          originalTotalHeight += 15; // Account for the 15px gap in your flex structure
         }
       });
+      
+      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
 
       originalBubbles.forEach(item => {
         const clone = item.cloneNode(true);
@@ -2584,11 +2577,27 @@
       })
       .then(response => response.json())
       .then(data => {
-        if (data.wishes && data.wishes.length > 0) {
-          allWishesData = data.wishes; // Store fetched wishes
-          renderAllWishes(allWishesData);
+        const existingWishes = data.wishes; 
+        const wall = document.getElementById('liveWishesWall');
+        
+        if (existingWishes && existingWishes.length > 0) {
+          const placeholder = document.getElementById('noWishesPlaceholder');
+          if (placeholder) placeholder.remove();
+          
+          existingWishes.forEach(item => {
+            const wishCard = document.createElement('div');
+            wishCard.className = 'wish-bubble';
+            wishCard.innerHTML = `<div class="wish-author"><span>${escapeHtml(item.name)}</span></div><div class="wish-text">"${escapeHtml(item.wishes)}"</div>`;
+            wall.appendChild(wishCard);
+          });
+
+          setTimeout(() => {
+            setupSeamlessClones();
+            preciseScrollTop = wall.scrollTop;
+            startWishAutoScroll();
+          }, 300);
         } else {
-          renderAllWishes([]);
+          startWishAutoScroll();
         }
       })
       .catch(err => {
@@ -2634,19 +2643,29 @@
         
         if (response === "Success") {
           alert(`Thank you ${formData.name}! Your RSVP has been recorded.`);
-          
           if (rawWishes !== "") {
-            // Push the new wish to our local array (at the top)
-            allWishesData.unshift({
-              name: formData.name,
-              wishes: rawWishes
-            });
-            // Re-render the wall cleanly from the single source of truth
-            renderAllWishes(allWishesData);
+            const wall = document.getElementById('liveWishesWall');
+            const placeholder = document.getElementById('noWishesPlaceholder');
+            if (placeholder) placeholder.remove();
+            
+            const newWish = document.createElement('div');
+            newWish.className = 'wish-bubble';
+            newWish.innerHTML = `
+              <div class="wish-author"><span>${escapeHtml(formData.name)}</span></div>
+              <div class="wish-text">"${escapeHtml(rawWishes)}"</div>
+            `;
+            
+            wall.insertBefore(newWish, wall.firstChild);
+            
+            setTimeout(() => {
+              setupSeamlessClones();
+              preciseScrollTop = 0;
+              wall.scrollTop = 0;
+            }, 100);
           }
-          
+          startWishAutoScroll();
           if (typeof closeRSVP === "function") closeRSVP();
-        }else if (response === "Duplicate") {
+        } else if (response === "Duplicate") {
           alert(`⚠️ Error: The name "${formData.name}" has already submitted an RSVP response.`);
         } else {
           alert("Something went wrong saving your data. Please try again.");
@@ -3089,6 +3108,7 @@
     const nameInput = document.getElementById('wishGuestName').value;
     const wishInput = document.getElementById('wishGuestText').value;
     
+    // Target the submit button inside your pureWishForm framework
     const form = document.getElementById('pureWishForm');
     const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
@@ -3099,13 +3119,14 @@
       submitBtn.style.cursor = "not-allowed";
     }
     
+    // 🟢 CHANGED: Modified payload to alert your sheet backend this is ONLY a wish, preventing name collision blocks
     const payload = {
-      action: "submitWishOnly",
+      action: "submitWishOnly", // 🟢 Changed action name so script doesn't conflict with RSVP validation
       formData: {
         name: nameInput,
-        status: "Wish Only",
+        status: "Wish Only", // 🟢 Explicitly flag status so it skips RSVP logic
         pax: "0",
-        email: "wish@only.com",
+        email: "wish@only.com", // 🟢 Dummy string to satisfy column structures if needed
         wishes: wishInput
       }
     };
@@ -3118,19 +3139,29 @@
     })
     .then(res => res.json())
     .then(data => {
+      // Handles both direct updates or general creation confirmations safely
       if (data.result === "Success" || data.status === "Success") {
         alert("Thank you! Your wish has been recorded beautifully.");
         toggleWishModal(false);
         if (form) form.reset();
         
-        // Push the new wish to our local array (at the top)
-        allWishesData.unshift({
-          name: nameInput,
-          wishes: wishInput
-        });
-        
-        // Re-render the wall cleanly
-        renderAllWishes(allWishesData);
+        // Prepends the new wish to the wall instantly with identical styles & quotes
+        const wall = document.getElementById('liveWishesWall');
+        if (wall) {
+          const placeholder = document.getElementById('noWishesPlaceholder');
+          if (placeholder) placeholder.remove();
+          
+          const newWish = document.createElement('div');
+          newWish.className = 'wish-bubble';
+          newWish.innerHTML = `
+            <div class="wish-author"><span>${escapeHtml(nameInput)}</span></div>
+            <div class="wish-text">"${escapeHtml(wishInput)}"</div>
+          `;
+          
+          wall.insertBefore(newWish, wall.firstChild);
+          scrollDirection = 1; // Resets your carousel direction to scroll down smoothly
+          wall.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       } else {
         alert("Oops, something went wrong saving your wish.");
       }
@@ -3140,6 +3171,7 @@
       alert("Network error: Could not submit wish. Please check your connection.");
     })
     .finally(() => {
+      // ALWAYS RUNS: Re-enables the submit button once the process completes
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerText = "Submit Wish";
@@ -3153,41 +3185,6 @@
     if (event.target.id === 'wishModal') {
       toggleWishModal(false); 
     }
-  }
-
-  // Stores all unique wishes currently loaded
-  let allWishesData = [];
-  
-  function renderAllWishes(wishesArray) {
-    const wall = document.getElementById('liveWishesWall');
-    if (!wall) return;
-  
-    // 1. Completely clear out the wall DOM (original cards + clones + placeholders)
-    wall.innerHTML = '';
-  
-    if (!wishesArray || wishesArray.length === 0) {
-      wall.innerHTML = '<div id="noWishesPlaceholder" style="text-align:center; padding:20px; color:#888;">No wishes yet. Be the first to leave a wish!</div>';
-      return;
-    }
-  
-    // 2. Render each unique wish ONCE
-    wishesArray.forEach(item => {
-      const wishCard = document.createElement('div');
-      wishCard.className = 'wish-bubble';
-      wishCard.innerHTML = `
-        <div class="wish-author"><span>${escapeHtml(item.name)}</span></div>
-        <div class="wish-text">"${escapeHtml(item.wishes)}"</div>
-      `;
-      wall.appendChild(wishCard);
-    });
-  
-    // 3. Re-setup clones cleanly after a brief rendering delay
-    setTimeout(() => {
-      setupSeamlessClones();
-      preciseScrollTop = 0;
-      wall.scrollTop = 0;
-      startWishAutoScroll();
-    }, 100);
   }
   </script>
 </body>
