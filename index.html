@@ -2522,25 +2522,27 @@
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
       
-      // Clean previous clones
+      // 1. ALWAYS strip existing clones first so we never clone clones!
       wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
 
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
       
-      // 🟢 NEVER clone if there's 0 or 1 item!
-      if (originalBubbles.length <= 1) {
+      // 2. Only clone if there are AT LEAST 3+ wishes OR the content height exceeds the scrollable area
+      // (This prevents short lists of 1-2 wishes from cloning themselves needlessly on screen)
+      if (originalBubbles.length < 3) {
         originalTotalHeight = 0;
         return;
       }
-      
+
       originalTotalHeight = 0;
       originalBubbles.forEach((item, index) => {
         originalTotalHeight += item.getBoundingClientRect().height;
         if (index < originalBubbles.length - 1) {
-          originalTotalHeight += 15;
+          originalTotalHeight += 15; // 15px gap
         }
       });
 
+      // 3. Clone each true original card
       originalBubbles.forEach(item => {
         const clone = item.cloneNode(true);
         clone.classList.add('cloned-bubble');
@@ -3127,7 +3129,6 @@
     const nameInput = document.getElementById('wishGuestName').value;
     const wishInput = document.getElementById('wishGuestText').value;
     
-    // Target the submit button inside your pureWishForm framework
     const form = document.getElementById('pureWishForm');
     const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
@@ -3138,14 +3139,13 @@
       submitBtn.style.cursor = "not-allowed";
     }
     
-    // 🟢 CHANGED: Modified payload to alert your sheet backend this is ONLY a wish, preventing name collision blocks
     const payload = {
-      action: "submitWishOnly", // 🟢 Changed action name so script doesn't conflict with RSVP validation
+      action: "submitWishOnly",
       formData: {
         name: nameInput,
-        status: "Wish Only", // 🟢 Explicitly flag status so it skips RSVP logic
+        status: "Wish Only",
         pax: "0",
-        email: "wish@only.com", // 🟢 Dummy string to satisfy column structures if needed
+        email: "wish@only.com",
         wishes: wishInput
       }
     };
@@ -3158,18 +3158,19 @@
     })
     .then(res => res.json())
     .then(data => {
-      // Handles both direct updates or general creation confirmations safely
       if (data.result === "Success" || data.status === "Success") {
         alert("Thank you! Your wish has been recorded beautifully.");
         toggleWishModal(false);
         if (form) form.reset();
         
-        // Prepends the new wish to the wall instantly with identical styles & quotes
         const wall = document.getElementById('liveWishesWall');
         if (wall) {
           const placeholder = document.getElementById('noWishesPlaceholder');
           if (placeholder) placeholder.remove();
           
+          // 🟢 CRITICAL FIX: Clean out existing clones BEFORE adding the new wish
+          wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+
           const newWish = document.createElement('div');
           newWish.className = 'wish-bubble';
           newWish.innerHTML = `
@@ -3178,8 +3179,13 @@
           `;
           
           wall.insertBefore(newWish, wall.firstChild);
-          scrollDirection = 1; // Resets your carousel direction to scroll down smoothly
-          wall.scrollTo({ top: 0, behavior: 'smooth' });
+
+          // 🟢 Re-run setupSeamlessClones safely after a short delay
+          setTimeout(() => {
+            setupSeamlessClones();
+            preciseScrollTop = 0;
+            wall.scrollTop = 0;
+          }, 100);
         }
       } else {
         alert("Oops, something went wrong saving your wish.");
@@ -3190,7 +3196,6 @@
       alert("Network error: Could not submit wish. Please check your connection.");
     })
     .finally(() => {
-      // ALWAYS RUNS: Re-enables the submit button once the process completes
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerText = "Submit Wish";
