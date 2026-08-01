@@ -1612,10 +1612,75 @@
         margin-right: 6px;
     }
 
+    .bird-flock {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 5; /* stays behind nav/modals, above plain background */
+  overflow: hidden;
+}
+
+.bird {
+  position: absolute;
+  width: 34px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.bird.show { opacity: 0.5; }
+
+.bird-svg path {
+  fill: none;
+  stroke: var(--maroon);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.wing-left, .wing-right {
+  transform-origin: 50px 30px;
+  animation: flap 0.35s ease-in-out infinite alternate;
+}
+.wing-right { animation-delay: 0.05s; }
+
+@keyframes flap {
+  0%   { transform: scaleY(1) rotate(0deg); }
+  100% { transform: scaleY(0.55) rotate(8deg); }
+}
+
+.bird1 { animation: flyPath1 16s linear infinite; }
+.bird2 { animation: flyPath2 20s linear infinite; animation-delay: 5s; }
+
+@keyframes flyPath1 {
+  0%   { left: -10%; top: 70%; transform: rotate(-25deg) scale(0.8); }
+  50%  { left: 55%;  top: 18%; transform: rotate(-15deg) scale(1); }
+  100% { left: 115%; top: 4%;  transform: rotate(-10deg) scale(0.9); }
+}
+@keyframes flyPath2 {
+  0%   { left: -10%; top: 88%; transform: rotate(-20deg) scale(0.55); }
+  50%  { left: 60%;  top: 32%; transform: rotate(-10deg) scale(0.75); }
+  100% { left: 115%; top: 12%; transform: rotate(-5deg) scale(0.65); }
+}
+
   </style>
 </head>
 
-<body class="no-scroll"> <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
+<body class="no-scroll"> 
+  <div class="bird-flock" id="birdFlock" aria-hidden="true">
+  <div class="bird bird1">
+    <svg viewBox="0 0 100 60" class="bird-svg">
+      <path class="wing wing-left" d="M50,30 Q20,5 2,20" />
+      <path class="wing wing-right" d="M50,30 Q80,5 98,20" />
+    </svg>
+  </div>
+  <div class="bird bird2">
+    <svg viewBox="0 0 100 60" class="bird-svg">
+      <path class="wing wing-left" d="M50,30 Q20,5 2,20" />
+      <path class="wing wing-right" d="M50,30 Q80,5 98,20" />
+    </svg>
+  </div>
+</div>
+<audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
 
   <!-- ✈️ UPDATED FLIGHT PATH SPLASH SCREEN ENGINE -->
   <div id="splashScreen" style="cursor: pointer;">
@@ -2288,6 +2353,32 @@
     window.addEventListener('wheel', stopPageAutoScroll);
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
+
+    (function() {
+      const flock = document.getElementById('birdFlock');
+      if (!flock) return;
+      const birds = flock.querySelectorAll('.bird');
+      let idleTimer = null;
+    
+      function showBirds() {
+        birds.forEach(b => b.classList.add('show'));
+      }
+      function hideBirds() {
+        birds.forEach(b => b.classList.remove('show'));
+      }
+    
+      function handleActivity() {
+        hideBirds();
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(showBirds, 3000); // reappear after 3s of stillness
+      }
+    
+      window.addEventListener('scroll', handleActivity, { passive: true });
+      window.addEventListener('wheel', handleActivity, { passive: true });
+      window.addEventListener('touchmove', handleActivity, { passive: true });
+    
+      idleTimer = setTimeout(showBirds, 2000); // initial appearance
+    })();
   
     let savedScrollTop = 0;
     function openRSVP() {
