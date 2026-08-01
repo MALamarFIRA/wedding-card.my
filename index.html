@@ -1613,6 +1613,9 @@
     }
 
     /* --- Bird flock (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) --- */
+    @media (max-width: 380px) {
+      .bidoBox { transform: scale(0.85); transform-origin: top left; }
+    }
     @keyframes bidoHover {
         100% { background-position: 0px -110px; }
     }
@@ -1627,10 +1630,30 @@
     .fldoContAiner2 { position: absolute; right: 0; }
     .fldoContAiner3 { position: fixed; right: 0; z-index: 500; pointer-events: none; }
 
+    .bird-flock-wrapper {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 450px; /* 🟢 matches .mobile-container so birds never leave the content column */
+      height: 100vh;
+      height: 100dvh;
+      pointer-events: none;
+      z-index: 500;
+      overflow: hidden; /* 🟢 clips anything that tries to drift past the column edges */
+    }
+    .fldoContAiner3 {
+      position: absolute; /* 🟢 was fixed — now relative to the wrapper, not the raw viewport */
+      right: 0;
+      z-index: 1;
+      transition: opacity 2.2s ease, transform 2.2s ease; /* 🟢 slower, paired with a scale for "flying away" */
+    }
+
   </style>
 </head>
 
-<body class="no-scroll"> 
+<body class="no-scroll">
 <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
 
   <!-- ✈️ UPDATED FLIGHT PATH SPLASH SCREEN ENGINE -->
@@ -1671,7 +1694,8 @@
   </div>
 
   <div class="mobile-container" id="top">
-
+    
+  <div class="bird-flock-wrapper" id="birdFlockWrapper"></div>
     <div class="flip-container" id="locationSection">
       <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
         
@@ -2157,10 +2181,16 @@ var weddingBirdSession = (function () {
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
   function getPageSize() {
-    return { width: window.innerWidth, height: window.innerHeight };
+    var wrapper = document.getElementById('birdFlockWrapper');
+    return {
+      width: wrapper ? wrapper.clientWidth : window.innerWidth,
+      height: window.innerHeight
+    };
   }
-
+  
   function createContainers(count) {
+    var wrapper = document.getElementById('birdFlockWrapper');
+    if (!wrapper) return;
     for (var i = 0; i < count; i++) {
       var c1 = document.createElement('div');
       var c2 = document.createElement('div');
@@ -2172,7 +2202,7 @@ var weddingBirdSession = (function () {
       c1.appendChild(box);
       c2.appendChild(c1);
       c3.appendChild(c2);
-      document.body.appendChild(c3);
+      wrapper.appendChild(c3); // 🟢 was document.body.appendChild(c3)
       mContainer1[i] = c1; mContainer2[i] = c2; mContainer3[i] = c3; mBox[i] = box;
     }
   }
@@ -2228,13 +2258,19 @@ var weddingBirdSession = (function () {
 
   function hide() {
     for (var i = 0; i < mCountBird; i++) {
-      if (mContainer3[i]) mContainer3[i].style.opacity = '0';
+      if (mContainer3[i]) {
+        mContainer3[i].style.opacity = '0';
+        mContainer3[i].style.transform += ' scale(0.85)'; // recedes as it fades
+      }
     }
   }
-
+  
   function showAfterHide() {
     for (var i = 0; i < mCountBird; i++) {
-      if (mContainer3[i]) mContainer3[i].style.opacity = '1';
+      if (mContainer3[i]) {
+        mContainer3[i].style.opacity = '1';
+        mContainer3[i].style.transform = mContainer3[i].style.transform.replace(' scale(0.85)', '');
+      }
     }
   }
 
