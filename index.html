@@ -1627,7 +1627,6 @@
         height: 55px;
         width: 64px;
     }
-    .fldoContAiner2 { position: absolute; right: 0; }
 
     .bird-flock-wrapper {
       position: fixed;
@@ -1642,11 +1641,15 @@
       z-index: 500;
       overflow: hidden; /* 🟢 clips anything that tries to drift past the column edges */
     }
-    .fldoContAiner3 {
-      position: absolute; /* 🟢 was fixed — now relative to the wrapper, not the raw viewport */
-      right: 0;
-      z-index: 1;
-      transition: opacity 2.2s ease, transform 2.2s ease; /* 🟢 slower, paired with a scale for "flying away" */
+
+    .bird-wander-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 64px;
+      height: 55px;
+      pointer-events: none;
+      will-change: transform;
     }
 
   </style>
@@ -2158,124 +2161,106 @@
 </div>
 
 <script>
-// --- Bird flock engine (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
-var weddingBirdSession = (function () {
-  var mContainer1 = [], mContainer2 = [], mContainer3 = [], mBox = [], mXIndent = [];
-  var mCountBird = 0, mTimeoutIdForStartPart2 = null;
-
-  var cHeightOfBird = 55;
-  var cJustOffScreen = '-55px';
-  var cRefreshDelay = 100;
-  var cMinBird = 2, cMaxBird = 3; // 🟢 kept low so it stays subtle
-  var cMinScale = 0.5, cMaxScale = 1.0;
-  var cMinAnimDur = 0.2, cMaxAnimDur = 0.4;
-  var cMinTransDur = 12, cMaxTransDur = 20; // 🟢 slower/longer drifts than the original
-  var cFractionAcross = 0.25, cFractionStartFromRight = 0.25;
-
-  var cEasings = ['linear','ease','ease-in','ease-out','ease-in-out',
-    'cubic-bezier(0.47,0,0.745,0.715)','cubic-bezier(0.39,0.575,0.565,1)',
-    'cubic-bezier(0.445,0.05,0.55,0.95)'];
-
-  function rand(min, max) { return min + Math.random() * (max - min); }
-  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-  function getPageSize() {
-    var wrapper = document.getElementById('birdFlockWrapper');
-    return {
-      width: wrapper ? wrapper.clientWidth : window.innerWidth,
-      height: window.innerHeight
-    };
-  }
+  // --- Bird flock engine: wandering version (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
+  var weddingBirdSession = (function () {
+    var mBox = [], mPos = [], mCountBird = 0;
+    var cMinBird = 2, cMaxBird = 3; // 🟢 kept low so it stays subtle
+    var cMinScale = 0.55, cMaxScale = 1.0;
+    var cMinAnimDur = 0.2, cMaxAnimDur = 0.4;
+    var cMinMoveDur = 6, cMaxMoveDur = 14; // seconds per wander leg — slow, gentle drifting
   
-  function createContainers(count) {
-    var wrapper = document.getElementById('birdFlockWrapper');
-    if (!wrapper) return;
-    for (var i = 0; i < count; i++) {
-      var c1 = document.createElement('div');
-      var c2 = document.createElement('div');
-      var c3 = document.createElement('div');
-      var box = document.createElement('div');
-      c2.className = 'fldoContAiner2';
-      c3.className = 'fldoContAiner3';
-      box.className = 'bidoBox';
-      c1.appendChild(box);
-      c2.appendChild(c1);
-      c3.appendChild(c2);
-      wrapper.appendChild(c3); // 🟢 was document.body.appendChild(c3)
-      mContainer1[i] = c1; mContainer2[i] = c2; mContainer3[i] = c3; mBox[i] = box;
+    var cEasings = ['ease-in-out', 'ease', 'linear',
+      'cubic-bezier(0.45,0.05,0.55,0.95)', 'cubic-bezier(0.39,0.575,0.565,1)'];
+  
+    function rand(min, max) { return min + Math.random() * (max - min); }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  
+    function getWrapperSize() {
+      var wrapper = document.getElementById('birdFlockWrapper');
+      return {
+        width: wrapper ? wrapper.clientWidth : window.innerWidth,
+        height: wrapper ? wrapper.clientHeight : window.innerHeight
+      };
     }
-  }
-
-  function setupEachBird(i) {
-    var c1 = mContainer1[i], c2 = mContainer2[i], c3 = mContainer3[i], box = mBox[i];
-    var scale = rand(cMinScale, cMaxScale);
-    var adjustForScale = 1 + (1 / scale - 1) / 2;
-    var animDur = rand(cMinAnimDur, cMaxAnimDur);
-    var transDur = rand(cMinTransDur, cMaxTransDur);
-    var isHoverDown = Math.random() > 0.5;
-    var isFaceRight = Math.random() > 0.5;
-    var page = getPageSize();
-
-    box.style.display = 'block';
-
-    if (isHoverDown) c3.style.top = cJustOffScreen;
-    else c3.style.bottom = cJustOffScreen;
-
-    if (isFaceRight) box.style.transform = 'rotate3d(0,1,0,180deg)';
-
-    var xIndent = Math.round(Math.random() * page.width * adjustForScale * cFractionStartFromRight);
-    if (isHoverDown) c2.style.right = xIndent + 'px';
-    mXIndent[i] = xIndent;
-
-    box.style.animation = 'bidoHover ' + animDur + 's steps(2) ' + (-Math.random() * animDur) + 's infinite';
-
-    var yMove = Math.round((page.height + cHeightOfBird) * adjustForScale);
-    if (!isHoverDown) yMove = -yMove;
-    c1.style.transition = 'transform ' + transDur + 's ' + pick(cEasings);
-    c1.style.transform = 'translate3d(0,' + yMove + 'px,0)';
-
-    var xMove = -Math.round(Math.random() * page.width * adjustForScale * cFractionAcross);
-    if (!isHoverDown) {
-      xMove *= -1;
-      c2.style.right = (xMove + xIndent) + 'px';
-    }
-    c2.style.transition = 'transform ' + transDur + 's ' + pick(cEasings);
-    c2.style.transform = 'translate3d(' + xMove + 'px,0,0)';
-
-    c3.style.transition = 'transform ' + transDur + 's linear';
-    c3.style.transform = 'scale3d(' + scale + ',' + scale + ',1)';
-  }
-
-  function start() {
-    var count = Math.round(rand(cMinBird, cMaxBird));
-    mCountBird = count;
-    createContainers(count);
-    mTimeoutIdForStartPart2 = setTimeout(function () {
-      for (var i = 0; i < count; i++) setupEachBird(i);
-    }, cRefreshDelay);
-  }
-
-  function hide() {
-    for (var i = 0; i < mCountBird; i++) {
-      if (mContainer3[i] && mContainer3[i].style.opacity !== '0') {
-        mContainer3[i].style.opacity = '0';
-        mContainer3[i].style.transform += ' scale(0.85)';
+  
+    function createBirds(count) {
+      var wrapper = document.getElementById('birdFlockWrapper');
+      if (!wrapper) return;
+      var size = getWrapperSize();
+  
+      for (var i = 0; i < count; i++) {
+        var wrap = document.createElement('div');
+        wrap.className = 'bird-wander-wrap';
+        var box = document.createElement('div');
+        box.className = 'bidoBox';
+        wrap.appendChild(box);
+        wrapper.appendChild(wrap);
+  
+        mBox[i] = box;
+  
+        var scale = rand(cMinScale, cMaxScale);
+        var startX = rand(0, Math.max(0, size.width - 64));
+        var startY = rand(0, Math.max(0, size.height * 0.6));
+        mPos[i] = { x: startX, y: startY, scale: scale, facingRight: Math.random() > 0.5 };
+  
+        wrap.style.transform = 'translate3d(' + startX + 'px,' + startY + 'px,0) scale(' + scale + ')';
+        box.style.display = 'block';
+        if (mPos[i].facingRight) box.style.transform = 'rotate3d(0,1,0,180deg)';
+  
+        var animDur = rand(cMinAnimDur, cMaxAnimDur);
+        box.style.animation = 'bidoHover ' + animDur + 's steps(2) ' + (-Math.random() * animDur) + 's infinite';
       }
     }
-  }
   
-  function showAfterHide() {
-    for (var i = 0; i < mCountBird; i++) {
-      if (mContainer3[i]) {
-        mContainer3[i].style.opacity = '1';
-        mContainer3[i].style.transform = mContainer3[i].style.transform.replace(/ scale\(0\.85\)/g, '');
+    function wander(i) {
+      var wraps = document.querySelectorAll('.bird-wander-wrap');
+      var wrap = wraps[i];
+      if (!wrap) return;
+  
+      var size = getWrapperSize();
+      var pos = mPos[i];
+  
+      var targetX = rand(0, Math.max(0, size.width - 64));
+      var targetY = rand(0, Math.max(0, size.height - 100));
+      var moveDur = rand(cMinMoveDur, cMaxMoveDur);
+      var easing = pick(cEasings);
+  
+      var goingRight = targetX > pos.x;
+      var box = mBox[i];
+      if (goingRight !== pos.facingRight) {
+        box.style.transform = goingRight ? 'rotate3d(0,1,0,180deg)' : '';
+        pos.facingRight = goingRight;
       }
+  
+      wrap.style.transition = 'transform ' + moveDur + 's ' + easing;
+      wrap.style.transform = 'translate3d(' + targetX + 'px,' + targetY + 'px,0) scale(' + pos.scale + ')';
+  
+      pos.x = targetX;
+      pos.y = targetY;
+  
+      setTimeout(function () { wander(i); }, moveDur * 1000);
     }
-  }
-
-  return { start: start, hide: hide, showAfterHide: showAfterHide };
-})();
-
+  
+    function start() {
+      var count = Math.round(rand(cMinBird, cMaxBird));
+      mCountBird = count;
+      createBirds(count);
+      setTimeout(function () {
+        for (var i = 0; i < count; i++) {
+          (function (idx) {
+            setTimeout(function () { wander(idx); }, 100 + idx * 300); // staggered start
+          })(i);
+        }
+      }, 150);
+    }
+  
+    return { start: start };
+  })();
+  
+  // Kick off once — birds stay visible permanently, no hide/show toggling
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () { weddingBirdSession.start(); }, 1500);
+  });
 
   
     //Checkbox
@@ -2447,35 +2432,6 @@ var weddingBirdSession = (function () {
     window.addEventListener('wheel', stopPageAutoScroll);
     window.addEventListener('touchstart', stopPageAutoScroll);
     window.addEventListener('keydown', stopPageAutoScroll);
-
-    (function() {
-      var idleTimer = null;
-      var birdsStarted = false;
-    
-      function showBirds() {
-        if (!birdsStarted) {
-          weddingBirdSession.start();
-          birdsStarted = true;
-        } else {
-          weddingBirdSession.showAfterHide();
-        }
-      }
-      function hideBirds() {
-        if (birdsStarted) weddingBirdSession.hide();
-      }
-    
-      function handleActivity() {
-        hideBirds();
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(showBirds, 3000); // reappear after 3s of no scrolling
-      }
-    
-      window.addEventListener('scroll', handleActivity, { passive: true });
-      window.addEventListener('wheel', handleActivity, { passive: true });
-      window.addEventListener('touchmove', handleActivity, { passive: true });
-    
-      idleTimer = setTimeout(showBirds, 2000); // first appearance
-    })();
   
     let savedScrollTop = 0;
     function openRSVP() {
