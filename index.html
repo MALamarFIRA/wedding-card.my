@@ -1648,7 +1648,8 @@
       left: 0;
       width: 64px;
       height: 55px;
-      pointer-events: none;
+      pointer-events: auto; /* 🟢 was none — now the bird itself is tappable */
+      cursor: pointer;
       will-change: transform;
     }
 
@@ -2212,43 +2213,69 @@
       }
     }
   
-    function wander(i) {
+    var mTimeoutIds = []; // 🟢 track scheduled wander timeouts so taps can cancel them
+    
+    function wander(i, isDodge) {
       var wraps = document.querySelectorAll('.bird-wander-wrap');
       var wrap = wraps[i];
       if (!wrap) return;
-  
+    
       var size = getWrapperSize();
       var pos = mPos[i];
-  
-      var targetX = rand(0, Math.max(0, size.width - 64));
-      var targetY = rand(0, Math.max(0, size.height - 100));
-      var moveDur = rand(cMinMoveDur, cMaxMoveDur);
-      var easing = pick(cEasings);
-  
+    
+      var targetX, targetY;
+      if (isDodge) {
+        // 🟢 Dodge: aim for a spot noticeably far from current position
+        do {
+          targetX = rand(0, Math.max(0, size.width - 64));
+          targetY = rand(0, Math.max(0, size.height - 100));
+        } while (Math.abs(targetX - pos.x) < size.width * 0.3 && Math.abs(targetY - pos.y) < size.height * 0.2);
+      } else {
+        targetX = rand(0, Math.max(0, size.width - 64));
+        targetY = rand(0, Math.max(0, size.height - 100));
+      }
+    
+      var moveDur = isDodge ? rand(0.8, 1.4) : rand(cMinMoveDur, cMaxMoveDur); // 🟢 dodge is quick/snappy
+      var easing = isDodge ? 'cubic-bezier(0.25,0.46,0.45,0.94)' : pick(cEasings);
+    
       var goingRight = targetX > pos.x;
       var box = mBox[i];
       if (goingRight !== pos.facingRight) {
         box.style.transform = goingRight ? 'rotate3d(0,1,0,180deg)' : '';
         pos.facingRight = goingRight;
       }
-  
+    
       wrap.style.transition = 'transform ' + moveDur + 's ' + easing;
       wrap.style.transform = 'translate3d(' + targetX + 'px,' + targetY + 'px,0) scale(' + pos.scale + ')';
-  
+    
       pos.x = targetX;
       pos.y = targetY;
-  
-      setTimeout(function () { wander(i); }, moveDur * 1000);
+    
+      mTimeoutIds[i] = setTimeout(function () { wander(i, false); }, moveDur * 1000);
     }
-  
+    
+    function dodge(i) {
+      if (mTimeoutIds[i]) clearTimeout(mTimeoutIds[i]); // 🟢 cancel whatever was scheduled
+      wander(i, true);
+    }
+    
     function start() {
       var count = Math.round(rand(cMinBird, cMaxBird));
       mCountBird = count;
       createBirds(count);
       setTimeout(function () {
+        var wraps = document.querySelectorAll('.bird-wander-wrap');
         for (var i = 0; i < count; i++) {
           (function (idx) {
-            setTimeout(function () { wander(idx); }, 100 + idx * 300); // staggered start
+            mTimeoutIds[idx] = setTimeout(function () { wander(idx, false); }, 100 + idx * 300);
+    
+            // 🟢 Tap/click handler: bird darts away when tapped
+            var handler = function (e) {
+              e.stopPropagation();
+              dodge(idx);
+            };
+            wraps[idx].addEventListener('click', handler);
+            wraps[idx].addEventListener('touchstart', handler, { passive: true });
           })(i);
         }
       }, 150);
