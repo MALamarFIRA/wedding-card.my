@@ -2485,8 +2485,13 @@
     function startWishAutoScroll() {
       const wall = document.getElementById('liveWishesWall');
       if (!wall) return;
-
-      // 🟢 FIX: Force behavior inline to override CSS smooth scroll fighting
+    
+      // 🟢 If content doesn't overflow, don't animate at all
+      if (originalTotalHeight <= wall.clientHeight) {
+        if (carouselTimer) cancelAnimationFrame(carouselTimer);
+        return;
+      }
+    
       wall.style.scrollBehavior = 'auto';
 
       function renderFrame() {
@@ -2521,19 +2526,31 @@
     function setupSeamlessClones() {
       const wall = document.getElementById('liveWishesWall');
       if (!wall || wall.children.length === 0) return;
-      
+    
       const originalBubbles = wall.querySelectorAll('.wish-bubble:not(.cloned-bubble)');
-      
+    
+      // Remove any old clones first so we measure only the real content
+      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
+    
       originalTotalHeight = 0;
       originalBubbles.forEach((item, index) => {
         originalTotalHeight += item.getBoundingClientRect().height;
         if (index < originalBubbles.length - 1) {
-          originalTotalHeight += 15; // Account for the 15px gap in your flex structure
+          originalTotalHeight += 15; // gap
         }
       });
-      
-      wall.querySelectorAll('.cloned-bubble').forEach(el => el.remove());
-
+    
+      const containerHeight = wall.clientHeight; // e.g. 250px
+    
+      // 🟢 Only clone + loop if the real content is actually taller than the visible box
+      if (originalTotalHeight <= containerHeight) {
+        wall.dataset.looped = "false";
+        if (carouselTimer) cancelAnimationFrame(carouselTimer);
+        wall.scrollTop = 0;
+        preciseScrollTop = 0;
+        return; // don't clone, don't scroll — nothing to loop
+      }
+    
       originalBubbles.forEach(item => {
         const clone = item.cloneNode(true);
         clone.classList.add('cloned-bubble');
