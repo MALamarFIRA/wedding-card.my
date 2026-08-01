@@ -1612,74 +1612,25 @@
         margin-right: 6px;
     }
 
-    .bird-flock {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none;
-  z-index: 5; /* stays behind nav/modals, above plain background */
-  overflow: hidden;
-}
-
-.bird {
-  position: absolute;
-  width: 34px;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-}
-
-.bird.show { opacity: 0.5; }
-
-.bird-svg path {
-  fill: none;
-  stroke: var(--maroon);
-  stroke-width: 6;
-  stroke-linecap: round;
-}
-
-.wing-left, .wing-right {
-  transform-origin: 50px 30px;
-  animation: flap 0.35s ease-in-out infinite alternate;
-}
-.wing-right { animation-delay: 0.05s; }
-
-@keyframes flap {
-  0%   { transform: scaleY(1) rotate(0deg); }
-  100% { transform: scaleY(0.55) rotate(8deg); }
-}
-
-.bird1 { animation: flyPath1 16s linear infinite; }
-.bird2 { animation: flyPath2 20s linear infinite; animation-delay: 5s; }
-
-@keyframes flyPath1 {
-  0%   { left: -10%; top: 70%; transform: rotate(-25deg) scale(0.8); }
-  50%  { left: 55%;  top: 18%; transform: rotate(-15deg) scale(1); }
-  100% { left: 115%; top: 4%;  transform: rotate(-10deg) scale(0.9); }
-}
-@keyframes flyPath2 {
-  0%   { left: -10%; top: 88%; transform: rotate(-20deg) scale(0.55); }
-  50%  { left: 60%;  top: 32%; transform: rotate(-10deg) scale(0.75); }
-  100% { left: 115%; top: 12%; transform: rotate(-5deg) scale(0.65); }
-}
+    /* --- Bird flock (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) --- */
+    @keyframes bidoHover {
+        100% { background-position: 0px -110px; }
+    }
+    .bidoBox {
+        width: 64px;
+        height: 55px;
+        display: none;
+        background-image: url(data:image/png;base64,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);
+        height: 55px;
+        width: 64px;
+    }
+    .fldoContAiner2 { position: absolute; right: 0; }
+    .fldoContAiner3 { position: fixed; right: 0; z-index: 500; pointer-events: none; }
 
   </style>
 </head>
 
 <body class="no-scroll"> 
-  <div class="bird-flock" id="birdFlock" aria-hidden="true">
-  <div class="bird bird1">
-    <svg viewBox="0 0 100 60" class="bird-svg">
-      <path class="wing wing-left" d="M50,30 Q20,5 2,20" />
-      <path class="wing wing-right" d="M50,30 Q80,5 98,20" />
-    </svg>
-  </div>
-  <div class="bird bird2">
-    <svg viewBox="0 0 100 60" class="bird-svg">
-      <path class="wing wing-left" d="M50,30 Q20,5 2,20" />
-      <path class="wing wing-right" d="M50,30 Q80,5 98,20" />
-    </svg>
-  </div>
-</div>
 <audio id="bgMusic" loop src="https://www.dropbox.com/scl/fi/y5hqvuehm87btwgk1q4f2/Bahagia.mp3?rlkey=kjaqlhg9zhs48j2nv6jjd9eqn&st=7jch6ygx&raw=1"></audio>
 
   <!-- ✈️ UPDATED FLIGHT PATH SPLASH SCREEN ENGINE -->
@@ -2184,6 +2135,120 @@
 </div>
 
 <script>
+// --- Bird flock engine (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
+var weddingBirdSession = (function () {
+  var mContainer1 = [], mContainer2 = [], mContainer3 = [], mBox = [], mXIndent = [];
+  var mCountBird = 0, mTimeoutIdForStartPart2 = null;
+
+  var cHeightOfBird = 55;
+  var cJustOffScreen = '-55px';
+  var cRefreshDelay = 100;
+  var cMinBird = 2, cMaxBird = 3; // 🟢 kept low so it stays subtle
+  var cMinScale = 0.5, cMaxScale = 1.0;
+  var cMinAnimDur = 0.2, cMaxAnimDur = 0.4;
+  var cMinTransDur = 12, cMaxTransDur = 20; // 🟢 slower/longer drifts than the original
+  var cFractionAcross = 0.25, cFractionStartFromRight = 0.25;
+
+  var cEasings = ['linear','ease','ease-in','ease-out','ease-in-out',
+    'cubic-bezier(0.47,0,0.745,0.715)','cubic-bezier(0.39,0.575,0.565,1)',
+    'cubic-bezier(0.445,0.05,0.55,0.95)'];
+
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function getPageSize() {
+    return { width: window.innerWidth, height: window.innerHeight };
+  }
+
+  function createContainers(count) {
+    for (var i = 0; i < count; i++) {
+      var c1 = document.createElement('div');
+      var c2 = document.createElement('div');
+      var c3 = document.createElement('div');
+      var box = document.createElement('div');
+      c2.className = 'fldoContAiner2';
+      c3.className = 'fldoContAiner3';
+      box.className = 'bidoBox';
+      c1.appendChild(box);
+      c2.appendChild(c1);
+      c3.appendChild(c2);
+      document.body.appendChild(c3);
+      mContainer1[i] = c1; mContainer2[i] = c2; mContainer3[i] = c3; mBox[i] = box;
+    }
+  }
+
+  function setupEachBird(i) {
+    var c1 = mContainer1[i], c2 = mContainer2[i], c3 = mContainer3[i], box = mBox[i];
+    var scale = rand(cMinScale, cMaxScale);
+    var adjustForScale = 1 + (1 / scale - 1) / 2;
+    var animDur = rand(cMinAnimDur, cMaxAnimDur);
+    var transDur = rand(cMinTransDur, cMaxTransDur);
+    var isHoverDown = Math.random() > 0.5;
+    var isFaceRight = Math.random() > 0.5;
+    var page = getPageSize();
+
+    box.style.display = 'block';
+
+    if (isHoverDown) c3.style.top = cJustOffScreen;
+    else c3.style.bottom = cJustOffScreen;
+
+    if (isFaceRight) box.style.transform = 'rotate3d(0,1,0,180deg)';
+
+    var xIndent = Math.round(Math.random() * page.width * adjustForScale * cFractionStartFromRight);
+    if (isHoverDown) c2.style.right = xIndent + 'px';
+    mXIndent[i] = xIndent;
+
+    box.style.animation = 'bidoHover ' + animDur + 's steps(2) ' + (-Math.random() * animDur) + 's infinite';
+
+    var yMove = Math.round((page.height + cHeightOfBird) * adjustForScale);
+    if (!isHoverDown) yMove = -yMove;
+    c1.style.transition = 'transform ' + transDur + 's ' + pick(cEasings);
+    c1.style.transform = 'translate3d(0,' + yMove + 'px,0)';
+
+    var xMove = -Math.round(Math.random() * page.width * adjustForScale * cFractionAcross);
+    if (!isHoverDown) {
+      xMove *= -1;
+      c2.style.right = (xMove + xIndent) + 'px';
+    }
+    c2.style.transition = 'transform ' + transDur + 's ' + pick(cEasings);
+    c2.style.transform = 'translate3d(' + xMove + 'px,0,0)';
+
+    c3.style.transition = 'transform ' + transDur + 's linear';
+    c3.style.transform = 'scale3d(' + scale + ',' + scale + ',1)';
+  }
+
+  function start() {
+    var count = Math.round(rand(cMinBird, cMaxBird));
+    mCountBird = count;
+    createContainers(count);
+    mTimeoutIdForStartPart2 = setTimeout(function () {
+      for (var i = 0; i < count; i++) setupEachBird(i);
+    }, cRefreshDelay);
+  }
+
+  function hide() {
+    for (var i = 0; i < mCountBird; i++) {
+      if (mContainer3[i]) mContainer3[i].style.opacity = '0';
+    }
+  }
+
+  function showAfterHide() {
+    for (var i = 0; i < mCountBird; i++) {
+      if (mContainer3[i]) mContainer3[i].style.opacity = '1';
+    }
+  }
+
+  return { start: start, hide: hide, showAfterHide: showAfterHide };
+})();
+
+// Fade transition for the show/hide toggle
+(function () {
+  var style = document.createElement('style');
+  style.textContent = '.fldoContAiner3 { transition: opacity 1s ease; }';
+  document.head.appendChild(style);
+})();
+
+  
     //Checkbox
     document.addEventListener("DOMContentLoaded", function() {
       const emailCheckbox = document.getElementById("toggleEmailCheckbox");
@@ -2355,29 +2420,32 @@
     window.addEventListener('keydown', stopPageAutoScroll);
 
     (function() {
-      const flock = document.getElementById('birdFlock');
-      if (!flock) return;
-      const birds = flock.querySelectorAll('.bird');
-      let idleTimer = null;
+      var idleTimer = null;
+      var birdsStarted = false;
     
       function showBirds() {
-        birds.forEach(b => b.classList.add('show'));
+        if (!birdsStarted) {
+          weddingBirdSession.start();
+          birdsStarted = true;
+        } else {
+          weddingBirdSession.showAfterHide();
+        }
       }
       function hideBirds() {
-        birds.forEach(b => b.classList.remove('show'));
+        if (birdsStarted) weddingBirdSession.hide();
       }
     
       function handleActivity() {
         hideBirds();
         clearTimeout(idleTimer);
-        idleTimer = setTimeout(showBirds, 3000); // reappear after 3s of stillness
+        idleTimer = setTimeout(showBirds, 3000); // reappear after 3s of no scrolling
       }
     
       window.addEventListener('scroll', handleActivity, { passive: true });
       window.addEventListener('wheel', handleActivity, { passive: true });
       window.addEventListener('touchmove', handleActivity, { passive: true });
     
-      idleTimer = setTimeout(showBirds, 2000); // initial appearance
+      idleTimer = setTimeout(showBirds, 2000); // first appearance
     })();
   
     let savedScrollTop = 0;
