@@ -1628,7 +1628,6 @@
         width: 64px;
     }
     .fldoContAiner2 { position: absolute; right: 0; }
-    .fldoContAiner3 { position: fixed; right: 0; z-index: 500; pointer-events: none; }
 
     .bird-flock-wrapper {
       position: fixed;
@@ -2258,9 +2257,9 @@ var weddingBirdSession = (function () {
 
   function hide() {
     for (var i = 0; i < mCountBird; i++) {
-      if (mContainer3[i]) {
+      if (mContainer3[i] && mContainer3[i].style.opacity !== '0') {
         mContainer3[i].style.opacity = '0';
-        mContainer3[i].style.transform += ' scale(0.85)'; // recedes as it fades
+        mContainer3[i].style.transform += ' scale(0.85)';
       }
     }
   }
@@ -2269,7 +2268,7 @@ var weddingBirdSession = (function () {
     for (var i = 0; i < mCountBird; i++) {
       if (mContainer3[i]) {
         mContainer3[i].style.opacity = '1';
-        mContainer3[i].style.transform = mContainer3[i].style.transform.replace(' scale(0.85)', '');
+        mContainer3[i].style.transform = mContainer3[i].style.transform.replace(/ scale\(0\.85\)/g, '');
       }
     }
   }
@@ -2277,12 +2276,6 @@ var weddingBirdSession = (function () {
   return { start: start, hide: hide, showAfterHide: showAfterHide };
 })();
 
-// Fade transition for the show/hide toggle
-(function () {
-  var style = document.createElement('style');
-  style.textContent = '.fldoContAiner3 { transition: opacity 1s ease; }';
-  document.head.appendChild(style);
-})();
 
   
     //Checkbox
@@ -3371,7 +3364,6 @@ var weddingBirdSession = (function () {
           `;
           
           wall.insertBefore(newWish, wall.firstChild);
-          scrollDirection = 1; // Resets your carousel direction to scroll down smoothly
           wall.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
