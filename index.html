@@ -1648,9 +1648,12 @@
       left: 0;
       width: 64px;
       height: 55px;
-      pointer-events: auto; /* 🟢 was none — now the bird itself is tappable */
+      pointer-events: auto;
       cursor: pointer;
       will-change: transform;
+      -webkit-tap-highlight-color: transparent; /* 🟢 removes the gray flash box on tap */
+      -webkit-touch-callout: none; /* 🟢 prevents iOS long-press context menu/callout */
+      user-select: none; /* 🟢 prevents accidental text selection on rapid taps */
     }
 
   </style>
