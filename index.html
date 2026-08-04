@@ -1752,16 +1752,12 @@
 
     .bird-flock-wrapper {
       position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 450px; /* 🟢 matches .mobile-container so birds never leave the content column */
-      height: 100vh;
+      inset: 0;
+      width: 100vw;
       height: 100dvh;
       pointer-events: none;
       z-index: 500;
-      overflow: hidden; /* 🟢 clips anything that tries to drift past the column edges */
+      overflow: hidden;
     }
 
     .bird-wander-wrap {
@@ -1859,8 +1855,9 @@
     <div class="music-bar bar-3"></div>
   </div>
 
-  <div class="bird-flock-wrapper" id="birdFlockWrapper"></div>
+
   <div class="mobile-container" id="top">
+    <div class="bird-flock-wrapper" id="birdFlockWrapper"></div>
     <div class="snow-wrapper" id="snowWrapper"></div>
     <div class="flip-container" id="locationSection">
       <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
@@ -2386,7 +2383,7 @@
     var mBox = [], mPos = [], mCountBird = 0;
     var cMinBird = 2, cMaxBird = 3; // 🟢 kept low so it stays subtle
     var cMinScale = 0.55, cMaxScale = 1.0;
-    var cMinAnimDur = 0.2, cMaxAnimDur = 0.4;
+    var cMinAnimDur = 0.7, cMaxAnimDur = 1.1;
     var cMinMoveDur = 6, cMaxMoveDur = 14; // seconds per wander leg — slow, gentle drifting
   
     var cEasings = ['ease-in-out', 'ease', 'linear',
@@ -2493,8 +2490,7 @@
               e.stopPropagation();
               dodge(idx);
             };
-            wraps[idx].addEventListener('click', handler);
-            wraps[idx].addEventListener('touchstart', handler, { passive: true });
+            wraps[idx].addEventListener('pointerdown', handler);
           })(i);
         }
       }, 150);
