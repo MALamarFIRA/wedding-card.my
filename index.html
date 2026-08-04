@@ -673,6 +673,128 @@
     .pax-btn { background: #eee; border: none; width: 45px; height: 42px; font-size: 18px; font-weight: bold; cursor: pointer; }
     .pax-stepper input[type="number"] { flex: 1; border: none; text-align: center; font-weight: 600; font-size: 16px; height: 42px; background: transparent; }
 
+    /* --- ATTEND / NOT ATTEND CIRCLE CHOICE BUTTONS --- */
+    .attendance-choice-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 36px;
+      margin-top: 18px;
+    }
+
+    .attend-choice-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      padding: 4px;
+    }
+
+    .attend-choice-btn .choice-circle {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: var(--white);
+      border: 2.5px solid #d8d2c6;
+      color: #b7b0a1;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .attend-choice-btn span:last-child {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--dark-text);
+      text-transform: uppercase;
+    }
+
+    .attend-choice-btn:active .choice-circle {
+      transform: scale(0.93);
+    }
+
+    .attend-choice-btn.yes-btn .choice-circle:hover {
+      border-color: #2e8b57;
+      color: #2e8b57;
+    }
+
+    .attend-choice-btn.no-btn .choice-circle:hover {
+      border-color: var(--maroon);
+      color: var(--maroon);
+    }
+
+    .attend-choice-btn.yes-btn.active .choice-circle {
+      background: #2e8b57;
+      border-color: #2e8b57;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(46, 139, 87, 0.35);
+    }
+
+    .attend-choice-btn.no-btn.active .choice-circle {
+      background: var(--maroon);
+      border-color: var(--maroon);
+      color: var(--gold);
+      box-shadow: 0 4px 14px rgba(88, 33, 33, 0.35);
+    }
+
+    .attend-choice-btn.yes-btn.active span:last-child { color: #2e8b57; }
+    .attend-choice-btn.no-btn.active span:last-child { color: var(--maroon); }
+
+    /* --- CLICKABLE "CHANGE ANSWER" PILL --- */
+    .attendance-summary-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark-text);
+      background: var(--white);
+      border: 1px solid #e2ddd0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+
+    .change-answer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      color: var(--maroon);
+      background: rgba(88, 33, 33, 0.07);
+      border: 1px solid rgba(88, 33, 33, 0.25);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .change-answer-link:hover,
+    .change-answer-link:active {
+      background: var(--maroon);
+      color: var(--gold);
+      border-color: var(--maroon);
+    }
+
+    .change-answer-link::before {
+      content: "\f2f1";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 10px;
+    }
+
     @keyframes fadeInSlide { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes pulseHint { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
@@ -1623,7 +1745,7 @@
         width: 64px;
         height: 55px;
         display: none;
-        background-image: url(data:image/png;base64,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);
+        background-image: url(data:image/png;base64,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);
         height: 55px;
         width: 64px;
     }
@@ -1974,10 +2096,12 @@
             <label style="text-align: center; display: block;">Will you attend? <span style="color: var(--maroon);">*</span></label>
             <div class="attendance-choice-buttons">
               <button type="button" class="attend-choice-btn yes-btn" onclick="selectAttendance('attend')">
-                <i class="fa-solid fa-circle-check"></i> Yes, I will attend
+                <span class="choice-circle"><i class="fa-solid fa-check"></i></span>
+                <span>Yes</span>
               </button>
               <button type="button" class="attend-choice-btn no-btn" onclick="selectAttendance('unable')">
-                <i class="fa-solid fa-circle-xmark"></i> No, I am unable to attend
+                <span class="choice-circle"><i class="fa-solid fa-xmark"></i></span>
+                <span>No</span>
               </button>
             </div>
           </div>
