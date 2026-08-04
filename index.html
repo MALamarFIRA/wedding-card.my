@@ -1964,53 +1964,74 @@
       <div class="modal-close" onclick="closeRSVP()"><i class="fa-solid fa-xmark"></i></div>
       <div class="modal-title">Wedding RSVP</div>
       <form id="rsvpForm" onsubmit="submitRSVP(event)">
-        <div class="form-group"><label for="guestName">Full Name <span style="color: var(--maroon);">*</span></label><input type="text" id="guestName" required placeholder="Enter name"></div>
-        <div class="form-group">
-          <label for="attendance">Will you attend? <span style="color: var(--maroon);">*</span></label>
-          <select id="attendance" required onchange="toggleAttendanceFields(this.value)">
-            <option value="" disabled selected>Choose option...</option>
-            <option value="attend">Yes, I will attend</option>
-            <option value="unable">No, I am unable to attend</option>
-          </select>
-        </div>
-        <div class="form-group conditional-field class-pax">
-          <label for="paxCount" style="display: flex; align-items: center; gap: 6px; position: relative;">
-            Number of Pax
-            <span class="tooltip-container">
-              <i class="fa-solid fa-circle-info" style="color: #888; cursor: pointer; font-size: 14px;"></i>
-              <span class="tooltip-box">Maximum capacity per RSVP submission is limited to 8 guests only.</span>
-            </span>
-          </label>
-          <div class="pax-stepper">
-            <button type="button" class="pax-btn" onclick="changePax(-1)">−</button>
-            <input type="number" id="paxCount" value="1" min="1" max="8" inputmode="numeric" pattern="[0-9]*" oninput="validatePaxInput(this)">
-            <button type="button" class="pax-btn" onclick="changePax(1)">+</button>
-          </div>
-        </div>
-        <div class="form-group"><label for="wishes">Wishes</label><textarea id="wishes" rows="3" placeholder="Write wishes here..."></textarea></div>
 
-        <div id="attendanceDependentWrapper" class="conditional-field" style="position: relative;">
-          <div class="checkbox-group">
-            <input type="checkbox" id="toggleEmailCheckbox">
-            <div class="checkbox-text-wrapper">
-              (Optional) I agree to receive my final attendance confirmation and seating information via email.
-              <span class="info-tooltip" aria-label="Why provide email?">
-                <i class="fa-regular fa-circle-question"></i>
-              </span>
+        <!-- Hidden field keeps the same variable name/behaviour the rest of the script relies on -->
+        <input type="hidden" id="attendance" value="">
+
+        <!-- STEP 1: Attendance choice shown first -->
+        <div id="attendanceChoiceStep">
+          <div class="form-group" style="text-align: center;">
+            <label style="text-align: center; display: block;">Will you attend? <span style="color: var(--maroon);">*</span></label>
+            <div class="attendance-choice-buttons">
+              <button type="button" class="attend-choice-btn yes-btn" onclick="selectAttendance('attend')">
+                <i class="fa-solid fa-circle-check"></i> Yes, I will attend
+              </button>
+              <button type="button" class="attend-choice-btn no-btn" onclick="selectAttendance('unable')">
+                <i class="fa-solid fa-circle-xmark"></i> No, I am unable to attend
+              </button>
             </div>
           </div>
-          
-          <div class="email-container-wrapper" id="emailFieldWrapper">
-            <div class="form-group">
-              <label for="rsvpEmail">Email Address 
-                <i class="fa-regular fa-envelope input-icon"></i><span style="color: var(--maroon);"> *</span></label>
-              <div class="input-wrapper">
-                <input type="email" id="rsvpEmail" placeholder="e.g., example@email.com">
+        </div>
+
+        <!-- STEP 2: Rest of the form, revealed after a choice is made -->
+        <div id="rsvpDetailsStep" style="display: none;">
+
+          <div style="text-align: center; margin-bottom: 18px;">
+            <span id="attendanceSummaryBadge" class="attendance-summary-badge"></span>
+            <span onclick="resetAttendanceChoice()" class="change-answer-link">Change answer</span>
+          </div>
+
+          <div class="form-group"><label for="guestName">Full Name <span style="color: var(--maroon);">*</span></label><input type="text" id="guestName" placeholder="Enter name"></div>
+
+          <div class="form-group conditional-field class-pax">
+            <label for="paxCount" style="display: flex; align-items: center; gap: 6px; position: relative;">
+              Number of Pax
+              <span class="tooltip-container">
+                <i class="fa-solid fa-circle-info" style="color: #888; cursor: pointer; font-size: 14px;"></i>
+                <span class="tooltip-box">Maximum capacity per RSVP submission is limited to 8 guests only.</span>
+              </span>
+            </label>
+            <div class="pax-stepper">
+              <button type="button" class="pax-btn" onclick="changePax(-1)">−</button>
+              <input type="number" id="paxCount" value="1" min="1" max="8" inputmode="numeric" pattern="[0-9]*" oninput="validatePaxInput(this)">
+              <button type="button" class="pax-btn" onclick="changePax(1)">+</button>
+            </div>
+          </div>
+          <div class="form-group"><label for="wishes">Wishes</label><textarea id="wishes" rows="3" placeholder="Write wishes here..."></textarea></div>
+
+          <div id="attendanceDependentWrapper" class="conditional-field" style="position: relative;">
+            <div class="checkbox-group">
+              <input type="checkbox" id="toggleEmailCheckbox">
+              <div class="checkbox-text-wrapper">
+                (Optional) I agree to receive my final attendance confirmation and seating information via email.
+                <span class="info-tooltip" aria-label="Why provide email?">
+                  <i class="fa-regular fa-circle-question"></i>
+                </span>
+              </div>
+            </div>
+            
+            <div class="email-container-wrapper" id="emailFieldWrapper">
+              <div class="form-group">
+                <label for="rsvpEmail">Email Address 
+                  <i class="fa-regular fa-envelope input-icon"></i><span style="color: var(--maroon);"> *</span></label>
+                <div class="input-wrapper">
+                  <input type="email" id="rsvpEmail" placeholder="e.g., example@email.com">
+                </div>
               </div>
             </div>
           </div>
+          <button type="submit" class="btn">SUBMIT RSVP</button>
         </div>
-        <button type="submit" class="btn">SUBMIT RSVP</button>
       </form>
     </div>
   </div>
@@ -2555,14 +2576,9 @@
       // ✨ Clean reset everything right before displaying the form to clear previous input remnants
       const form = document.getElementById('rsvpForm');
       if (form) form.reset();
-    
-      const paxField = document.querySelector('.class-pax');
-      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
-      const emailWrapper = document.getElementById('emailFieldWrapper');
-    
-      if (paxField) paxField.style.display = 'none';
-      if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
-      if (emailWrapper) emailWrapper.classList.remove('show');
+
+      // 🟢 Reset to the attendance-choice step every time the form is opened
+      resetAttendanceChoice();
     
       // If before deadline, open the form normally
       document.getElementById('rsvpModal').classList.add('active');
@@ -2668,14 +2684,68 @@
       if (typeof toggleAttendanceFields === "function") {
         toggleAttendanceFields(""); 
       }
+
+      // 6. 🟢 Reset the two-step flow back to the initial Yes/No choice screen
+      resetAttendanceChoice();
     }
 
     function closeRSVPOnBackdrop(event) { 
       if(event.target.id === 'rsvpModal') closeRSVP(); 
     }
 
+    // --- 🟢 NEW: TWO-STEP ATTENDANCE FLOW CONTROLLERS ---
+    function selectAttendance(val) {
+      const attendanceField = document.getElementById('attendance');
+      const guestNameInput = document.getElementById('guestName');
+      const badge = document.getElementById('attendanceSummaryBadge');
 
-    
+      attendanceField.value = val;
+
+      // Highlight the chosen button
+      document.querySelectorAll('.attend-choice-btn').forEach(b => b.classList.remove('active'));
+      const chosenBtn = document.querySelector(val === 'attend' ? '.attend-choice-btn.yes-btn' : '.attend-choice-btn.no-btn');
+      if (chosenBtn) chosenBtn.classList.add('active');
+
+      // Update the little summary badge shown on step 2
+      if (badge) {
+        badge.innerHTML = val === 'attend'
+          ? '<i class="fa-solid fa-circle-check" style="color:#2e8b57;"></i> Attending'
+          : '<i class="fa-solid fa-circle-xmark" style="color:#ba0c2f;"></i> Not Attending';
+      }
+
+      // Swap the visible step
+      document.getElementById('attendanceChoiceStep').style.display = 'none';
+      document.getElementById('rsvpDetailsStep').style.display = 'block';
+
+      // Full Name is now required since it's the visible/active field
+      if (guestNameInput) guestNameInput.required = true;
+
+      // Reuses your existing pax/email conditional logic
+      toggleAttendanceFields(val);
+
+      setTimeout(() => { if (guestNameInput) guestNameInput.focus(); }, 150);
+    }
+
+    function resetAttendanceChoice() {
+      const attendanceField = document.getElementById('attendance');
+      const guestNameInput = document.getElementById('guestName');
+
+      if (attendanceField) attendanceField.value = '';
+      if (guestNameInput) guestNameInput.required = false;
+
+      document.querySelectorAll('.attend-choice-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById('attendanceChoiceStep').style.display = 'block';
+      document.getElementById('rsvpDetailsStep').style.display = 'none';
+
+      // Also hide the conditional pax/email fields until a choice is made again
+      const paxField = document.querySelector('.class-pax');
+      const emailDependentWrapper = document.getElementById('attendanceDependentWrapper');
+      const emailWrapper = document.getElementById('emailFieldWrapper');
+      if (paxField) paxField.style.display = 'none';
+      if (emailDependentWrapper) emailDependentWrapper.style.display = 'none';
+      if (emailWrapper) emailWrapper.classList.remove('show');
+    }
 
     function handlePassportCardFlip(event) {
       if (event.target.closest('.barcode-area') || event.target.closest('#mapSelectionMenu')) return;
