@@ -1656,6 +1656,44 @@
       user-select: none; /* 🟢 prevents accidental text selection on rapid taps */
     }
 
+    .snow-wrapper {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 450px; /* 🟢 same column constraint as the bird wrapper */
+      height: 100vh;
+      height: 100dvh;
+      pointer-events: none;
+      z-index: 400; /* 🟢 sits behind the birds (500) and content, ahead of plain background */
+      overflow: hidden;
+    }
+    
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      filter: blur(1px);
+      animation-name: snowFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      will-change: transform;
+    }
+    
+    @keyframes snowFall {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(var(--sway, 15px), 50vh, 0);
+      }
+      100% {
+        transform: translate3d(0, 105vh, 0);
+      }
+    }
+
   </style>
 </head>
 
@@ -1702,6 +1740,7 @@
   <div class="mobile-container" id="top">
     
   <div class="bird-flock-wrapper" id="birdFlockWrapper"></div>
+    <div class="snow-wrapper" id="snowWrapper"></div>
     <div class="flip-container" id="locationSection">
       <div class="flip-card-inner" id="passportFlipCard" onclick="handlePassportCardFlip(event)">
         
@@ -2165,6 +2204,39 @@
 </div>
 
 <script>
+  // --- Gentle snowfall (lightweight, plain CSS/JS — no jQuery/GSAP needed) ---
+  (function () {
+    var wrapper = document.getElementById('snowWrapper');
+    if (!wrapper) return;
+  
+    var COUNT = 14; // 🟢 kept low so it doesn't feel crowded
+  
+    function createFlake() {
+      var flake = document.createElement('div');
+      flake.className = 'snowflake';
+  
+      var size = (Math.random() * 3 + 2).toFixed(1); // 2–5px
+      var left = Math.random() * 100; // %
+      var duration = (Math.random() * 15 + 20).toFixed(1); // 20–35s — slow motion
+      var delay = (Math.random() * -35).toFixed(1); // negative delay staggers start positions
+      var sway = (Math.random() * 30 - 15).toFixed(0); // -15 to +15px horizontal drift
+      var opacity = (Math.random() * 0.4 + 0.4).toFixed(2); // 0.4–0.8
+  
+      flake.style.width = size + 'px';
+      flake.style.height = size + 'px';
+      flake.style.left = left + '%';
+      flake.style.opacity = opacity;
+      flake.style.setProperty('--sway', sway + 'px');
+      flake.style.animationDuration = duration + 's';
+      flake.style.animationDelay = delay + 's';
+  
+      wrapper.appendChild(flake);
+    }
+  
+    for (var i = 0; i < COUNT; i++) createFlake();
+  })();
+
+  
   // --- Bird flock engine: wandering version (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
   var weddingBirdSession = (function () {
     var mBox = [], mPos = [], mCountBird = 0;
