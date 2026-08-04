@@ -1735,9 +1735,7 @@
     }
 
     /* --- Bird flock (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) --- */
-    @media (max-width: 380px) {
-      .bidoBox { transform: scale(0.85); transform-origin: top left; }
-    }
+
     @keyframes bidoHover {
         100% { background-position: 0px -110px; }
     }
@@ -2385,7 +2383,7 @@
   // --- Bird flock engine: wandering version (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
   var weddingBirdSession = (function () {
     var mBox = [], mPos = [], mCountBird = 0;
-    var cMinBird = 2, cMaxBird = 3; // 🟢 kept low so it stays subtle
+    var cMinBird = 5, cMaxBird = 5; // 🟢 kept low so it stays subtle
     var cMinScale = 0.55, cMaxScale = 1.0;
     var cMinAnimDur = 0.2, cMaxAnimDur = 0.4;
     var cMinMoveDur = 6, cMaxMoveDur = 14; // seconds per wander leg — slow, gentle drifting
@@ -2418,16 +2416,16 @@
         wrapper.appendChild(wrap);
   
         mBox[i] = box;
-  
-        var scale = rand(cMinScale, cMaxScale);
+        var isSmallScreen = window.innerWidth <= 380;
+        var scale = rand(cMinScale, cMaxScale) * (isSmallScreen ? 0.85 : 1); // bake the mobile shrink in here
         var startX = rand(0, Math.max(0, size.width - 64));
         var startY = rand(0, Math.max(0, size.height * 0.6));
         mPos[i] = { x: startX, y: startY, scale: scale, facingRight: Math.random() > 0.5 };
   
         wrap.style.transform = 'translate3d(' + startX + 'px,' + startY + 'px,0) scale(' + scale + ')';
         box.style.display = 'block';
-        if (mPos[i].facingRight) box.style.transform = 'rotate3d(0,1,0,180deg)';
-  
+        box.style.transform = mPos[i].facingRight ? 'scaleX(-1)' : ''; // 2D flip only, never conflicts  
+        
         var animDur = rand(cMinAnimDur, cMaxAnimDur);
         box.style.animation = 'bidoHover ' + animDur + 's steps(2) ' + (-Math.random() * animDur) + 's infinite';
       }
@@ -2461,7 +2459,7 @@
       var goingRight = targetX > pos.x;
       var box = mBox[i];
       if (goingRight !== pos.facingRight) {
-        box.style.transform = goingRight ? 'rotate3d(0,1,0,180deg)' : '';
+        box.style.transform = goingRight ? 'scaleX(-1)' : '';
         pos.facingRight = goingRight;
       }
     
