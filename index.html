@@ -1740,23 +1740,9 @@
       height: 40px;
       display: none;
     }
-    .bidoBox svg {
-      width: 100%;
-      height: 100%;
-      display: block;
+    @keyframes bidoFlyCycle {
+      100% { background-position: -900px 0; }
     }
-    .bidoBox .wing-up { animation: flapUp 0.18s ease-in-out infinite alternate; transform-origin: 32px 20px; }
-    .bidoBox .wing-down { animation: flapDown 0.18s ease-in-out infinite alternate; transform-origin: 32px 20px; }
-    
-    @keyframes flapUp {
-      0%   { transform: scaleY(1); }
-      100% { transform: scaleY(0.35); }
-    }
-    @keyframes flapDown {
-      0%   { transform: scaleY(0.35); }
-      100% { transform: scaleY(1); }
-    }
-
     .bird-flock-wrapper {
       position: fixed;
       top: 0;
@@ -2410,25 +2396,23 @@
       var wrapper = document.getElementById('birdFlockWrapper');
       if (!wrapper) return;
       var size = getWrapperSize();
+      var animDur = rand(0.8, 1.1); // 🟢 slightly slower per-cycle than a single flap for a natural wingbeat rate
+      box.style.animation = 'bidoFlyCycle ' + animDur + 's steps(10) infinite';
     
       for (var i = 0; i < count; i++) {
         var wrap = document.createElement('div');
         wrap.className = 'bird-wander-wrap';
         var box = document.createElement('div');
         box.className = 'bidoBox';
-        box.innerHTML =
-          '<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">' +
-            // beak
-            '<path d="M58,30 L82,26 L58,36 Z" fill="#C5A059"/>' +
-            // head + back (upper polygon mass)
-            '<path d="M58,30 L38,10 L20,28 L40,34 L58,36 Z" fill="#C5A059"/>' +
-            // dark face/chest wedge
-            '<path d="M40,34 L58,36 L46,58 L28,46 Z" fill="#2B2321"/>' +
-            // lower wing (lighter accent)
-            '<path d="M28,46 L46,58 L70,64 L34,60 Z" fill="#8C6A46"/>' +
-            // tail tip
-            '<path class="wing-down" d="M20,28 L8,42 L28,46 L40,34 Z" fill="#C5A059" opacity="0.85"/>' +
-          '</svg>';
+        box.innerHTML = '';
+        box.style.width = '88px';
+        box.style.height = '60px';
+        box.style.backgroundImage = "url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/174479/bird-cells-new.svg')";
+        box.style.backgroundSize = 'auto 100%';
+        box.style.backgroundRepeat = 'no-repeat';
+        box.style.willChange = 'background-position';
+        box.style.filter = 'invert(13%) sepia(31%) saturate(2933%) hue-rotate(340deg) brightness(85%) contrast(93%)'; // 🟢 recolors the black silhouette toward your maroon
+        
         wrap.appendChild(box);
         wrapper.appendChild(wrap);
     
