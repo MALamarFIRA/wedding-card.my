@@ -1735,38 +1735,45 @@
     }
 
     /* --- Bird flock (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) --- */
-    .bidoBox {
-      display: none;
-    }
-    @keyframes bidoFlyCycle {
-      100% { background-position: -900px 0; }
-    }
+ 
     .bird-flock-wrapper {
       position: fixed;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 450px; /* 🟢 matches .mobile-container so birds never leave the content column */
+      left: 0;
+      width: 100vw;
       height: 100vh;
       height: 100dvh;
       pointer-events: none;
       z-index: 500;
-      overflow: hidden; /* 🟢 clips anything that tries to drift past the column edges */
+      overflow: hidden;
     }
-
+    
     .bird-wander-wrap {
       position: absolute !important;
       top: 0;
       left: 0;
-      width: 64px;
-      height: 55px;
+      width: 54px;
+      height: 47px;
       pointer-events: auto;
       cursor: pointer;
       will-change: transform;
-      -webkit-tap-highlight-color: transparent; /* 🟢 removes the gray flash box on tap */
-      -webkit-touch-callout: none; /* 🟢 prevents iOS long-press context menu/callout */
-      user-select: none; /* 🟢 prevents accidental text selection on rapid taps */
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+    
+    .hummingbird-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      animation: birdFlutter 0.32s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+    
+    @keyframes birdFlutter {
+      0%   { transform: rotate(-6deg) scaleY(0.95); }
+      100% { transform: rotate(6deg) scaleY(1.05); }
     }
 
     .snow-wrapper {
@@ -2368,66 +2375,51 @@
   })();
 
   
-  // --- Bird flock engine: wandering version (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
-// --- Bird flock engine: flies across & off-screen (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) ---
+  // --- Hummingbird flock: flies freely across the full screen, dodges on tap ---
   var weddingBirdSession = (function () {
+    var BIRD_SRC = "data:image/png;base64,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";
+
     var cEasings = [
-      'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out',
-      'cubic-bezier(0.47,0,0.745,0.715)',
+      'linear', 'ease-in-out',
+      'cubic-bezier(0.45,0.05,0.55,0.95)',
       'cubic-bezier(0.39,0.575,0.565,1)',
-      'cubic-bezier(0.445,0.05,0.55,0.95)',
-      'cubic-bezier(0.55,0.085,0.68,0.53)',
-      'cubic-bezier(0.25,0.46,0.45,0.94)',
-      'cubic-bezier(0.455,0.03,0.515,0.955)'
+      'cubic-bezier(0.25,0.46,0.45,0.94)'
     ];
 
-    var cMinScale = 0.5, cMaxScale = 1.0;
-    var cMinFlapDur = 0.2, cMaxFlapDur = 0.4;   // wing flap cycle speed
-    var cMinFlightDur = 10, cMaxFlightDur = 20; // seconds to cross & exit
-    var cHorizontalDriftFraction = 0.25;        // how far sideways as fraction of width
-    var cSpawnMin = 2, cSpawnMax = 4;           // birds per spawn wave
-    var cWaveIntervalMin = 7000, cWaveIntervalMax = 13000; // ms between spawn waves
+    var cMinScale = 0.55, cMaxScale = 1.0;
+    var cMinFlightDur = 10, cMaxFlightDur = 20;
+    var cHorizontalDriftFraction = 0.35;
+    var cSpawnMin = 2, cSpawnMax = 4;
+    var cWaveIntervalMin = 7000, cWaveIntervalMax = 13000;
 
     function rand(min, max) { return min + Math.random() * (max - min); }
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function getWrapperSize() {
-      var wrapper = document.getElementById('birdFlockWrapper');
-      return {
-        width: wrapper ? wrapper.clientWidth : window.innerWidth,
-        height: wrapper ? wrapper.clientHeight : window.innerHeight
-      };
-    }
+    function viewportSize() { return { width: window.innerWidth, height: window.innerHeight }; }
 
     function spawnBird() {
-      var wrapper = document.getElementById('birdFlockWrapper');
-      if (!wrapper) return;
+      var wrapperEl = document.getElementById('birdFlockWrapper');
+      if (!wrapperEl) return;
 
-      var size = getWrapperSize();
-      var spriteW = 88, spriteH = 60;
+      var spriteW = 54, spriteH = 47;
+      var size = viewportSize();
 
       var wrap = document.createElement('div');
       wrap.className = 'bird-wander-wrap';
-      wrap.style.pointerEvents = 'none'; // pure flyby, not interactive
 
-      var box = document.createElement('div');
-      box.className = 'bidoBox';
-      box.style.display = 'block';
-      box.style.width = spriteW + 'px';
-      box.style.height = spriteH + 'px';
-      box.style.backgroundImage = "url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/174479/bird-cells-new.svg')";
-      box.style.backgroundSize = 'auto 100%';
-      box.style.backgroundRepeat = 'no-repeat';
-      box.style.willChange = 'background-position';
-      // 🟢 No color filter — natural sprite colors
+      var imgFlip = document.createElement('div');
+      imgFlip.style.width = '100%';
+      imgFlip.style.height = '100%';
 
-      var flapDur = rand(cMinFlapDur, cMaxFlapDur);
-      box.style.animation = 'bidoFlyCycle ' + flapDur + 's steps(10) infinite';
+      var img = document.createElement('img');
+      img.src = BIRD_SRC;
+      img.alt = '';
+      img.className = 'hummingbird-img';
+      img.draggable = false;
 
-      wrap.appendChild(box);
-      wrapper.appendChild(wrap);
+      imgFlip.appendChild(img);
+      wrap.appendChild(imgFlip);
+      wrapperEl.appendChild(wrap);
 
-      // Decide flight direction: top→bottom or bottom→top, fully off-screen at both ends
       var isHoverDown = Math.random() > 0.5;
       var scaleFactor = rand(cMinScale, cMaxScale);
 
@@ -2440,56 +2432,63 @@
       var startY = isHoverDown ? -spriteH - 20 : size.height + 20;
       var targetY = isHoverDown ? size.height + 20 : -spriteH - 20;
 
-      // Face the direction of horizontal travel
-      box.style.transform = goingRight ? 'rotate3d(0,1,0,180deg)' : '';
-
-      // Set starting position instantly (no transition yet)
+      imgFlip.style.transform = goingRight ? 'scaleX(-1)' : '';
       wrap.style.transform = 'translate3d(' + startX + 'px,' + startY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)';
+      void wrap.offsetWidth;
 
       var flightDur = rand(cMinFlightDur, cMaxFlightDur);
       var easing = pick(cEasings);
-
-      // Force reflow so the browser registers the start position before transitioning
-      void wrap.offsetWidth;
-
       wrap.style.transition = 'transform ' + flightDur + 's ' + easing;
-      wrap.style.transform = 'translate3d(' + targetX + 'px,' + targetY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)' + (goingRight ? '' : '');
-      if (goingRight) {
-        wrap.style.transform = 'translate3d(' + targetX + 'px,' + targetY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1) rotate3d(0,1,0,0deg)';
-      }
-      // Re-apply facing rotation on the wrap itself so it persists through the transition
       wrap.style.transform = 'translate3d(' + targetX + 'px,' + targetY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)';
 
-      wrap.addEventListener('transitionend', function onEnd(e) {
+      function handleEnd(e) {
         if (e.propertyName !== 'transform') return;
-        wrap.removeEventListener('transitionend', onEnd);
+        wrap.removeEventListener('transitionend', handleEnd);
         if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-      });
+      }
+      wrap.addEventListener('transitionend', handleEnd);
+
+      // --- Tap-to-dodge: bird darts off toward the nearest edge, away from the tap ---
+      function dodge(e) {
+        e.stopPropagation();
+        var rect = wrap.getBoundingClientRect();
+        var curX = rect.left, curY = rect.top;
+
+        wrap.removeEventListener('transitionend', handleEnd);
+        wrap.style.transition = 'none';
+        wrap.style.transform = 'translate3d(' + curX + 'px,' + curY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)';
+        void wrap.offsetWidth;
+
+        var size2 = viewportSize();
+        var goUp = curY > size2.height / 2;
+        var newTargetY = goUp ? -spriteH - 20 : size2.height + 20;
+        var goRightNow = curX < size2.width / 2;
+        var newTargetX = goRightNow ? size2.width + spriteW + 20 : -spriteW - 20;
+
+        imgFlip.style.transform = goRightNow ? 'scaleX(-1)' : '';
+
+        var dodgeDur = rand(0.8, 1.4);
+        wrap.style.transition = 'transform ' + dodgeDur + 's cubic-bezier(0.25,0.46,0.45,0.94)';
+        wrap.style.transform = 'translate3d(' + newTargetX + 'px,' + newTargetY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)';
+
+        wrap.addEventListener('transitionend', handleEnd);
+      }
+
+      wrap.addEventListener('click', dodge);
+      wrap.addEventListener('touchstart', dodge, { passive: true });
     }
 
     function spawnWave() {
       var count = Math.round(rand(cSpawnMin, cSpawnMax));
       for (var i = 0; i < count; i++) {
-        (function (delay) {
-          setTimeout(spawnBird, delay);
-        })(i * rand(200, 600));
+        (function (delay) { setTimeout(spawnBird, delay); })(i * rand(200, 600));
       }
       setTimeout(spawnWave, rand(cWaveIntervalMin, cWaveIntervalMax));
     }
 
-    function start() {
-      spawnWave();
-    }
-
-    return { start: start };
+    return { start: function () { spawnWave(); } };
   })();
 
-  // Kick off — first wave shortly after load, then waves keep spawning forever
-  document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(function () { weddingBirdSession.start(); }, 1500);
-  });
-  
-  // Kick off once — birds stay visible permanently, no hide/show toggling
   document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () { weddingBirdSession.start(); }, 1500);
   });
