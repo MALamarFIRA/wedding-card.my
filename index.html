@@ -1735,7 +1735,6 @@
     }
 
     /* --- Bird flock (adapted from codepen.io/Bert-Beckwith/pen/LYvxGYq) --- */
- 
     .bird-flock-wrapper {
       position: fixed;
       top: 0;
@@ -1752,8 +1751,8 @@
       position: absolute !important;
       top: 0;
       left: 0;
-      width: 54px;
-      height: 47px;
+      width: 64px;
+      height: 55px;
       pointer-events: auto;
       cursor: pointer;
       will-change: transform;
@@ -1762,18 +1761,16 @@
       user-select: none;
     }
     
-    .hummingbird-img {
-      width: 100%;
-      height: 100%;
+    .bidoBox {
+      width: 64px;
+      height: 55px;
       display: block;
-      pointer-events: none;
-      animation: birdFlutter 0.32s ease-in-out infinite alternate;
-      transform-origin: center center;
+      background-image: url(data:image/png;base64,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);
+      will-change: background-position;
     }
     
-    @keyframes birdFlutter {
-      0%   { transform: rotate(-6deg) scaleY(0.95); }
-      100% { transform: rotate(6deg) scaleY(1.05); }
+    @keyframes bidoHover {
+      100% { background-position: 0px -110px; }
     }
 
     .snow-wrapper {
@@ -2377,8 +2374,6 @@
   
   // --- Hummingbird flock: flies freely across the full screen, dodges on tap ---
   var weddingBirdSession = (function () {
-    var BIRD_SRC = "data:image/png;base64,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";
-
     var cEasings = [
       'linear', 'ease-in-out',
       'cubic-bezier(0.45,0.05,0.55,0.95)',
@@ -2400,24 +2395,20 @@
       var wrapperEl = document.getElementById('birdFlockWrapper');
       if (!wrapperEl) return;
 
-      var spriteW = 54, spriteH = 47;
+      var spriteW = 64, spriteH = 55;
       var size = viewportSize();
 
       var wrap = document.createElement('div');
       wrap.className = 'bird-wander-wrap';
 
-      var imgFlip = document.createElement('div');
-      imgFlip.style.width = '100%';
-      imgFlip.style.height = '100%';
+      var box = document.createElement('div');
+      box.className = 'bidoBox';
 
-      var img = document.createElement('img');
-      img.src = BIRD_SRC;
-      img.alt = '';
-      img.className = 'hummingbird-img';
-      img.draggable = false;
+      var flapDur = rand(0.2, 0.4);
+      var flapDelay = -Math.random() * flapDur;
+      box.style.animation = 'bidoHover ' + flapDur + 's steps(2) ' + flapDelay + 's infinite';
 
-      imgFlip.appendChild(img);
-      wrap.appendChild(imgFlip);
+      wrap.appendChild(box);
       wrapperEl.appendChild(wrap);
 
       var isHoverDown = Math.random() > 0.5;
@@ -2432,7 +2423,7 @@
       var startY = isHoverDown ? -spriteH - 20 : size.height + 20;
       var targetY = isHoverDown ? size.height + 20 : -spriteH - 20;
 
-      imgFlip.style.transform = goingRight ? 'scaleX(-1)' : '';
+      box.style.transform = goingRight ? 'rotate3d(0,1,0,180deg)' : '';
       wrap.style.transform = 'translate3d(' + startX + 'px,' + startY + 'px,0) scale3d(' + scaleFactor + ',' + scaleFactor + ',1)';
       void wrap.offsetWidth;
 
@@ -2448,7 +2439,6 @@
       }
       wrap.addEventListener('transitionend', handleEnd);
 
-      // --- Tap-to-dodge: bird darts off toward the nearest edge, away from the tap ---
       function dodge(e) {
         e.stopPropagation();
         var rect = wrap.getBoundingClientRect();
@@ -2465,7 +2455,7 @@
         var goRightNow = curX < size2.width / 2;
         var newTargetX = goRightNow ? size2.width + spriteW + 20 : -spriteW - 20;
 
-        imgFlip.style.transform = goRightNow ? 'scaleX(-1)' : '';
+        box.style.transform = goRightNow ? 'rotate3d(0,1,0,180deg)' : '';
 
         var dodgeDur = rand(0.8, 1.4);
         wrap.style.transition = 'transform ' + dodgeDur + 's cubic-bezier(0.25,0.46,0.45,0.94)';
