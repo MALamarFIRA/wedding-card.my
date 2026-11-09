@@ -1805,7 +1805,7 @@
     
     .dresscode-options {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2d, 1fr);
       gap: 10px;
       margin-bottom: 22px;
     }
@@ -1868,7 +1868,9 @@
     .dress-image-card {
       position: relative;
       width: 100%;
-      max-width: 480px;
+      max-width: 380px;
+      max-height: 92dvh;
+      overflow-y: auto;
       background: var(--cream);
       border: 2px solid var(--gold);
       border-radius: 14px;
@@ -1911,9 +1913,11 @@
     
     #dressImage {
       width: 100%;
-      aspect-ratio: 1408 / 768; /* matches your image size, avoids layout jump */
+      aspect-ratio: 896 / 1200; /* portrait, matches your image */
+      max-height: calc(92dvh - 90px); /* leaves room for title + padding */
       object-fit: contain;
       display: block;
+      margin: 0 auto;
       border-radius: 8px;
       background: #fff;
     }
@@ -2142,13 +2146,10 @@
       <p class="dresscode-hint">Tap an attire to see the outfit guide</p>
       <div class="dresscode-options">
         <button type="button" class="dresscode-item" onclick="openDressImage('tradisional')">
-          <span>Baju Tradisional</span>
+          <span>Malay Tradisional</span>
         </button>
         <button type="button" class="dresscode-item" onclick="openDressImage('formal')">
           <span>Formal</span>
-        </button>
-        <button type="button" class="dresscode-item" onclick="openDressImage('smartcasual')">
-          <span>Smart Casual</span>
         </button>
       </div>
     
@@ -3750,21 +3751,16 @@
   });
 
   // --- DRESS CODE IMAGE POPUP ---
-// Replace each FILE_ID with the Google Drive file ID of the matching image
-const dressImages = {
-  tradisional: {
-    title: "Baju Tradisional",
-    src: "https://lh3.googleusercontent.com/d/1H_6vpdtuT78clw5da_NNij0Nu-QM6mqn"
-  },
-  formal: {
-    title: "Formal",
-    src: "https://lh3.googleusercontent.com/d/1BCRVRnFcM1FAsZCpC5heiW3PgK-JACRJ"
-  },
-  smartcasual: {
-    title: "Smart Casual",
-    src: "https://lh3.googleusercontent.com/d/1V5nlvbOVfZ9AUltw_3nD5Tt9H6Ve3cK1"
-  }
-};
+  const dressImages = {
+    tradisional: {
+      title: "Baju Tradisional",
+      src: "https://lh3.googleusercontent.com/d/1JBpUoOetcIxCHpXUaeLIr7f-HiaP_P0j"
+    },
+    formal: {
+      title: "Formal",
+      src: "https://lh3.googleusercontent.com/d/1cvCW30zXU33jjDXw2XDxVdOapdnVUH2L"
+    }
+  };
 
 function openDressImage(key) {
   const data = dressImages[key];
