@@ -2564,7 +2564,7 @@
     const VENUE_TEXT = "Eastwood Valley Golf & Country Club - Club House";
   
     // 1. Copy venue name (works inside a tap/click)
-    const copyDone = () => showGrabToast("Venue copied! Paste it in Grab's destination box.");
+    const copyDone = () => showGrabToast("Venue copied!");
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(VENUE_TEXT).then(copyDone).catch(() => legacyCopy(VENUE_TEXT, copyDone));
     } else {
