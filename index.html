@@ -2504,6 +2504,9 @@
         <a href="https://ul.waze.com/ul?venue_id=74711084.747241909.2804519&overview=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank" class="btn" style="background: #33CCFF; color: #2B2321; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
           <i class="fa-brands fa-waze"></i> Open Waze Navigation
         </a>
+        <a href="javascript:void(0);" onclick="openGrabToVenue()" class="btn" style="background: #00B14F; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; margin:0; font-size: 13px; font-weight: bold;">
+          <i class="fa-solid fa-car"></i> Book Grab to Venue
+        </a>
       </div>
     </div>
   </div>
@@ -2556,6 +2559,50 @@
 </div>
 
 <script>
+  // --- OPEN GRAB WITH VENUE AS DROP-OFF ---
+  function openGrabToVenue() {
+    const VENUE_LAT = 0.000000;   // 🔴 replace with venue latitude
+    const VENUE_LNG = 0.000000;   // 🔴 replace with venue longitude
+    const VENUE_NAME = encodeURIComponent("Eastwood Valley Golf & Country Club");
+  
+    const grabLink = "grab://open?screenType=BOOKING"
+      + "&dropOffLatitude=" + VENUE_LAT
+      + "&dropOffLongitude=" + VENUE_LNG
+      + "&dropOffName=" + VENUE_NAME;
+  
+    const ua = navigator.userAgent || "";
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  
+    // Desktop: Grab app doesn't apply, open the map instead
+    if (!isAndroid && !isIOS) {
+      window.open("https://maps.app.goo.gl/KyWUGHw6Sc7wcBE67", "_blank");
+      return;
+    }
+  
+    const storeLink = isAndroid
+      ? "https://play.google.com/store/apps/details?id=com.grabtaxi.passenger"
+      : "https://apps.apple.com/app/id647268330";
+  
+    // If the app opens, the page loses focus/visibility and we cancel the fallback
+    let appOpened = false;
+    const onHide = () => { if (document.hidden) appOpened = true; };
+    document.addEventListener("visibilitychange", onHide);
+  
+    window.location.href = grabLink;
+  
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", onHide);
+      if (!appOpened) window.location.href = storeLink; // Grab not installed
+    }, 1500);
+  }
+
+
+
+
+
+
+  
   // --- Gentle snowfall (lightweight, plain CSS/JS — no jQuery/GSAP needed) ---
   (function () {
     var wrapper = document.getElementById('snowWrapper');
