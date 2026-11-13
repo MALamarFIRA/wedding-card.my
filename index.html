@@ -2559,22 +2559,23 @@
 </div>
 
 <script>
-  // --- OPEN GRAB WITH VENUE AS DROP-OFF ---
+  // --- COPY VENUE + OPEN GRAB ---
   function openGrabToVenue() {
-    const VENUE_LAT = 4.370594482359237;   // 🔴 replace with venue latitude
-    const VENUE_LNG = 114.01718960198342;   // 🔴 replace with venue longitude
-    const VENUE_NAME = encodeURIComponent("Eastwood Valley Golf & Country Club");
+    const VENUE_TEXT = "Eastwood Valley Golf & Country Club, Miri";
   
-    const grabLink = "grab://open?screenType=BOOKING"
-      + "&dropOffLatitude=" + VENUE_LAT
-      + "&dropOffLongitude=" + VENUE_LNG
-      + "&dropOffName=" + VENUE_NAME;
+    // 1. Copy venue name (works inside a tap/click)
+    const copyDone = () => showGrabToast("Venue copied! Paste it in Grab's destination box.");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(VENUE_TEXT).then(copyDone).catch(() => legacyCopy(VENUE_TEXT, copyDone));
+    } else {
+      legacyCopy(VENUE_TEXT, copyDone);
+    }
   
+    // 2. Open Grab (desktop falls back to the map)
     const ua = navigator.userAgent || "";
     const isAndroid = /Android/i.test(ua);
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
   
-    // Desktop: Grab app doesn't apply, open the map instead
     if (!isAndroid && !isIOS) {
       window.open("https://maps.app.goo.gl/KyWUGHw6Sc7wcBE67", "_blank");
       return;
@@ -2584,17 +2585,39 @@
       ? "https://play.google.com/store/apps/details?id=com.grabtaxi.passenger"
       : "https://apps.apple.com/app/id647268330";
   
-    // If the app opens, the page loses focus/visibility and we cancel the fallback
     let appOpened = false;
     const onHide = () => { if (document.hidden) appOpened = true; };
     document.addEventListener("visibilitychange", onHide);
   
-    window.location.href = grabLink;
+    setTimeout(() => { window.location.href = "grab://open?screenType=BOOKING"; }, 600);
   
     setTimeout(() => {
       document.removeEventListener("visibilitychange", onHide);
-      if (!appOpened) window.location.href = storeLink; // Grab not installed
-    }, 1500);
+      if (!appOpened) window.location.href = storeLink;
+    }, 2200);
+  }
+  
+  function legacyCopy(text, done) {
+    const t = document.createElement("textarea");
+    t.value = text;
+    t.style.position = "fixed";
+    t.style.opacity = "0";
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(t);
+    done();
+  }
+  
+  function showGrabToast(msg) {
+    const old = document.getElementById("grabToast");
+    if (old) old.remove();
+    const el = document.createElement("div");
+    el.id = "grabToast";
+    el.innerText = msg;
+    el.style.cssText = "position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#2B2321;color:#fff;padding:10px 16px;border-radius:20px;font-size:12px;z-index:200000;max-width:85%;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
   }
 
 
