@@ -3527,6 +3527,7 @@
 
         let showQr = false;
         let showCalendar = false; 
+        let showGrab = false;
         let cleanOutput = aiOutput;
 
         if (
@@ -3581,6 +3582,11 @@
           cleanOutput = cleanOutput.replace("[SHOW_CALENDAR_BUTTONS]", "").trim();
         }
 
+        if (cleanOutput.includes("[SHOW_GRAB_BUTTON]")) {
+          showGrab = true;
+          cleanOutput = cleanOutput.replace("[SHOW_GRAB_BUTTON]", "").trim();
+        }
+
         cleanOutput = cleanOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
         cleanOutput = cleanOutput.replace(/^\s*[\*]\s*/gm, '');
         let parsedText = cleanOutput.replace(/\|/g, ' | '); 
@@ -3616,6 +3622,17 @@
             </div>
           `;
         }
+
+        if (showGrab) {
+            botBubble.innerHTML += `
+              <div style="margin-top: 12px;">
+                <button onclick="openGrabToVenue()"
+                  style="padding: 10px 16px; background: #00B14F; color: white; border-radius: 20px; border: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer;">
+                  <i class="fa-solid fa-car"></i> Open Grab to Venue
+                </button>
+              </div>
+            `;
+          }
 
         chatLog.appendChild(botBubble);
 
